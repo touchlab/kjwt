@@ -3,6 +3,7 @@ package co.touchlab.kjwt.builder
 import co.touchlab.kjwt.algorithm.JweContentAlgorithm
 import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
+import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.internal.encodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
 import co.touchlab.kjwt.internal.jweEncrypt
@@ -10,7 +11,7 @@ import co.touchlab.kjwt.internal.jwsSign
 import co.touchlab.kjwt.model.ClaimsBuilder
 import co.touchlab.kjwt.model.JweHeader
 import co.touchlab.kjwt.model.JwsHeaderBuilder
-import dev.whyoleg.cryptography.materials.key.EncodableKey
+import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.JsonElement
 
@@ -59,7 +60,7 @@ class JwtBuilder {
      *
      * For [JwsAlgorithm.None] the signature part is empty, producing `header.payload.`
      */
-    suspend fun <T : EncodableKey<*>> signWith(algorithm: JwsAlgorithm<T>, key: T): String {
+    suspend fun <T : Key> signWith(algorithm: JwsAlgorithm<T>, key: T): String {
         val header = headerBuilder.build(algorithm.id)
         val headerB64 = header.toJsonObject().encodeToBase64Url()
         val payloadB64 = claims.toJsonObject().encodeToBase64Url()
@@ -68,13 +69,16 @@ class JwtBuilder {
         return "$headerB64.$payloadB64.${signature.encodeBase64Url()}"
     }
 
+    suspend fun signWith(algorithm: JwsAlgorithm.None): String =
+        signWith(algorithm, SimpleKey.Empty)
+
     /**
      * Builds and returns a JWE compact serialization:
      * `header.encryptedKey.iv.ciphertext.tag`
      */
-    suspend fun encryptWith(
-        key: Any,
-        keyAlgorithm: JweKeyAlgorithm,
+    suspend fun <PublicKey : Key, PrivateKey : Key> encryptWith(
+        key: PublicKey,
+        keyAlgorithm: JweKeyAlgorithm<PublicKey, PrivateKey>,
         contentAlgorithm: JweContentAlgorithm,
     ): String {
         val header = JweHeader(

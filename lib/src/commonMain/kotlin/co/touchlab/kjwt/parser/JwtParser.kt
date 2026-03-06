@@ -101,17 +101,17 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             throw UnsupportedJwtException("Unsupported JWE content algorithm: '${header.encryption}'", e)
         }
 
-        val decryptKey = config.jweKey
+        val decryptKey = config.definedKeyForAlgorithm(keyAlgorithm)
             ?: throw IllegalStateException("No decryption key configured. Call decryptWith() on the parser builder.")
 
-        val encryptedKey = parts[1].decodeBase64Url()
-        val iv = parts[2].decodeBase64Url()
-        val ciphertext = parts[3].decodeBase64Url()
-        val tag = parts[4].decodeBase64Url()
         // AAD is the ASCII bytes of the raw base64url header string (part[0])
         val aad = parts[0].encodeToByteArray()
 
         val plaintext = try {
+            val encryptedKey = parts[1].decodeBase64Url()
+            val iv = parts[2].decodeBase64Url()
+            val ciphertext = parts[3].decodeBase64Url()
+            val tag = parts[4].decodeBase64Url()
             jweDecrypt(decryptKey, keyAlgorithm, contentAlgorithm, encryptedKey, iv, ciphertext, tag, aad)
         } catch (e: Exception) {
             throw SignatureException("JWE decryption or authentication tag verification failed", e)

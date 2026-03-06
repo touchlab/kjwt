@@ -1,10 +1,10 @@
 package co.touchlab.kjwt
 
+import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.exception.MalformedJwtException
 import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.exception.UnsupportedJwtException
-import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.materials.key.EncodableKey
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -171,7 +171,7 @@ class MalformedTokenTest {
     fun parse_none_withoutAllowUnsecured_throwsUnsupportedJwtException() = runTest {
         val noneToken = Jwt.builder()
             .subject("user")
-            .signWith(JwsAlgorithm.None, JwsAlgorithm.None.NoneKey)
+            .signWith(JwsAlgorithm.None)
 
         assertFailsWith<UnsupportedJwtException> {
             Jwt.parser()
@@ -232,11 +232,11 @@ class MalformedTokenTest {
 
     @Test
     fun parseEncryptedClaims_threeParts_throwsMalformedJwtException() = runTest {
-        val cek = aesKeyBytes(256)
+        val cek = aesSimpleKey(256)
         // A 3-part token passed to parseEncryptedClaims (JWE expects 5)
         assertFailsWith<MalformedJwtException> {
             Jwt.parser()
-                .decryptWith(cek)
+                .decryptWith(JweKeyAlgorithm.RsaOaep, cek)
                 .build()
                 .parseEncryptedClaims("a.b.c")
         }

@@ -1,5 +1,6 @@
 package co.touchlab.kjwt
 
+import co.touchlab.kjwt.cryptography.SimpleKey
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.EC
@@ -59,7 +60,8 @@ suspend fun rsaOaep256KeyPair(): RSA.OAEP.KeyPair =
 
 // ---- AES key bytes for JWE Dir ----
 
-fun aesKeyBytes(bits: Int): ByteArray = Random.Default.nextBytes(bits / 8)
+fun aesSimpleKey(bits: Int): SimpleKey =
+    SimpleKey(Random.Default.nextBytes(bits / 8))
 
 // ---- Token helpers ----
 

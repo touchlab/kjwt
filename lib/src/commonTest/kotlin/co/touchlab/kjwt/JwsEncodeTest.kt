@@ -351,7 +351,7 @@ class JwsEncodeTest {
     fun signNone_producesEmptySignaturePart() = runTest {
         val token = Jwt.builder()
             .subject("test")
-            .signWith(JwsAlgorithm.None, JwsAlgorithm.None.NoneKey)
+            .signWith(JwsAlgorithm.None)
 
         val parts = token.split('.')
         assertEquals(3, parts.size)

@@ -1,29 +1,34 @@
 package co.touchlab.kjwt.algorithm
 
+import co.touchlab.kjwt.cryptography.SimpleKey
+import dev.whyoleg.cryptography.algorithms.RSA
+import dev.whyoleg.cryptography.materials.key.Key
 import kotlin.jvm.JvmStatic
 
-sealed class JweKeyAlgorithm(val id: String) {
+sealed class JweKeyAlgorithm<out PublicKey : Key, out PrivateKey: Key>(val id: String) {
+    sealed class OAEPBased(id: String) : JweKeyAlgorithm<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey>(id)
+
     /** Direct use of a shared symmetric CEK — no key wrapping. */
-    data object Dir : JweKeyAlgorithm("dir")
+    data object Dir : JweKeyAlgorithm<SimpleKey, SimpleKey>("dir")
 
     /**
      * RSA-OAEP with SHA-1.
      * Key must be created with `RSA.OAEP.keyPairGenerator(SHA1)` or equivalent.
      */
-    data object RsaOaep : JweKeyAlgorithm("RSA-OAEP")
+    data object RsaOaep : OAEPBased("RSA-OAEP")
 
     /**
      * RSA-OAEP with SHA-256.
      * Key must be created with `RSA.OAEP.keyPairGenerator(SHA256)` or equivalent.
      */
-    data object RsaOaep256 : JweKeyAlgorithm("RSA-OAEP-256")
+    data object RsaOaep256 : OAEPBased("RSA-OAEP-256")
 
     override fun toString(): String = id
 
     companion object {
         private val all by lazy { listOf(Dir, RsaOaep, RsaOaep256) }
 
-        fun fromId(id: String): JweKeyAlgorithm =
+        fun fromId(id: String): JweKeyAlgorithm<*, *> =
             all.firstOrNull { it.id == id }
                 ?: throw IllegalArgumentException("Unknown JWE key algorithm: '$id'")
     }

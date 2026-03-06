@@ -7,7 +7,7 @@ import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.materials.key.EncodableKey
+import dev.whyoleg.cryptography.materials.key.Key
 
 /**
  * Signs [signingInput] using [algorithm] and the given [key].
@@ -21,9 +21,9 @@ import dev.whyoleg.cryptography.materials.key.EncodableKey
  * - ES512         → [ECDSA.PrivateKey] (created with P-521 curve)
  * - None          → any key (ignored); returns empty ByteArray
  */
-internal suspend fun <T : EncodableKey<*>> jwsSign(
+internal suspend fun <T : Key> jwsSign(
     algorithm: JwsAlgorithm<T>,
-    key: EncodableKey<*>,
+    key: Key,
     signingInput: ByteArray
 ): ByteArray =
     when (algorithm) {
@@ -69,7 +69,7 @@ internal suspend fun <T : EncodableKey<*>> jwsSign(
  * - ES256/384/512 → [ECDSA.PublicKey]
  * - None          → returns `true` only if [signature] is empty
  */
-internal suspend fun <T : EncodableKey<*>> jwsVerify(
+internal suspend fun <T : Key> jwsVerify(
     algorithm: JwsAlgorithm<T>,
     key: T,
     signingInput: ByteArray,

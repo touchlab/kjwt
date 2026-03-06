@@ -1,8 +1,9 @@
 package co.touchlab.kjwt.parser
 
+import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import dev.whyoleg.cryptography.materials.key.EncodableKey
-import kotlinx.datetime.DateTimePeriod
+import dev.whyoleg.cryptography.materials.key.Key
 
 /**
  * Configures and builds a [JwtParser].
@@ -19,7 +20,7 @@ import kotlinx.datetime.DateTimePeriod
  */
 class JwtParserBuilder {
     internal var jwsKeyHolder: MutableList<JwtKeyHolder<*>> = mutableListOf()
-    internal var jweKey: Any? = null
+    internal var jweKeyHolder: MutableList<JweKeyHolder<*, *>> = mutableListOf()
     internal val requiredClaims: MutableMap<String, Any> = mutableMapOf()
     internal var clockSkewSeconds: Long = 0L
     internal var allowUnsecured: Boolean = false
@@ -28,13 +29,21 @@ class JwtParserBuilder {
         jwsKeyHolder.add(JwtKeyHolder(algorithm, key))
     }
 
-    internal fun <T : EncodableKey<*>> definedKeyForAlgorithm(algorithm: JwsAlgorithm<T>): T? {
+    fun <PublicKey : Key, PrivateKey : Key> decryptWith(
+        algorithm: JweKeyAlgorithm<PublicKey, PrivateKey>,
+        privateKey: PrivateKey
+    ): JwtParserBuilder = apply {
+        jweKeyHolder.add(JweKeyHolder(algorithm, privateKey))
+    }
+
+    internal fun <T : Key> definedKeyForAlgorithm(algorithm: JwsAlgorithm<T>): T? {
         @Suppress("UNCHECKED_CAST")
         return jwsKeyHolder.firstOrNull { it.jwsAlgorithm == algorithm }?.jwsKey as? T
     }
 
-    fun decryptWith(key: Any): JwtParserBuilder = apply {
-        jweKey = key
+    internal fun <PublicKey : Key, PrivateKey : Key> definedKeyForAlgorithm(algorithm: JweKeyAlgorithm<PublicKey, PrivateKey>): PrivateKey? {
+        @Suppress("UNCHECKED_CAST")
+        return jweKeyHolder.firstOrNull { it.jweAlgorithm == algorithm }?.jwiPrivateKey as? PrivateKey
     }
 
     fun requireIssuer(iss: String): JwtParserBuilder = apply {
@@ -70,4 +79,9 @@ class JwtParserBuilder {
 internal data class JwtKeyHolder<out T : EncodableKey<*>>(
     val jwsAlgorithm: JwsAlgorithm<T>,
     val jwsKey: T,
+)
+
+internal data class JweKeyHolder<out PublicKey : Key, out PrivateKey : Key>(
+    val jweAlgorithm: JweKeyAlgorithm<PublicKey, PrivateKey>,
+    val jwiPrivateKey: PublicKey,
 )

@@ -1,6 +1,7 @@
 package co.touchlab.kjwt
 
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
+import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.Jws
 import co.touchlab.kjwt.model.Claims
 import dev.whyoleg.cryptography.algorithms.EC
@@ -31,8 +32,8 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZX0" +
-                    "._-A3B6dTUb8NrJi2SlUH_9jxmaU3plM2sxf-OyXnWiw",
+                        ".eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZX0" +
+                        "._-A3B6dTUb8NrJi2SlUH_9jxmaU3plM2sxf-OyXnWiw",
             )
 
         assertEquals("HS256", jws.header.algorithm)
@@ -135,7 +136,7 @@ class JwsDecodeTest {
     fun parseNone_withAllowUnsecured() = runTest {
         val token = Jwt.builder()
             .subject("none-user")
-            .signWith(JwsAlgorithm.None, JwsAlgorithm.None.NoneKey)
+            .signWith(JwsAlgorithm.None)
 
         val jws = Jwt.parser()
             .allowUnsecured(true)

@@ -1,7 +1,7 @@
 package co.touchlab.kjwt.model
 
 import co.touchlab.kjwt.internal.JwtJson
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject

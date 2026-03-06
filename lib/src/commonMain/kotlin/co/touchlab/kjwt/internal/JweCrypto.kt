@@ -4,6 +4,7 @@ package co.touchlab.kjwt.internal
 
 import co.touchlab.kjwt.algorithm.JweContentAlgorithm
 import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
+import co.touchlab.kjwt.cryptography.SimpleKey
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.AES
 import dev.whyoleg.cryptography.algorithms.HMAC
@@ -11,6 +12,7 @@ import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
+import dev.whyoleg.cryptography.materials.key.Key
 import kotlin.random.Random
 
 internal data class JweEncryptResult(
@@ -18,7 +20,29 @@ internal data class JweEncryptResult(
     val iv: ByteArray,
     val ciphertext: ByteArray,
     val tag: ByteArray,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as JweEncryptResult
+
+        if (!encryptedKey.contentEquals(other.encryptedKey)) return false
+        if (!iv.contentEquals(other.iv)) return false
+        if (!ciphertext.contentEquals(other.ciphertext)) return false
+        if (!tag.contentEquals(other.tag)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = encryptedKey.contentHashCode()
+        result = 31 * result + iv.contentHashCode()
+        result = 31 * result + ciphertext.contentHashCode()
+        result = 31 * result + tag.contentHashCode()
+        return result
+    }
+}
 
 /**
  * Encrypts [plaintext] according to the JWE compact serialization process.
@@ -30,9 +54,9 @@ internal data class JweEncryptResult(
  * - RSA-OAEP      → [RSA.OAEP.PublicKey] (key created with SHA-1)
  * - RSA-OAEP-256  → [RSA.OAEP.PublicKey] (key created with SHA-256)
  */
-internal suspend fun jweEncrypt(
-    key: Any,
-    keyAlgorithm: JweKeyAlgorithm,
+internal suspend fun <PublicKey : Key, PrivateKey : Key> jweEncrypt(
+    key: PublicKey,
+    keyAlgorithm: JweKeyAlgorithm<PublicKey, PrivateKey>,
     contentAlgorithm: JweContentAlgorithm,
     plaintext: ByteArray,
     aad: ByteArray,
@@ -41,7 +65,7 @@ internal suspend fun jweEncrypt(
 
     val (cek, encryptedKey) = when (keyAlgorithm) {
         JweKeyAlgorithm.Dir -> {
-            val cek = key as ByteArray
+            val cek = (key as SimpleKey).value
             Pair(cek, ByteArray(0))
         }
         JweKeyAlgorithm.RsaOaep,
@@ -72,9 +96,9 @@ internal suspend fun jweEncrypt(
  *
  * Key types mirror [jweEncrypt].
  */
-internal suspend fun jweDecrypt(
-    key: Any,
-    keyAlgorithm: JweKeyAlgorithm,
+internal suspend fun <PublicKey : Key, PrivateKey : Key> jweDecrypt(
+    key: PrivateKey,
+    keyAlgorithm: JweKeyAlgorithm<PublicKey, PrivateKey>,
     contentAlgorithm: JweContentAlgorithm,
     encryptedKey: ByteArray,
     iv: ByteArray,
@@ -85,7 +109,7 @@ internal suspend fun jweDecrypt(
     val provider = CryptographyProvider.Default
 
     val cek = when (keyAlgorithm) {
-        JweKeyAlgorithm.Dir -> key as ByteArray
+        JweKeyAlgorithm.Dir -> (key as SimpleKey).value
         JweKeyAlgorithm.RsaOaep,
         JweKeyAlgorithm.RsaOaep256,
         -> {
