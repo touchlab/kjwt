@@ -99,7 +99,11 @@ class Claims(@PublishedApi internal val data: Map<String, JsonElement>) : JwtPay
         var audience: Set<String>? = null
             set(value) {
                 field = value
-                claim(AUD, value)
+                if (value != null && value.size == 1) {
+                    claim(AUD, value.first())
+                } else {
+                    claim(AUD, value)
+                }
             }
 
         var expiration: Instant? = null
@@ -120,7 +124,7 @@ class Claims(@PublishedApi internal val data: Map<String, JsonElement>) : JwtPay
                 claim(IAT, InstantEpochSecondsSerializer, value)
             }
 
-        var jwtId: String? = null
+        var id: String? = null
             set(value) {
                 field = value
                 claim(JTI, value)

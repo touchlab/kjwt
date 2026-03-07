@@ -1,7 +1,7 @@
 package co.touchlab.kjwt.exception
 
-import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtHeader
+import co.touchlab.kjwt.model.JwtPayload
 
 open class JwtException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
@@ -13,13 +13,13 @@ class UnsupportedJwtException(message: String, cause: Throwable? = null) : JwtEx
 
 class ExpiredJwtException(
     val header: JwtHeader,
-    val claims: Claims,
+    val claims: JwtPayload,
     message: String,
 ) : JwtException(message)
 
 class PrematureJwtException(
     val header: JwtHeader,
-    val claims: Claims,
+    val claims: JwtPayload,
     message: String,
 ) : JwtException(message)
 

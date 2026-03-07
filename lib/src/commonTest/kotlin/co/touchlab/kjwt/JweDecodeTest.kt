@@ -199,7 +199,7 @@ class JweDecodeTest {
             .subject("auto-detect-jwe")
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A256GCM)
 
-        val result = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parse(token)
+        val result = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseClaims(token)
 
         assertIs<JwtInstance.Jwe<Claims>>(result)
         assertEquals("auto-detect-jwe", result.payload.subjectOrNull)

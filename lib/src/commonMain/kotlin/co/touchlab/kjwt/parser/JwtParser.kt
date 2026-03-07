@@ -23,7 +23,9 @@ import co.touchlab.kjwt.model.issuerOrNull
 import co.touchlab.kjwt.model.jwtIdOrNull
 import co.touchlab.kjwt.model.notBeforeOrNull
 import co.touchlab.kjwt.model.subjectOrNull
+import co.touchlab.kjwt.serializers.ClaimsSerializer
 import kotlin.time.Clock
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -31,8 +33,11 @@ import kotlinx.serialization.json.JsonPrimitive
  * Thread-safe JWT parser. Obtain via [JwtParserBuilder.build].
  */
 class JwtParser internal constructor(private val config: JwtParserBuilder) {
+    suspend fun parseSignedClaims(token: String): JwtInstance.Jws<Claims> =
+        parseSignedJwt(ClaimsSerializer, token)
+
     /**
-     * Parses and validates a JWS compact token, returning the signed claims.
+     * Parses and validates a JWS compact token, returning the signed JwtInstance.
      *
      * @throws MalformedJwtException if the token is not a valid 3-part JWT
      * @throws UnsupportedJwtException if `alg=none` and unsecured tokens are not allowed
@@ -42,7 +47,10 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
      * @throws MissingClaimException if a required claim is absent
      * @throws IncorrectClaimException if a required claim has an unexpected value
      */
-    suspend fun parseSignedClaims(token: String): JwtInstance.Jws<Claims> {
+    suspend fun <T : JwtPayload> parseSignedJwt(
+        serializer: DeserializationStrategy<T>,
+        token: String
+    ): JwtInstance.Jws<T> {
         val parts = token.split('.')
         if (parts.size != 3) throw MalformedJwtException("JWS token must have exactly 3 parts, got ${parts.size}")
 
@@ -60,7 +68,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             )
         }
 
-        val claims = decodeJsonObjectFromBase64Url<Claims>(parts[1], "payload")
+        val claims = decodeJsonObjectFromBase64Url(serializer, parts[1], "payload")
 
         if (algorithm != JwsAlgorithm.None) {
             val verifier = config.verifierForAlgorithm(algorithm)
@@ -84,7 +92,13 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
      * @throws MalformedJwtException if the token is not a valid 5-part JWE
      * @throws SignatureException if decryption or authentication tag verification fails
      */
-    suspend fun parseEncryptedClaims(token: String): JwtInstance.Jwe<Claims> {
+    suspend fun parseEncryptedClaims(token: String): JwtInstance.Jwe<Claims> =
+        parseEncryptedJwt(ClaimsSerializer, token)
+
+    suspend fun <T : JwtPayload> parseEncryptedJwt(
+        serializer: DeserializationStrategy<T>,
+        token: String
+    ): JwtInstance.Jwe<T> {
         val parts = token.split('.')
         if (parts.size != 5) throw MalformedJwtException("JWE token must have exactly 5 parts, got ${parts.size}")
 
@@ -117,7 +131,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             throw SignatureException("JWE decryption or authentication tag verification failed", e)
         }
 
-        val claims = decodeJsonObjectFromString<Claims>(plaintext.decodeToString(), "payload")
+        val claims = decodeJsonObjectFromString(serializer, plaintext.decodeToString(), "payload")
 
         // For JWE time-claim validation we create a synthetic JwsHeader for the exception type
         val syntheticJwsHeader = JwtHeader.Jws(algorithm = header.algorithm)
@@ -130,34 +144,53 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
     /**
      * Auto-detects JWS (3 parts) or JWE (5 parts) and delegates accordingly.
      */
-    suspend fun parse(token: String): JwtInstance<Claims> {
+    suspend fun parseClaims(token: String): JwtInstance<Claims> =
+        parse(ClaimsSerializer, token)
+
+    suspend fun <T : JwtPayload> parse(
+        deserializer: DeserializationStrategy<T>,
+        token: String
+    ): JwtInstance<T> {
         val partCount = token.count { it == '.' } + 1
         return when (partCount) {
-            3 -> parseSignedClaims(token)
-            5 -> parseEncryptedClaims(token)
+            3 -> parseSignedJwt(deserializer, token)
+            5 -> parseEncryptedJwt(deserializer, token)
             else -> throw MalformedJwtException("Cannot determine JWT type: expected 3 or 5 parts, got $partCount")
         }
     }
 
     // ---- Private helpers ----
 
-    private inline fun <reified T> decodeJsonObjectFromBase64Url(base64UrlPart: String, name: String): T {
+    private inline fun <reified T> decodeJsonObjectFromBase64Url(base64UrlPart: String, name: String): T =
+        decodeJsonObjectFromBase64Url(kotlinx.serialization.serializer<T>(), base64UrlPart, name)
+
+    private fun <T> decodeJsonObjectFromBase64Url(
+        deserializer: DeserializationStrategy<T>,
+        base64UrlPart: String,
+        name: String
+    ): T {
         val bytes = try {
             base64UrlPart.decodeBase64Url()
         } catch (e: Exception) {
             throw MalformedJwtException("Invalid base64url encoding in JWT $name", e)
         }
-        return decodeJsonObjectFromString(bytes.decodeToString(), name)
+        return decodeJsonObjectFromString(deserializer, bytes.decodeToString(), name)
     }
 
     private inline fun <reified T> decodeJsonObjectFromString(json: String, name: String): T =
-        try {
-            JwtJson.decodeFromString(json)
-        } catch (e: Exception) {
-            throw MalformedJwtException("JWT $name is not valid JSON", e)
-        }
+        decodeJsonObjectFromString(kotlinx.serialization.serializer<T>(), json, name)
 
-    private fun validateTimeClaims(claims: Claims, header: JwtHeader) {
+    private fun <T> decodeJsonObjectFromString(
+        deserializer: DeserializationStrategy<T>,
+        json: String,
+        name: String
+    ): T = try {
+        JwtJson.decodeFromString(deserializer, json)
+    } catch (e: Exception) {
+        throw MalformedJwtException("JWT $name is not valid JSON", e)
+    }
+
+    private fun validateTimeClaims(claims: JwtPayload, header: JwtHeader) {
         val now = Clock.System.now()
         val skew = config.clockSkewSeconds
 
@@ -174,7 +207,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         }
     }
 
-    private fun validateRequiredClaims(claims: Claims) {
+    private fun validateRequiredClaims(claims: JwtPayload) {
         for ((name, expected) in config.requiredClaims) {
             when (name) {
                 JwtPayload.AUD -> {
@@ -190,7 +223,8 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
                         JwtPayload.SUB -> claims.subjectOrNull
                         JwtPayload.JTI -> claims.jwtIdOrNull
                         else -> {
-                            val element = claims.getClaimOrNull<JsonElement>(name) ?: throw MissingClaimException(name)
+                            val element =
+                                claims.getClaimOrNull<JsonElement>(name) ?: throw MissingClaimException(name)
                             (element as? JsonPrimitive)?.content ?: element.toString()
                         }
                     }

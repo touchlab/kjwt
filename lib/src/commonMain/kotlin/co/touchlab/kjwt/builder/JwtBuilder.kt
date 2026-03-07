@@ -43,7 +43,7 @@ class JwtBuilder {
     fun expiration(exp: Instant): JwtBuilder = apply { claimsBuilder.expiration = exp }
     fun notBefore(nbf: Instant): JwtBuilder = apply { claimsBuilder.notBefore = nbf }
     fun issuedAt(iat: Instant): JwtBuilder = apply { claimsBuilder.issuedAt = iat }
-    fun id(jti: String): JwtBuilder = apply { claimsBuilder.jwtId = jti }
+    fun id(jti: String): JwtBuilder = apply { claimsBuilder.id = jti }
 
     fun claim(name: String, value: JsonElement): JwtBuilder = apply { claimsBuilder.claim(name, value) }
     inline fun <reified T> claim(name: String, value: T): JwtBuilder = apply { claimsBuilder.claim(name, value) }

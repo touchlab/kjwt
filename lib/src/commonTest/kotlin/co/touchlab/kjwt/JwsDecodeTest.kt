@@ -212,7 +212,7 @@ class JwsDecodeTest {
         val result = Jwt.parser()
             .verifyWith(JwsAlgorithm.HS256, key)
             .build()
-            .parse(token)
+            .parseClaims(token)
 
         assertIs<JwtInstance.Jws<Claims>>(result)
         assertEquals("auto-detect-user", result.payload.subjectOrNull)

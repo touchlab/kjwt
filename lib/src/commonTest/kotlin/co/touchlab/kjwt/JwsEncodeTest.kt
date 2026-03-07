@@ -37,8 +37,8 @@ class JwsEncodeTest {
 
         assertEquals(
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZX0" +
-                    "._-A3B6dTUb8NrJi2SlUH_9jxmaU3plM2sxf-OyXnWiw",
+                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0" +
+                    ".KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30",
             token,
         )
     }

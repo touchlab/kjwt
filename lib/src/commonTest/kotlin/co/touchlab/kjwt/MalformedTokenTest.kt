@@ -247,7 +247,7 @@ class MalformedTokenTest {
             Jwt.parser()
                 .verifyWith(JwsAlgorithm.HS256, key)
                 .build()
-                .parse("a.b.c.d") // 4 parts — neither JWS nor JWE
+                .parseClaims("a.b.c.d") // 4 parts — neither JWS nor JWE
         }
     }
 }
