@@ -40,7 +40,7 @@ class JwtBuilderExtTest {
             .parseSignedClaims(token)
 
         assertEquals("HS256", jws.header.algorithm)
-        assertEquals("ext-hs256", jws.payload.subject)
+        assertEquals("ext-hs256", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -54,7 +54,7 @@ class JwtBuilderExtTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ext-hs384", jws.payload.subject)
+        assertEquals("ext-hs384", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -68,7 +68,7 @@ class JwtBuilderExtTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ext-hs512", jws.payload.subject)
+        assertEquals("ext-hs512", jws.payload.subjectOrNull)
     }
 
     // ---- signWith(String key) — RSA PKCS1 ----
@@ -89,7 +89,7 @@ class JwtBuilderExtTest {
             .parseSignedClaims(token)
 
         assertEquals("RS256", jws.header.algorithm)
-        assertEquals("ext-rs256", jws.payload.subject)
+        assertEquals("ext-rs256", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -106,7 +106,7 @@ class JwtBuilderExtTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ext-rs512", jws.payload.subject)
+        assertEquals("ext-rs512", jws.payload.subjectOrNull)
     }
 
     // ---- signWith(String key) — RSA PSS ----
@@ -126,7 +126,7 @@ class JwtBuilderExtTest {
             .parseSignedClaims(token)
 
         assertEquals("PS256", jws.header.algorithm)
-        assertEquals("ext-ps256", jws.payload.subject)
+        assertEquals("ext-ps256", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -143,7 +143,7 @@ class JwtBuilderExtTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ext-ps384", jws.payload.subject)
+        assertEquals("ext-ps384", jws.payload.subjectOrNull)
     }
 
     // ---- signWith(String key) — ECDSA ----
@@ -163,7 +163,7 @@ class JwtBuilderExtTest {
             .parseSignedClaims(token)
 
         assertEquals("ES256", jws.header.algorithm)
-        assertEquals("ext-es256", jws.payload.subject)
+        assertEquals("ext-es256", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -180,7 +180,7 @@ class JwtBuilderExtTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ext-es512", jws.payload.subject)
+        assertEquals("ext-es512", jws.payload.subjectOrNull)
     }
 
     // ---- encryptWith(ByteArray) ----
@@ -198,7 +198,7 @@ class JwtBuilderExtTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("ext-encrypt-bytes", jwe.payload.subject)
+        assertEquals("ext-encrypt-bytes", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -214,7 +214,7 @@ class JwtBuilderExtTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("ext-encrypt-cbc", jwe.payload.subject)
+        assertEquals("ext-encrypt-cbc", jwe.payload.subjectOrNull)
     }
 
     // ---- encryptWith(String) ----
@@ -233,6 +233,6 @@ class JwtBuilderExtTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("ext-encrypt-string", jwe.payload.subject)
+        assertEquals("ext-encrypt-string", jwe.payload.subjectOrNull)
     }
 }

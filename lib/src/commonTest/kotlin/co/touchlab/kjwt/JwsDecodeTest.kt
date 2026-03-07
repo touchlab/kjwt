@@ -32,10 +32,10 @@ class JwsDecodeTest {
 
         assertEquals("HS256", jws.header.algorithm)
         assertEquals("JWT", jws.header.type)
-        assertEquals("1234567890", jws.payload.subject)
-        assertEquals(Instant.fromEpochSeconds(1516239022), jws.payload.issuedAt)
-        assertEquals("John Doe", jws.payload.getClaim("name"))
-        assertEquals(true, jws.payload.getClaim("admin"))
+        assertEquals("1234567890", jws.payload.subjectOrNull)
+        assertEquals(Instant.fromEpochSeconds(1516239022), jws.payload.issuedAtOrNull)
+        assertEquals("John Doe", jws.payload.getClaimOrNull("name"))
+        assertEquals(true, jws.payload.getClaimOrNull("admin"))
     }
 
     @Test
@@ -52,7 +52,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("HS384", jws.header.algorithm)
-        assertEquals("hs384-user", jws.payload.subject)
+        assertEquals("hs384-user", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -69,7 +69,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("HS512", jws.header.algorithm)
-        assertEquals("hs512-user", jws.payload.subject)
+        assertEquals("hs512-user", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -85,7 +85,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("RS256", jws.header.algorithm)
-        assertEquals("rs256-user", jws.payload.subject)
+        assertEquals("rs256-user", jws.payload.subjectOrNull)
         assertNotNull(jws.signature)
     }
 
@@ -102,7 +102,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("ES256", jws.header.algorithm)
-        assertEquals("es256-user", jws.payload.subject)
+        assertEquals("es256-user", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -118,7 +118,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("PS256", jws.header.algorithm)
-        assertEquals("ps256-user", jws.payload.subject)
+        assertEquals("ps256-user", jws.payload.subjectOrNull)
     }
 
     // ---- None algorithm (opt-in) ----
@@ -135,7 +135,7 @@ class JwsDecodeTest {
             .parseSignedClaims(token)
 
         assertEquals("none", jws.header.algorithm)
-        assertEquals("none-user", jws.payload.subject)
+        assertEquals("none-user", jws.payload.subjectOrNull)
     }
 
     // ---- Audience normalization ----
@@ -153,7 +153,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals(setOf("api.example.com"), jws.payload.audience)
+        assertEquals(setOf("api.example.com"), jws.payload.audienceOrNull)
     }
 
     @Test
@@ -169,7 +169,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals(setOf("aud1", "aud2"), jws.payload.audience)
+        assertEquals(setOf("aud1", "aud2"), jws.payload.audienceOrNull)
     }
 
     // ---- Typed custom claim access ----
@@ -188,9 +188,9 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("admin", jws.payload.getClaim<String>("role"))
-        assertEquals(5, jws.payload.getClaim<Int>("level"))
-        assertEquals(true, jws.payload.getClaim<Boolean>("active"))
+        assertEquals("admin", jws.payload.getClaimOrNull<String>("role"))
+        assertEquals(5, jws.payload.getClaimOrNull<Int>("level"))
+        assertEquals(true, jws.payload.getClaimOrNull<Boolean>("active"))
     }
 
     // ---- Auto-detect ----
@@ -208,7 +208,7 @@ class JwsDecodeTest {
             .parse(token)
 
         assertIs<JwtInstance.Jws<Claims>>(result)
-        assertEquals("auto-detect-user", result.payload.subject)
+        assertEquals("auto-detect-user", result.payload.subjectOrNull)
     }
 
     // ---- Claim validation happy paths ----
@@ -227,7 +227,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("my-issuer", jws.payload.issuer)
+        assertEquals("my-issuer", jws.payload.issuerOrNull)
     }
 
     @Test
@@ -244,7 +244,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("my-subject", jws.payload.subject)
+        assertEquals("my-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -261,7 +261,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals(setOf("my-api"), jws.payload.audience)
+        assertEquals(setOf("my-api"), jws.payload.audienceOrNull)
     }
 
     @Test
@@ -278,7 +278,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals(setOf("api1", "api2", "api3"), jws.payload.audience)
+        assertEquals(setOf("api1", "api2", "api3"), jws.payload.audienceOrNull)
     }
 
     @Test
@@ -294,7 +294,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertNotNull(jws.payload.expiration)
+        assertNotNull(jws.payload.expirationOrNull)
     }
 
     @Test
@@ -310,7 +310,7 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertNotNull(jws.payload.notBefore)
+        assertNotNull(jws.payload.notBeforeOrNull)
     }
 
     @Test
@@ -328,6 +328,6 @@ class JwsDecodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertNotNull(jws.payload.expiration)
+        assertNotNull(jws.payload.expirationOrNull)
     }
 }

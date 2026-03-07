@@ -49,7 +49,7 @@ class JwsEncodeTest {
             .parseSignedClaims(token)
 
         assertEquals("HS384", jws.header.algorithm)
-        assertEquals("user-384", jws.payload.subject)
+        assertEquals("user-384", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -66,7 +66,7 @@ class JwsEncodeTest {
             .parseSignedClaims(token)
 
         assertEquals("HS512", jws.header.algorithm)
-        assertEquals("user-512", jws.payload.subject)
+        assertEquals("user-512", jws.payload.subjectOrNull)
     }
 
     // ---- All registered claims ----
@@ -90,13 +90,13 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("test-issuer", jws.payload.issuer)
-        assertEquals("test-subject", jws.payload.subject)
-        assertEquals(setOf("test-audience"), jws.payload.audience)
-        assertEquals((now + 1.hours).epochSeconds, jws.payload.expiration?.epochSeconds)
-        assertEquals((now - 1.hours).epochSeconds, jws.payload.notBefore?.epochSeconds)
-        assertEquals(now.epochSeconds, jws.payload.issuedAt?.epochSeconds)
-        assertEquals("unique-jwt-id", jws.payload.jwtId)
+        assertEquals("test-issuer", jws.payload.issuerOrNull)
+        assertEquals("test-subject", jws.payload.subjectOrNull)
+        assertEquals(setOf("test-audience"), jws.payload.audienceOrNull)
+        assertEquals((now + 1.hours).epochSeconds, jws.payload.expirationOrNull?.epochSeconds)
+        assertEquals((now - 1.hours).epochSeconds, jws.payload.notBeforeOrNull?.epochSeconds)
+        assertEquals(now.epochSeconds, jws.payload.issuedAtOrNull?.epochSeconds)
+        assertEquals("unique-jwt-id", jws.payload.jwtIdOrNull)
     }
 
     // ---- Custom claims ----
@@ -115,9 +115,9 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("hello", jws.payload.getClaim<String>("strClaim"))
-        assertEquals(42, jws.payload.getClaim<Int>("numClaim"))
-        assertEquals(true, jws.payload.getClaim<Boolean>("boolClaim"))
+        assertEquals("hello", jws.payload.getClaimOrNull<String>("strClaim"))
+        assertEquals(42, jws.payload.getClaimOrNull<Int>("numClaim"))
+        assertEquals(true, jws.payload.getClaimOrNull<Boolean>("boolClaim"))
     }
 
     // ---- Audience serialization ----
@@ -191,7 +191,7 @@ class JwsEncodeTest {
             .parseSignedClaims(token)
 
         assertEquals("RS256", jws.header.algorithm)
-        assertEquals("rs256-subject", jws.payload.subject)
+        assertEquals("rs256-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -206,7 +206,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("rs384-subject", jws.payload.subject)
+        assertEquals("rs384-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -221,7 +221,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("rs512-subject", jws.payload.subject)
+        assertEquals("rs512-subject", jws.payload.subjectOrNull)
     }
 
     // ---- RSA PSS round-trips ----
@@ -239,7 +239,7 @@ class JwsEncodeTest {
             .parseSignedClaims(token)
 
         assertEquals("PS256", jws.header.algorithm)
-        assertEquals("ps256-subject", jws.payload.subject)
+        assertEquals("ps256-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -254,7 +254,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ps384-subject", jws.payload.subject)
+        assertEquals("ps384-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -269,7 +269,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("ps512-subject", jws.payload.subject)
+        assertEquals("ps512-subject", jws.payload.subjectOrNull)
     }
 
     // ---- ECDSA round-trips ----
@@ -287,7 +287,7 @@ class JwsEncodeTest {
             .parseSignedClaims(token)
 
         assertEquals("ES256", jws.header.algorithm)
-        assertEquals("es256-subject", jws.payload.subject)
+        assertEquals("es256-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -302,7 +302,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("es384-subject", jws.payload.subject)
+        assertEquals("es384-subject", jws.payload.subjectOrNull)
     }
 
     @Test
@@ -317,7 +317,7 @@ class JwsEncodeTest {
             .build()
             .parseSignedClaims(token)
 
-        assertEquals("es512-subject", jws.payload.subject)
+        assertEquals("es512-subject", jws.payload.subjectOrNull)
     }
 
     @Test

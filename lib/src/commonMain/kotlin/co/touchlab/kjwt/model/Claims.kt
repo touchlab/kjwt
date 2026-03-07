@@ -1,49 +1,54 @@
 package co.touchlab.kjwt.model
 
+import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.internal.JwtJson
+import co.touchlab.kjwt.serializers.AudienceDeserializer
+import co.touchlab.kjwt.serializers.ClaimsSerializer
+import co.touchlab.kjwt.serializers.InstantEpochSecondsDeserializer
 import kotlin.time.Instant
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.longOrNull
 
-@Serializable(with = Claims.ClaimsSerializer::class)
+@Serializable(with = ClaimsSerializer::class)
 class Claims(@PublishedApi internal val data: Map<String, JsonElement>) {
+    val issuer: String get() = getClaim(ISS)
+    val issuerOrNull: String? get() = getClaimOrNull(ISS)
 
-    val issuer: String? get() = data[ISS]?.jsonPrimitive?.content
+    val subject: String get() = getClaim(SUB)
+    val subjectOrNull: String? get() = getClaimOrNull(SUB)
 
-    val subject: String? get() = data[SUB]?.jsonPrimitive?.content
+    val audience: Set<String> get() = getClaim(AudienceDeserializer, AUD)
+    val audienceOrNull: Set<String>? get() = getClaimOrNull(AudienceDeserializer, AUD)
 
-    val audience: Set<String>?
-        get() = data[AUD]?.let { aud ->
-            when (aud) {
-                is JsonArray -> aud.jsonArray.mapNotNull { it.jsonPrimitive.content }.toSet()
-                is JsonPrimitive -> setOf(aud.content)
-                else -> null
-            }
-        }
+    val expiration: Instant get() = getClaim(InstantEpochSecondsDeserializer, EXP)
+    val expirationOrNull: Instant? get() = getClaimOrNull(InstantEpochSecondsDeserializer, EXP)
 
-    val expiration: Instant? get() = data[EXP]?.jsonPrimitive?.longOrNull?.let { Instant.fromEpochSeconds(it) }
+    val notBefore: Instant get() = getClaim(InstantEpochSecondsDeserializer, NBF)
+    val notBeforeOrNull: Instant? get() = getClaimOrNull(InstantEpochSecondsDeserializer, NBF)
 
-    val notBefore: Instant? get() = data[NBF]?.jsonPrimitive?.longOrNull?.let { Instant.fromEpochSeconds(it) }
+    val issuedAt: Instant get() = getClaim(InstantEpochSecondsDeserializer, IAT)
+    val issuedAtOrNull: Instant? get() = getClaimOrNull(InstantEpochSecondsDeserializer, IAT)
 
-    val issuedAt: Instant? get() = data[IAT]?.jsonPrimitive?.longOrNull?.let { Instant.fromEpochSeconds(it) }
+    val jwtId: String get() = getClaim(JTI)
+    val jwtIdOrNull: String? get() = getClaimOrNull(JTI)
 
-    val jwtId: String? get() = data[JTI]?.jsonPrimitive?.content
+    inline fun <reified T> getClaim(name: String): T =
+        getClaim(kotlinx.serialization.serializer<T>(), name)
 
-    inline fun <reified T> getClaim(name: String): T? {
+    inline fun <reified T> getClaimOrNull(name: String): T? =
+        getClaimOrNull(kotlinx.serialization.serializer<T>(), name)
+
+    fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
+        getClaimOrNull(serializer, name) ?: throw MissingClaimException(name)
+
+    fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
         val element = data[name] ?: return null
-        return JwtJson.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), element)
+        return JwtJson.decodeFromJsonElement(serializer, element)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -52,54 +57,11 @@ class Claims(@PublishedApi internal val data: Map<String, JsonElement>) {
 
         other as Claims
 
-        if (data != other.data) return false
-        if (issuer != other.issuer) return false
-        if (subject != other.subject) return false
-        if (audience != other.audience) return false
-        if (expiration != other.expiration) return false
-        if (notBefore != other.notBefore) return false
-        if (issuedAt != other.issuedAt) return false
-        if (jwtId != other.jwtId) return false
-
-        return true
+        return data == other.data
     }
 
-    override fun hashCode(): Int {
-        var result = data.hashCode()
-        result = 31 * result + (issuer?.hashCode() ?: 0)
-        result = 31 * result + (subject?.hashCode() ?: 0)
-        result = 31 * result + (audience?.hashCode() ?: 0)
-        result = 31 * result + (expiration?.hashCode() ?: 0)
-        result = 31 * result + (notBefore?.hashCode() ?: 0)
-        result = 31 * result + (issuedAt?.hashCode() ?: 0)
-        result = 31 * result + (jwtId?.hashCode() ?: 0)
-        return result
-    }
-
-    override fun toString(): String =
-        "Claims(" +
-                "data=$data, " +
-                "issuer=$issuer, " +
-                "subject=$subject, " +
-                "audience=$audience, " +
-                "expiration=$expiration, " +
-                "notBefore=$notBefore, " +
-                "issuedAt=$issuedAt, " +
-                "jwtId=$jwtId" +
-                ")"
-
-    object ClaimsSerializer : KSerializer<Claims> {
-        private val delegate = JsonObject.serializer()
-        override val descriptor: SerialDescriptor = delegate.descriptor
-
-        override fun serialize(encoder: Encoder, value: Claims) {
-            encoder.encodeSerializableValue(delegate, JsonObject(value.data))
-        }
-
-        override fun deserialize(decoder: Decoder): Claims {
-            return Claims(decoder.decodeSerializableValue(delegate))
-        }
-    }
+    override fun hashCode(): Int = data.hashCode()
+    override fun toString(): String = "Claims(data=$data)"
 
     class Builder {
         var issuer: String? = null
@@ -134,8 +96,7 @@ class Claims(@PublishedApi internal val data: Map<String, JsonElement>) {
                 issuedAt?.let { put(IAT, JsonPrimitive(it.epochSeconds)) }
                 jwtId?.let { put(JTI, JsonPrimitive(it)) }
                 extra.forEach { (k, v) -> put(k, v) }
-            }
-        )
+            })
     }
 
     companion object {

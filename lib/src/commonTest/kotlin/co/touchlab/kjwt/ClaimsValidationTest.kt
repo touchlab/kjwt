@@ -48,8 +48,8 @@ class ClaimsValidationTest {
                 .parseSignedClaims(token)
         }
 
-        assertEquals("expired-user", ex.claims.subject)
-        assertNotNull(ex.claims.expiration)
+        assertEquals("expired-user", ex.claims.subjectOrNull)
+        assertNotNull(ex.claims.expirationOrNull)
         assertNotNull(ex.header)
     }
 

@@ -38,12 +38,12 @@ class JweDecodeTest {
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
 
-        assertEquals("test-iss", jwe.payload.issuer)
-        assertEquals("test-sub", jwe.payload.subject)
-        assertEquals(setOf("test-aud"), jwe.payload.audience)
-        assertEquals(now.epochSeconds, jwe.payload.issuedAt?.epochSeconds)
-        assertEquals("jti-1", jwe.payload.jwtId)
-        assertNotNull(jwe.payload.expiration)
+        assertEquals("test-iss", jwe.payload.issuerOrNull)
+        assertEquals("test-sub", jwe.payload.subjectOrNull)
+        assertEquals(setOf("test-aud"), jwe.payload.audienceOrNull)
+        assertEquals(now.epochSeconds, jwe.payload.issuedAtOrNull?.epochSeconds)
+        assertEquals("jti-1", jwe.payload.jwtIdOrNull)
+        assertNotNull(jwe.payload.expirationOrNull)
     }
 
     @Test
@@ -54,7 +54,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A192GCM)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals("a192gcm-sub", jwe.payload.subject)
+        assertEquals("a192gcm-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -65,7 +65,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A256GCM)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals("a256gcm-sub", jwe.payload.subject)
+        assertEquals("a256gcm-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -76,7 +76,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A128CbcHs256)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals("a128cbc-sub", jwe.payload.subject)
+        assertEquals("a128cbc-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -87,7 +87,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A192CbcHs384)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals("a192cbc-sub", jwe.payload.subject)
+        assertEquals("a192cbc-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -98,7 +98,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A256CbcHs512)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals("a256cbc-sub", jwe.payload.subject)
+        assertEquals("a256cbc-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -110,7 +110,7 @@ class JweDecodeTest {
 
         val jwe =
             Jwt.parser().decryptWith(JweKeyAlgorithm.RsaOaep, keyPair.privateKey).build().parseEncryptedClaims(token)
-        assertEquals("rsa-oaep-sub", jwe.payload.subject)
+        assertEquals("rsa-oaep-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -122,7 +122,7 @@ class JweDecodeTest {
 
         val jwe =
             Jwt.parser().decryptWith(JweKeyAlgorithm.RsaOaep256, keyPair.privateKey).build().parseEncryptedClaims(token)
-        assertEquals("rsa-oaep256-sub", jwe.payload.subject)
+        assertEquals("rsa-oaep256-sub", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -134,7 +134,7 @@ class JweDecodeTest {
 
         val jwe =
             Jwt.parser().decryptWith(JweKeyAlgorithm.RsaOaep256, keyPair.privateKey).build().parseEncryptedClaims(token)
-        assertEquals("rsa-oaep256-cbc-sub", jwe.payload.subject)
+        assertEquals("rsa-oaep256-cbc-sub", jwe.payload.subjectOrNull)
     }
 
     // ---- Claim access ----
@@ -150,9 +150,9 @@ class JweDecodeTest {
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
 
-        assertEquals("admin", jwe.payload.getClaim<String>("role"))
-        assertEquals(7, jwe.payload.getClaim<Int>("level"))
-        assertEquals(true, jwe.payload.getClaim<Boolean>("active"))
+        assertEquals("admin", jwe.payload.getClaimOrNull<String>("role"))
+        assertEquals(7, jwe.payload.getClaimOrNull<Int>("level"))
+        assertEquals(true, jwe.payload.getClaimOrNull<Boolean>("active"))
     }
 
     @Test
@@ -164,7 +164,7 @@ class JweDecodeTest {
             .encryptWith(cek, JweKeyAlgorithm.Dir, JweContentAlgorithm.A256GCM)
 
         val jwe = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parseEncryptedClaims(token)
-        assertEquals(setOf("single-aud"), jwe.payload.audience)
+        assertEquals(setOf("single-aud"), jwe.payload.audienceOrNull)
     }
 
     // ---- Header fields ----
@@ -195,7 +195,7 @@ class JweDecodeTest {
         val result = Jwt.parser().decryptWith(JweKeyAlgorithm.Dir, cek).build().parse(token)
 
         assertIs<JwtInstance.Jwe<Claims>>(result)
-        assertEquals("auto-detect-jwe", result.payload.subject)
+        assertEquals("auto-detect-jwe", result.payload.subjectOrNull)
     }
 
     // ---- Error cases ----

@@ -153,13 +153,13 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         val now = Clock.System.now()
         val skew = config.clockSkewSeconds
 
-        claims.expiration?.let { exp ->
+        claims.expirationOrNull?.let { exp ->
             if (now.epochSeconds > exp.epochSeconds + skew) {
                 throw ExpiredJwtException(header, claims, "JWT expired at $exp (now=$now)")
             }
         }
 
-        claims.notBefore?.let { nbf ->
+        claims.notBeforeOrNull?.let { nbf ->
             if (now.epochSeconds < nbf.epochSeconds - skew) {
                 throw PrematureJwtException(header, claims, "JWT not valid before $nbf (now=$now)")
             }
@@ -170,7 +170,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         for ((name, expected) in config.requiredClaims) {
             when (name) {
                 Claims.AUD -> {
-                    val aud = claims.audience ?: throw MissingClaimException(name)
+                    val aud = claims.audienceOrNull ?: throw MissingClaimException(name)
                     if (expected.toString() !in aud) {
                         throw IncorrectClaimException(name, expected, aud)
                     }
@@ -178,11 +178,11 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
 
                 else -> {
                     val actual: String? = when (name) {
-                        Claims.ISS -> claims.issuer
-                        Claims.SUB -> claims.subject
-                        Claims.JTI -> claims.jwtId
+                        Claims.ISS -> claims.issuerOrNull
+                        Claims.SUB -> claims.subjectOrNull
+                        Claims.JTI -> claims.jwtIdOrNull
                         else -> {
-                            val element = claims.getClaim<JsonElement>(name) ?: throw MissingClaimException(name)
+                            val element = claims.getClaimOrNull<JsonElement>(name) ?: throw MissingClaimException(name)
                             (element as? JsonPrimitive)?.content ?: element.toString()
                         }
                     }

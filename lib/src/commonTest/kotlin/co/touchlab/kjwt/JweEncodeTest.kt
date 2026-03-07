@@ -26,7 +26,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a128gcm-user", jwe.payload.subject)
+        assertEquals("a128gcm-user", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -41,7 +41,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a192gcm-user", jwe.payload.subject)
+        assertEquals("a192gcm-user", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -56,7 +56,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a256gcm-user", jwe.payload.subject)
+        assertEquals("a256gcm-user", jwe.payload.subjectOrNull)
     }
 
     // ---- Dir + CBC-HMAC round-trips ----
@@ -73,7 +73,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a128cbc-user", jwe.payload.subject)
+        assertEquals("a128cbc-user", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -88,7 +88,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a192cbc-user", jwe.payload.subject)
+        assertEquals("a192cbc-user", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -103,7 +103,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("a256cbc-user", jwe.payload.subject)
+        assertEquals("a256cbc-user", jwe.payload.subjectOrNull)
     }
 
     // ---- RSA-OAEP (SHA-1) round-trips ----
@@ -120,7 +120,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep-a128gcm", jwe.payload.subject)
+        assertEquals("rsa-oaep-a128gcm", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -135,7 +135,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep-a256gcm", jwe.payload.subject)
+        assertEquals("rsa-oaep-a256gcm", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -150,7 +150,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep-cbc512", jwe.payload.subject)
+        assertEquals("rsa-oaep-cbc512", jwe.payload.subjectOrNull)
     }
 
     // ---- RSA-OAEP-256 (SHA-256) round-trips ----
@@ -167,7 +167,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep256-a128gcm", jwe.payload.subject)
+        assertEquals("rsa-oaep256-a128gcm", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -182,7 +182,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep256-a256gcm", jwe.payload.subject)
+        assertEquals("rsa-oaep256-a256gcm", jwe.payload.subjectOrNull)
     }
 
     @Test
@@ -197,7 +197,7 @@ class JweEncodeTest {
             .build()
             .parseEncryptedClaims(token)
 
-        assertEquals("rsa-oaep256-cbc512", jwe.payload.subject)
+        assertEquals("rsa-oaep256-cbc512", jwe.payload.subjectOrNull)
     }
 
     // ---- Structure / header checks ----
