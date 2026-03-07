@@ -37,6 +37,8 @@ data class UserClaims(
     @SerialName("exp") val expSeconds: Long? = null,
     private val jsonData: JsonObject = JsonObject(emptyMap()),
 ) : JwtPayload {
+    override fun hasClaim(name: String): Boolean =
+        jsonData.containsKey(name)
 
     override fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw MissingClaimException(name)

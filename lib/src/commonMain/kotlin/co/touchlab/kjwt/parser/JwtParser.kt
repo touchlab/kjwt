@@ -10,13 +10,8 @@ import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.exception.PrematureJwtException
 import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.exception.UnsupportedJwtException
-import co.touchlab.kjwt.ext.audience
 import co.touchlab.kjwt.ext.expirationOrNull
-import co.touchlab.kjwt.ext.getClaimOrNull
-import co.touchlab.kjwt.ext.issuerOrNull
-import co.touchlab.kjwt.ext.jwtIdOrNull
 import co.touchlab.kjwt.ext.notBeforeOrNull
-import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.internal.decodeBase64Url
 import co.touchlab.kjwt.model.JwtHeader
@@ -25,8 +20,6 @@ import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.serializers.ClaimsSerializer
 import kotlin.time.Clock
 import kotlinx.serialization.DeserializationStrategy
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Thread-safe JWT parser. Obtain via [JwtParserBuilder.build].
@@ -209,30 +202,6 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
     }
 
     private fun validateRequiredClaims(claims: JwtPayload) {
-        for ((name, expected) in config.requiredClaims) {
-            when (name) {
-                JwtPayload.AUD -> {
-                    val aud = claims.audience
-                    if (expected.toString() !in aud) {
-                        throw IncorrectClaimException(name, expected, aud)
-                    }
-                }
-
-                else -> {
-                    val actual: String? = when (name) {
-                        JwtPayload.ISS -> claims.issuerOrNull
-                        JwtPayload.SUB -> claims.subjectOrNull
-                        JwtPayload.JTI -> claims.jwtIdOrNull
-                        else -> {
-                            val element =
-                                claims.getClaimOrNull<JsonElement>(name) ?: throw MissingClaimException(name)
-                            (element as? JsonPrimitive)?.content ?: element.toString()
-                        }
-                    }
-                    if (actual == null) throw MissingClaimException(name)
-                    if (actual != expected.toString()) throw IncorrectClaimException(name, expected, actual)
-                }
-            }
-        }
+        config.validators.forEach { validate -> validate(claims) }
     }
 }

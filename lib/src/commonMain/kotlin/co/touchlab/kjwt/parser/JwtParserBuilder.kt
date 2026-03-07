@@ -4,6 +4,12 @@ import co.touchlab.kjwt.algorithm.JweContentAlgorithm
 import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.exception.IncorrectClaimException
+import co.touchlab.kjwt.ext.audience
+import co.touchlab.kjwt.ext.getClaim
+import co.touchlab.kjwt.ext.issuer
+import co.touchlab.kjwt.ext.subject
+import co.touchlab.kjwt.model.JwtPayload
 import dev.whyoleg.cryptography.materials.key.Key
 
 /**
@@ -22,7 +28,9 @@ import dev.whyoleg.cryptography.materials.key.Key
 class JwtParserBuilder {
     internal var jwsKeyVerifier: JwsKeyVerifier<*, *>? = null
     internal var jweKeyDecryptor: JweKeyDecryptor<*, *>? = null
-    internal val requiredClaims: MutableMap<String, Any> = mutableMapOf()
+
+    @PublishedApi
+    internal val validators: MutableList<(JwtPayload) -> Unit> = mutableListOf()
     internal var clockSkewSeconds: Long = 0L
     internal var allowUnsecured: Boolean = false
 
@@ -46,19 +54,39 @@ class JwtParserBuilder {
     }
 
     fun requireIssuer(iss: String): JwtParserBuilder = apply {
-        requiredClaims["iss"] = iss
+        validators.add {
+            val currentValue = it.issuer
+            if (currentValue != iss) {
+                throw IncorrectClaimException(JwtPayload.ISS, iss, currentValue)
+            }
+        }
     }
 
     fun requireSubject(sub: String): JwtParserBuilder = apply {
-        requiredClaims["sub"] = sub
+        validators.add {
+            val currentValue = it.subject
+            if (currentValue != sub) {
+                throw IncorrectClaimException(JwtPayload.SUB, sub, currentValue)
+            }
+        }
     }
 
     fun requireAudience(aud: String): JwtParserBuilder = apply {
-        requiredClaims["aud"] = aud
+        validators.add {
+            val currentValue = it.audience
+            if (currentValue.contains(aud).not()) {
+                throw IncorrectClaimException(JwtPayload.AUD, aud, currentValue)
+            }
+        }
     }
 
-    fun require(claimName: String, value: Any): JwtParserBuilder = apply {
-        requiredClaims[claimName] = value
+    inline fun <reified T> require(claimName: String, value: T): JwtParserBuilder = apply {
+        validators.add {
+            val currentValue = it.getClaim<T>(claimName)
+            if (currentValue != value) {
+                throw IncorrectClaimException(claimName, value, currentValue)
+            }
+        }
     }
 
     fun clockSkew(seconds: Long): JwtParserBuilder = apply {

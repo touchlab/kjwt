@@ -13,6 +13,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 interface JwtPayload {
+    fun hasClaim(name: String): Boolean
     fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T
     fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T?
 

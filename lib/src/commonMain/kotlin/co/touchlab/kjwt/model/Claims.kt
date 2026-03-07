@@ -8,6 +8,9 @@ import kotlinx.serialization.json.JsonObject
 
 @Serializable
 internal class Claims(@PublishedApi internal val jsonData: JsonObject = JsonObject(emptyMap())) : JwtPayload {
+    override fun hasClaim(name: String): Boolean =
+        jsonData.containsKey(name)
+
     override fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw MissingClaimException(name)
 
