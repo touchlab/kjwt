@@ -1,7 +1,6 @@
 package co.touchlab.kjwt.internal
 
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
 
 @PublishedApi
 internal val JwtJson = Json {
@@ -9,7 +8,7 @@ internal val JwtJson = Json {
     explicitNulls = false
 }
 
-internal fun JsonObject.encodeToBase64Url(): String =
-    JwtJson.encodeToString(JsonObject.serializer(), this)
+inline fun <reified T> Json.encodeToBase64Url(value: T): String =
+    encodeToString(value)
         .encodeToByteArray()
         .encodeBase64Url()

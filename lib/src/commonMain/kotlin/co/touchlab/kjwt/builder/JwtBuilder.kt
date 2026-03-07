@@ -4,10 +4,9 @@ import co.touchlab.kjwt.algorithm.JweContentAlgorithm
 import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.internal.encodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
-import co.touchlab.kjwt.internal.jweEncrypt
-import co.touchlab.kjwt.internal.jwsSign
 import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtHeader
 import dev.whyoleg.cryptography.materials.key.Key
@@ -35,21 +34,21 @@ import kotlinx.serialization.json.JsonElement
  */
 class JwtBuilder {
     @PublishedApi
-    internal val claims = Claims.Builder()
+    internal val claimsBuilder = Claims.Builder()
     private val headerBuilder = JwtHeader.Builder()
 
-    fun issuer(iss: String): JwtBuilder = apply { claims.issuer = iss }
-    fun subject(sub: String): JwtBuilder = apply { claims.subject = sub }
-    fun audience(vararg aud: String): JwtBuilder = apply { claims.audience = aud.toSet() }
-    fun expiration(exp: Instant): JwtBuilder = apply { claims.expiration = exp }
-    fun notBefore(nbf: Instant): JwtBuilder = apply { claims.notBefore = nbf }
-    fun issuedAt(iat: Instant): JwtBuilder = apply { claims.issuedAt = iat }
-    fun id(jti: String): JwtBuilder = apply { claims.jwtId = jti }
+    fun issuer(iss: String): JwtBuilder = apply { claimsBuilder.issuer = iss }
+    fun subject(sub: String): JwtBuilder = apply { claimsBuilder.subject = sub }
+    fun audience(vararg aud: String): JwtBuilder = apply { claimsBuilder.audience = aud.toSet() }
+    fun expiration(exp: Instant): JwtBuilder = apply { claimsBuilder.expiration = exp }
+    fun notBefore(nbf: Instant): JwtBuilder = apply { claimsBuilder.notBefore = nbf }
+    fun issuedAt(iat: Instant): JwtBuilder = apply { claimsBuilder.issuedAt = iat }
+    fun id(jti: String): JwtBuilder = apply { claimsBuilder.jwtId = jti }
 
-    fun claim(name: String, value: JsonElement): JwtBuilder = apply { claims.claim(name, value) }
-    inline fun <reified T> claim(name: String, value: T): JwtBuilder = apply { claims.claim(name, value) }
+    fun claim(name: String, value: JsonElement): JwtBuilder = apply { claimsBuilder.claim(name, value) }
+    inline fun <reified T> claim(name: String, value: T): JwtBuilder = apply { claimsBuilder.claim(name, value) }
 
-    fun claims(block: Claims.Builder.() -> Unit): JwtBuilder = apply { claims.block() }
+    fun claims(block: Claims.Builder.() -> Unit): JwtBuilder = apply { claimsBuilder.block() }
 
     fun header(block: JwtHeader.Builder.() -> Unit): JwtBuilder = apply { headerBuilder.block() }
     fun keyId(kid: String): JwtBuilder = apply { headerBuilder.keyId = kid }
@@ -59,12 +58,18 @@ class JwtBuilder {
      *
      * For [JwsAlgorithm.None] the signature part is empty, producing `header.payload.`
      */
-    suspend fun <T : Key> signWith(algorithm: JwsAlgorithm<T>, key: T): String {
+    suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
+        algorithm: JwsAlgorithm<PublicKey, PrivateKey>,
+        key: PrivateKey
+    ): String {
         val header = headerBuilder.build(algorithm)
-        val headerB64 = header.toJsonObject().encodeToBase64Url()
-        val payloadB64 = claims.toJsonObject().encodeToBase64Url()
+        val claims = claimsBuilder.build()
+
+        val headerB64 = JwtJson.encodeToBase64Url(header)
+        val payloadB64 = JwtJson.encodeToBase64Url(claims)
+
         val signingInput = "$headerB64.$payloadB64".encodeToByteArray()
-        val signature = jwsSign(algorithm, key, signingInput)
+        val signature = algorithm.sign(key, signingInput)
         return "$headerB64.$payloadB64.${signature.encodeBase64Url()}"
     }
 
@@ -81,11 +86,13 @@ class JwtBuilder {
         contentAlgorithm: JweContentAlgorithm,
     ): String {
         val header = headerBuilder.build(keyAlgorithm, contentAlgorithm)
-        val headerB64 = header.toJsonObject().encodeToBase64Url()
-        val aad = headerB64.encodeToByteArray()
-        val plaintext = claims.toJsonObject().toString().encodeToByteArray()
+        val claims = claimsBuilder.build()
 
-        val result = jweEncrypt(key, keyAlgorithm, contentAlgorithm, plaintext, aad)
+        val headerB64 = JwtJson.encodeToBase64Url(header)
+        val aad = headerB64.encodeToByteArray()
+        val plaintext = JwtJson.encodeToString(claims).encodeToByteArray()
+
+        val result = keyAlgorithm.encrypt(key, contentAlgorithm, plaintext, aad)
 
         return buildString {
             append(headerB64)

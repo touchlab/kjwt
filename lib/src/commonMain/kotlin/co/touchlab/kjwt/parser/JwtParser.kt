@@ -12,21 +12,17 @@ import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.exception.UnsupportedJwtException
 import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.internal.decodeBase64Url
-import co.touchlab.kjwt.internal.jweDecrypt
-import co.touchlab.kjwt.internal.jwsVerify
 import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtInstance
 import kotlin.time.Clock
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * Thread-safe JWT parser. Obtain via [JwtParserBuilder.build].
  */
 class JwtParser internal constructor(private val config: JwtParserBuilder) {
-
     /**
      * Parses and validates a JWS compact token, returning the signed claims.
      *
@@ -42,10 +38,9 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         val parts = token.split('.')
         if (parts.size != 3) throw MalformedJwtException("JWS token must have exactly 3 parts, got ${parts.size}")
 
-        val headerJson = decodeJsonObjectFromBase64Url(parts[0], "header")
-        val header = JwtHeader.Jws.fromJsonObject(headerJson)
+        val header = decodeJsonObjectFromBase64Url<JwtHeader.Jws>(parts[0], "header")
 
-        val algorithm: JwsAlgorithm<*> = try {
+        val algorithm: JwsAlgorithm<*, *> = try {
             JwsAlgorithm.fromId(header.algorithm)
         } catch (e: IllegalArgumentException) {
             throw UnsupportedJwtException("Unsupported algorithm: '${header.algorithm}'", e)
@@ -57,16 +52,15 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             )
         }
 
-        val payloadJson = decodeJsonObjectFromBase64Url(parts[1], "payload")
-        val claims = Claims(payloadJson)
+        val claims = decodeJsonObjectFromBase64Url<Claims>(parts[1], "payload")
 
         if (algorithm != JwsAlgorithm.None) {
-            val verifyKey = config.definedKeyForAlgorithm(algorithm)
+            val verifier = config.verifierForAlgorithm(algorithm)
                 ?: throw IllegalStateException("No verification key configured. Call verifyWith() on the parser builder.")
             val signingInput = "${parts[0]}.${parts[1]}".encodeToByteArray()
             val signature = parts[2].decodeBase64Url()
 
-            val valid = jwsVerify(algorithm, verifyKey, signingInput, signature)
+            val valid = verifier.verify(signingInput, signature)
             if (!valid) throw SignatureException("JWT signature verification failed")
         }
 
@@ -86,8 +80,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         val parts = token.split('.')
         if (parts.size != 5) throw MalformedJwtException("JWE token must have exactly 5 parts, got ${parts.size}")
 
-        val headerJson = decodeJsonObjectFromBase64Url(parts[0], "header")
-        val header = JwtHeader.Jwe.fromJsonObject(headerJson)
+        val header = decodeJsonObjectFromBase64Url<JwtHeader.Jwe>(parts[0], "header")
 
         val keyAlgorithm = try {
             JweKeyAlgorithm.fromId(header.algorithm)
@@ -100,7 +93,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             throw UnsupportedJwtException("Unsupported JWE content algorithm: '${header.encryption}'", e)
         }
 
-        val decryptKey = config.definedKeyForAlgorithm(keyAlgorithm)
+        val decryptor = config.decryptorForAlgorithm(keyAlgorithm)
             ?: throw IllegalStateException("No decryption key configured. Call decryptWith() on the parser builder.")
 
         // AAD is the ASCII bytes of the raw base64url header string (part[0])
@@ -111,7 +104,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             val iv = parts[2].decodeBase64Url()
             val ciphertext = parts[3].decodeBase64Url()
             val tag = parts[4].decodeBase64Url()
-            jweDecrypt(decryptKey, keyAlgorithm, contentAlgorithm, encryptedKey, iv, ciphertext, tag, aad)
+            decryptor.decrypt(contentAlgorithm, encryptedKey, iv, ciphertext, tag, aad)
         } catch (e: Exception) {
             throw SignatureException("JWE decryption or authentication tag verification failed", e)
         }
@@ -140,7 +133,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
 
     // ---- Private helpers ----
 
-    private fun decodeJsonObjectFromBase64Url(base64UrlPart: String, name: String): JsonObject {
+    private inline fun <reified T> decodeJsonObjectFromBase64Url(base64UrlPart: String, name: String): T {
         val bytes = try {
             base64UrlPart.decodeBase64Url()
         } catch (e: Exception) {

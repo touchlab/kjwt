@@ -121,19 +121,21 @@ class Claims(@PublishedApi internal val data: Map<String, JsonElement>) {
             extra[name] = JwtJson.encodeToJsonElement(value)
         }
 
-        internal fun toJsonObject(): JsonObject = buildJsonObject {
-            issuer?.let { put(ISS, JsonPrimitive(it)) }
-            subject?.let { put(SUB, JsonPrimitive(it)) }
-            audience?.let { aud ->
-                if (aud.size == 1) put(AUD, JsonPrimitive(aud.first()))
-                else put(AUD, JsonArray(aud.map { JsonPrimitive(it) }))
+        internal fun build(): Claims = Claims(
+            buildJsonObject {
+                issuer?.let { put(ISS, JsonPrimitive(it)) }
+                subject?.let { put(SUB, JsonPrimitive(it)) }
+                audience?.let { aud ->
+                    if (aud.size == 1) put(AUD, JsonPrimitive(aud.first()))
+                    else put(AUD, JsonArray(aud.map { JsonPrimitive(it) }))
+                }
+                expiration?.let { put(EXP, JsonPrimitive(it.epochSeconds)) }
+                notBefore?.let { put(NBF, JsonPrimitive(it.epochSeconds)) }
+                issuedAt?.let { put(IAT, JsonPrimitive(it.epochSeconds)) }
+                jwtId?.let { put(JTI, JsonPrimitive(it)) }
+                extra.forEach { (k, v) -> put(k, v) }
             }
-            expiration?.let { put(EXP, JsonPrimitive(it.epochSeconds)) }
-            notBefore?.let { put(NBF, JsonPrimitive(it.epochSeconds)) }
-            issuedAt?.let { put(IAT, JsonPrimitive(it.epochSeconds)) }
-            jwtId?.let { put(JTI, JsonPrimitive(it)) }
-            extra.forEach { (k, v) -> put(k, v) }
-        }
+        )
     }
 
     companion object {

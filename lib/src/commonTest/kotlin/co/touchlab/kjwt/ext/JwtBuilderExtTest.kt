@@ -19,7 +19,6 @@ import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.materials.key.EncodableKey
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -84,9 +83,8 @@ class JwtBuilderExtTest {
             .subject("ext-rs256")
             .signWith(JwsAlgorithm.RS256, privatePem, RSA.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -103,9 +101,8 @@ class JwtBuilderExtTest {
             .subject("ext-rs512")
             .signWith(JwsAlgorithm.RS512, privatePem, RSA.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS512
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS512, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -123,9 +120,8 @@ class JwtBuilderExtTest {
             .subject("ext-ps256")
             .signWith(JwsAlgorithm.PS256, privatePem, RSA.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -142,9 +138,8 @@ class JwtBuilderExtTest {
             .subject("ext-ps384")
             .signWith(JwsAlgorithm.PS384, privatePem, RSA.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS384
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS384, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -162,9 +157,8 @@ class JwtBuilderExtTest {
             .subject("ext-es256")
             .signWith(JwsAlgorithm.ES256, privatePem, EC.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -181,9 +175,8 @@ class JwtBuilderExtTest {
             .subject("ext-es512")
             .signWith(JwsAlgorithm.ES512, privatePem, EC.PrivateKey.Format.PEM)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES512
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES512, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -194,7 +187,7 @@ class JwtBuilderExtTest {
 
     @Test
     fun encryptWith_byteArrayKey_roundTrip() = runTest {
-        val keyBytes = Random.Default.nextBytes(32) // 256-bit key for A256GCM
+        val keyBytes = Random.nextBytes(32) // 256-bit key for A256GCM
 
         val token = Jwt.builder()
             .subject("ext-encrypt-bytes")
@@ -210,7 +203,7 @@ class JwtBuilderExtTest {
 
     @Test
     fun encryptWith_byteArrayKey_cbcAlgorithm_roundTrip() = runTest {
-        val keyBytes = Random.Default.nextBytes(64) // 512-bit key for A256CBC-HS512
+        val keyBytes = Random.nextBytes(64) // 512-bit key for A256CBC-HS512
 
         val token = Jwt.builder()
             .subject("ext-encrypt-cbc")

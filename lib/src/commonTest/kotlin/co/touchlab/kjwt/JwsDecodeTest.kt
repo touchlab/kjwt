@@ -4,7 +4,6 @@ import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtInstance
 import dev.whyoleg.cryptography.algorithms.EC
-import dev.whyoleg.cryptography.materials.key.EncodableKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -80,9 +79,8 @@ class JwsDecodeTest {
             .subject("rs256-user")
             .signWith(JwsAlgorithm.RS256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -98,9 +96,8 @@ class JwsDecodeTest {
             .subject("es256-user")
             .signWith(JwsAlgorithm.ES256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -115,9 +112,8 @@ class JwsDecodeTest {
             .subject("ps256-user")
             .signWith(JwsAlgorithm.PS256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 

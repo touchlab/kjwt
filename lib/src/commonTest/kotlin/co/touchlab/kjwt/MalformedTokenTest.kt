@@ -5,7 +5,6 @@ import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.exception.MalformedJwtException
 import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.exception.UnsupportedJwtException
-import dev.whyoleg.cryptography.materials.key.EncodableKey
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
@@ -156,10 +155,9 @@ class MalformedTokenTest {
             .subject("user")
             .signWith(JwsAlgorithm.RS256, signingKeyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS256
         assertFailsWith<SignatureException> {
             Jwt.parser()
-                .verifyWith(algo, differentKeyPair.publicKey) // wrong public key
+                .verifyWith(JwsAlgorithm.RS256, differentKeyPair.publicKey) // wrong public key
                 .build()
                 .parseSignedClaims(token)
         }
@@ -232,11 +230,11 @@ class MalformedTokenTest {
 
     @Test
     fun parseEncryptedClaims_threeParts_throwsMalformedJwtException() = runTest {
-        val cek = aesSimpleKey(256)
+        val key = rsaOaep256KeyPair().privateKey
         // A 3-part token passed to parseEncryptedClaims (JWE expects 5)
         assertFailsWith<MalformedJwtException> {
             Jwt.parser()
-                .decryptWith(JweKeyAlgorithm.RsaOaep, cek)
+                .decryptWith(JweKeyAlgorithm.RsaOaep, key)
                 .build()
                 .parseEncryptedClaims("a.b.c")
         }

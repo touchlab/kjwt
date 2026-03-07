@@ -4,7 +4,6 @@ import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.materials.key.EncodableKey
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -13,8 +12,6 @@ import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
-import kotlinx.serialization.json.jsonPrimitive
 
 class JwsEncodeTest {
 
@@ -32,8 +29,8 @@ class JwsEncodeTest {
 
         assertEquals(
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-                ".eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZX0" +
-                "._-A3B6dTUb8NrJi2SlUH_9jxmaU3plM2sxf-OyXnWiw",
+                    ".eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZX0" +
+                    "._-A3B6dTUb8NrJi2SlUH_9jxmaU3plM2sxf-OyXnWiw",
             token,
         )
     }
@@ -188,9 +185,8 @@ class JwsEncodeTest {
             .subject("rs256-subject")
             .signWith(JwsAlgorithm.RS256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -205,9 +201,8 @@ class JwsEncodeTest {
             .subject("rs384-subject")
             .signWith(JwsAlgorithm.RS384, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS384
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS384, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -221,9 +216,8 @@ class JwsEncodeTest {
             .subject("rs512-subject")
             .signWith(JwsAlgorithm.RS512, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.RS512
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.RS512, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -239,9 +233,8 @@ class JwsEncodeTest {
             .subject("ps256-subject")
             .signWith(JwsAlgorithm.PS256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -256,9 +249,8 @@ class JwsEncodeTest {
             .subject("ps384-subject")
             .signWith(JwsAlgorithm.PS384, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS384
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS384, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -272,9 +264,8 @@ class JwsEncodeTest {
             .subject("ps512-subject")
             .signWith(JwsAlgorithm.PS512, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.PS512
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.PS512, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -290,9 +281,8 @@ class JwsEncodeTest {
             .subject("es256-subject")
             .signWith(JwsAlgorithm.ES256, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES256
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES256, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -307,9 +297,8 @@ class JwsEncodeTest {
             .subject("es384-subject")
             .signWith(JwsAlgorithm.ES384, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES384
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES384, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 
@@ -323,9 +312,8 @@ class JwsEncodeTest {
             .subject("es512-subject")
             .signWith(JwsAlgorithm.ES512, keyPair.privateKey)
 
-        val algo: JwsAlgorithm<EncodableKey<*>> = JwsAlgorithm.ES512
         val jws = Jwt.parser()
-            .verifyWith(algo, keyPair.publicKey)
+            .verifyWith(JwsAlgorithm.ES512, keyPair.publicKey)
             .build()
             .parseSignedClaims(token)
 

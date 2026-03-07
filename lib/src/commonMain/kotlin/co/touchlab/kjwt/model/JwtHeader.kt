@@ -3,6 +3,11 @@ package co.touchlab.kjwt.model
 import co.touchlab.kjwt.algorithm.JweContentAlgorithm
 import co.touchlab.kjwt.algorithm.JweKeyAlgorithm
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -15,8 +20,7 @@ sealed class JwtHeader {
     abstract val keyId: String?
     abstract val extra: Map<String, JsonElement>
 
-    internal abstract fun toJsonObject(): JsonObject
-
+    @Serializable(with = Jws.JwsSerializer::class)
     data class Jws(
         override val algorithm: String,
         override val type: String? = "JWT",
@@ -24,17 +28,27 @@ sealed class JwtHeader {
         override val keyId: String? = null,
         override val extra: Map<String, JsonElement> = emptyMap(),
     ) : JwtHeader() {
-        override fun toJsonObject(): JsonObject = buildJsonObject {
-            put(ALG, JsonPrimitive(algorithm))
-            type?.let { put(TYP, JsonPrimitive(it)) }
-            contentType?.let { put(CTY, JsonPrimitive(it)) }
-            keyId?.let { put(KID, JsonPrimitive(it)) }
-            extra.forEach { (k, v) -> put(k, v) }
-        }
+        object JwsSerializer : KSerializer<Jws> {
+            private val delegate = JsonObject.serializer()
+            override val descriptor: SerialDescriptor = delegate.descriptor
 
-        companion object {
-            internal fun fromJsonObject(obj: JsonObject): Jws {
+            override fun serialize(encoder: Encoder, value: Jws) {
+                encoder.encodeSerializableValue(
+                    delegate,
+                    buildJsonObject {
+                        put(ALG, JsonPrimitive(value.algorithm))
+                        value.type?.let { put(TYP, JsonPrimitive(it)) }
+                        value.contentType?.let { put(CTY, JsonPrimitive(it)) }
+                        value.keyId?.let { put(KID, JsonPrimitive(it)) }
+                        value.extra.forEach { (k, v) -> put(k, v) }
+                    }
+                )
+            }
+
+            override fun deserialize(decoder: Decoder): Jws {
+                val obj = decoder.decodeSerializableValue(delegate)
                 val extra = obj.filterKeys { it !in setOf(ALG, TYP, CTY, KID) }
+
                 return Jws(
                     algorithm = obj[ALG]?.let { (it as JsonPrimitive).content }
                         ?: error("Missing 'alg' in JWS header"),
@@ -47,6 +61,7 @@ sealed class JwtHeader {
         }
     }
 
+    @Serializable(with = Jwe.JweSerializer::class)
     data class Jwe(
         override val algorithm: String,
         val encryption: String,
@@ -55,18 +70,28 @@ sealed class JwtHeader {
         override val keyId: String? = null,
         override val extra: Map<String, JsonElement> = emptyMap(),
     ) : JwtHeader() {
-        override fun toJsonObject(): JsonObject = buildJsonObject {
-            put(ALG, JsonPrimitive(algorithm))
-            put(ENC, JsonPrimitive(encryption))
-            type?.let { put(TYP, JsonPrimitive(it)) }
-            contentType?.let { put(CTY, JsonPrimitive(it)) }
-            keyId?.let { put(KID, JsonPrimitive(it)) }
-            extra.forEach { (k, v) -> put(k, v) }
-        }
+        object JweSerializer : KSerializer<Jwe> {
+            private val delegate = JsonObject.serializer()
+            override val descriptor: SerialDescriptor = delegate.descriptor
 
-        companion object {
-            internal fun fromJsonObject(obj: JsonObject): Jwe {
+            override fun serialize(encoder: Encoder, value: Jwe) {
+                encoder.encodeSerializableValue(
+                    delegate,
+                    buildJsonObject {
+                        put(ALG, JsonPrimitive(value.algorithm))
+                        put(ENC, JsonPrimitive(value.encryption))
+                        value.type?.let { put(TYP, JsonPrimitive(it)) }
+                        value.contentType?.let { put(CTY, JsonPrimitive(it)) }
+                        value.keyId?.let { put(KID, JsonPrimitive(it)) }
+                        value.extra.forEach { (k, v) -> put(k, v) }
+                    }
+                )
+            }
+
+            override fun deserialize(decoder: Decoder): Jwe {
+                val obj = decoder.decodeSerializableValue(delegate)
                 val extra = obj.filterKeys { it !in setOf(ALG, ENC, TYP, CTY, KID) }
+
                 return Jwe(
                     algorithm = obj[ALG]?.let { (it as JsonPrimitive).content }
                         ?: error("Missing 'alg' in JWE header"),
@@ -91,7 +116,7 @@ sealed class JwtHeader {
             extra[name] = value
         }
 
-        internal fun build(algorithm: JwsAlgorithm<*>) = Jws(
+        internal fun build(algorithm: JwsAlgorithm<*, *>) = Jws(
             algorithm = algorithm.id,
             type = type,
             contentType = contentType,
