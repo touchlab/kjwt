@@ -3,6 +3,13 @@ package co.touchlab.kjwt
 import co.touchlab.kjwt.algorithm.JwsAlgorithm
 import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtInstance
+import co.touchlab.kjwt.model.audienceOrNull
+import co.touchlab.kjwt.model.expirationOrNull
+import co.touchlab.kjwt.model.getClaimOrNull
+import co.touchlab.kjwt.model.issuedAtOrNull
+import co.touchlab.kjwt.model.issuerOrNull
+import co.touchlab.kjwt.model.notBeforeOrNull
+import co.touchlab.kjwt.model.subjectOrNull
 import dev.whyoleg.cryptography.algorithms.EC
 import kotlin.test.Test
 import kotlin.test.assertEquals

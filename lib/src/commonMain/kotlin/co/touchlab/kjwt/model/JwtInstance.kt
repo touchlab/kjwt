@@ -1,15 +1,15 @@
 package co.touchlab.kjwt.model
 
-sealed class JwtInstance<P> {
+sealed class JwtInstance<P : JwtPayload> {
     abstract val header: JwtHeader
     abstract val payload: P
 
-    data class Jwe<P>(
+    data class Jwe<P : JwtPayload>(
         override val header: JwtHeader.Jwe,
         override val payload: P,
     ) : JwtInstance<P>()
 
-    data class Jws<P>(
+    data class Jws<P : JwtPayload>(
         override val header: JwtHeader.Jws,
         override val payload: P,
         val signature: ByteArray,
@@ -22,7 +22,7 @@ sealed class JwtInstance<P> {
 
         override fun hashCode(): Int {
             var result = header.hashCode()
-            result = 31 * result + (payload?.hashCode() ?: 0)
+            result = 31 * result + payload.hashCode()
             result = 31 * result + signature.contentHashCode()
             return result
         }

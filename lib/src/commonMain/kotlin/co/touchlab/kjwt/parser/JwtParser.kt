@@ -15,6 +15,14 @@ import co.touchlab.kjwt.internal.decodeBase64Url
 import co.touchlab.kjwt.model.Claims
 import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtInstance
+import co.touchlab.kjwt.model.JwtPayload
+import co.touchlab.kjwt.model.audience
+import co.touchlab.kjwt.model.expirationOrNull
+import co.touchlab.kjwt.model.getClaimOrNull
+import co.touchlab.kjwt.model.issuerOrNull
+import co.touchlab.kjwt.model.jwtIdOrNull
+import co.touchlab.kjwt.model.notBeforeOrNull
+import co.touchlab.kjwt.model.subjectOrNull
 import kotlin.time.Clock
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
@@ -169,8 +177,8 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
     private fun validateRequiredClaims(claims: Claims) {
         for ((name, expected) in config.requiredClaims) {
             when (name) {
-                Claims.AUD -> {
-                    val aud = claims.audienceOrNull ?: throw MissingClaimException(name)
+                JwtPayload.AUD -> {
+                    val aud = claims.audience
                     if (expected.toString() !in aud) {
                         throw IncorrectClaimException(name, expected, aud)
                     }
@@ -178,9 +186,9 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
 
                 else -> {
                     val actual: String? = when (name) {
-                        Claims.ISS -> claims.issuerOrNull
-                        Claims.SUB -> claims.subjectOrNull
-                        Claims.JTI -> claims.jwtIdOrNull
+                        JwtPayload.ISS -> claims.issuerOrNull
+                        JwtPayload.SUB -> claims.subjectOrNull
+                        JwtPayload.JTI -> claims.jwtIdOrNull
                         else -> {
                             val element = claims.getClaimOrNull<JsonElement>(name) ?: throw MissingClaimException(name)
                             (element as? JsonPrimitive)?.content ?: element.toString()

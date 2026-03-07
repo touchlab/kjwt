@@ -5,6 +5,8 @@ import co.touchlab.kjwt.exception.ExpiredJwtException
 import co.touchlab.kjwt.exception.IncorrectClaimException
 import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.exception.PrematureJwtException
+import co.touchlab.kjwt.model.expirationOrNull
+import co.touchlab.kjwt.model.subjectOrNull
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
