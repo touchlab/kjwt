@@ -4,13 +4,14 @@ import co.touchlab.kjwt.exception.MalformedJwtException
 import co.touchlab.kjwt.model.JwtInstance
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.parser.JwtParser
+import co.touchlab.kjwt.serializers.asJwtPayloadSerializer
 
 
 suspend inline fun <reified T : JwtPayload> JwtParser.parseSignedJwt(token: String): JwtInstance.Jws<T> =
-    parseSignedJwt(kotlinx.serialization.serializer<T>(), token)
+    parseSignedJwt(kotlinx.serialization.serializer<T>().asJwtPayloadSerializer(), token)
 
 suspend inline fun <reified T : JwtPayload> JwtParser.parseEncryptedJwt(token: String): JwtInstance.Jwe<T> =
-    parseEncryptedJwt(kotlinx.serialization.serializer<T>(), token)
+    parseEncryptedJwt(kotlinx.serialization.serializer<T>().asJwtPayloadSerializer(), token)
 
 /**
  * Auto-detects JWS (3 parts) or JWE (5 parts) and delegates accordingly.

@@ -9,6 +9,7 @@ import co.touchlab.kjwt.internal.encodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
 import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
+import co.touchlab.kjwt.serializers.ClaimsSerializer
 import dev.whyoleg.cryptography.materials.key.Key
 import kotlin.time.Instant
 import kotlinx.serialization.SerializationStrategy
@@ -71,7 +72,7 @@ class JwtBuilder {
         val payload = payloadBuilder.build()
 
         val headerB64 = JwtJson.encodeToBase64Url(header)
-        val payloadB64 = JwtJson.encodeToBase64Url(payload)
+        val payloadB64 = JwtJson.encodeToBase64Url(ClaimsSerializer, payload)
 
         val signingInput = "$headerB64.$payloadB64".encodeToByteArray()
         val signature = algorithm.sign(key, signingInput)
@@ -95,7 +96,7 @@ class JwtBuilder {
 
         val headerB64 = JwtJson.encodeToBase64Url(header)
         val aad = headerB64.encodeToByteArray()
-        val plaintext = JwtJson.encodeToString(claims).encodeToByteArray()
+        val plaintext = JwtJson.encodeToString(ClaimsSerializer, claims).encodeToByteArray()
 
         val result = keyAlgorithm.encrypt(key, contentAlgorithm, plaintext, aad)
 

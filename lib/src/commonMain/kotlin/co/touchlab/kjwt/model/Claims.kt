@@ -2,18 +2,17 @@ package co.touchlab.kjwt.model
 
 import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.internal.JwtJson
-import co.touchlab.kjwt.serializers.ClaimsSerializer
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
-@Serializable(with = ClaimsSerializer::class)
-internal class Claims(@PublishedApi internal val data: Map<String, JsonElement>) : JwtPayload {
+@Serializable
+internal class Claims(@PublishedApi internal val jsonData: JsonObject = JsonObject(emptyMap())) : JwtPayload {
     override fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw MissingClaimException(name)
 
     override fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
-        val element = data[name] ?: return null
+        val element = jsonData[name] ?: return null
         return JwtJson.decodeFromJsonElement(serializer, element)
     }
 
@@ -23,9 +22,9 @@ internal class Claims(@PublishedApi internal val data: Map<String, JsonElement>)
 
         other as Claims
 
-        return data == other.data
+        return jsonData == other.jsonData
     }
 
-    override fun hashCode(): Int = data.hashCode()
-    override fun toString(): String = "Claims(data=$data)"
+    override fun hashCode(): Int = jsonData.hashCode()
+    override fun toString(): String = "Claims(data=$jsonData)"
 }

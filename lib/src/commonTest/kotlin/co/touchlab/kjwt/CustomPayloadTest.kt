@@ -26,7 +26,6 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonObject
 
 // ---- Custom payload type used in all tests in this file ----
 
@@ -36,10 +35,8 @@ data class UserClaims(
     @SerialName("role") val role: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("exp") val expSeconds: Long? = null,
+    private val jsonData: JsonObject = JsonObject(emptyMap()),
 ) : JwtPayload {
-    private val jsonData: JsonObject by lazy {
-        JwtJson.encodeToJsonElement(serializer(), this).jsonObject
-    }
 
     override fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw MissingClaimException(name)
