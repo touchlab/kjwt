@@ -35,3 +35,17 @@ No explicit provider registration is needed when using `cryptography-provider-op
 - [Platform Compatibility](docs/platform-compatibility.md) - Per-platform provider selection and algorithm availability
 - [Error Handling](docs/error-handling.md) - Exception reference and handling patterns
 - [RFC 7519 Compliance](docs/rfc-7519.md) - Compliance checklist against RFC 7519/7518
+
+## Why another library?
+
+[Signum](https://a-sit-plus.github.io/signum/) is a community KMP library that aims to support many cryptographic operations,
+such as JWT Operations. Their library is more feature-rich and supports many algorithms. However, it has a requirement
+of SDK 30+ for Android projects. This limitation is needed as they support hardware backed operations that have such requirement.
+
+On the other hand, [Cryptography Kotlin](https://whyoleg.github.io/cryptography-kotlin/) is another community library
+with a much narrow scope. It supports a wide range of platforms and algorithms, but its goal is to provide access to
+the cryptographic APIs, and not to implement any specific protocol on top of it.
+
+Our proposal is to support JWT on top of the cryptographic library. We aim to provide an easy-to-migrate API for
+Kotlin/Java only applications that are using JJWT for this purpose, supporting the main KMP platforms available.
+As of now, the library is compliant with Jws and Jwe specifications.

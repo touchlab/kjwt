@@ -8,25 +8,27 @@ KJWT supports JWS (signing) algorithms via `JwsAlgorithm` and JWE (encryption) a
 
 `signWith()` takes the **private** key; `verifyWith()` takes the **public** key. For HMAC (`HS*`), the same key is used for both operations.
 
-| Constant | `alg` value | Key type | RFC 7518 status | KJWT |
-|---|---|---|---|---|
-| `JwsAlgorithm.HS256` | `HS256` | `HMAC.Key` | Required | Supported |
-| `JwsAlgorithm.HS384` | `HS384` | `HMAC.Key` | Optional | Supported |
-| `JwsAlgorithm.HS512` | `HS512` | `HMAC.Key` | Optional | Supported |
-| `JwsAlgorithm.RS256` | `RS256` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Recommended | Supported |
-| `JwsAlgorithm.RS384` | `RS384` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Optional | Supported |
-| `JwsAlgorithm.RS512` | `RS512` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Optional | Supported |
-| `JwsAlgorithm.PS256` | `PS256` | `RSA.PSCanS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported |
-| `JwsAlgorithm.PS384` | `PS384` | `RSA.PSS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported |
-| `JwsAlgorithm.PS512` | `PS512` | `RSA.PSS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported |
-| `JwsAlgorithm.ES256` | `ES256` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-256) | Recommended+ | Supported |
-| `JwsAlgorithm.ES384` | `ES384` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-384) | Optional | Supported |
-| `JwsAlgorithm.ES512` | `ES512` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-521) | Optional | Supported |
-| `JwsAlgorithm.None` | `none` | — | Required | Supported (opt-in only) |
+| Constant | `alg` value | Key type | RFC 7518 status | KJWT | Platform notes |
+|---|---|---|---|---|---|
+| `JwsAlgorithm.HS256` | `HS256` | `HMAC.Key` | Required | Supported | |
+| `JwsAlgorithm.HS384` | `HS384` | `HMAC.Key` | Optional | Supported | |
+| `JwsAlgorithm.HS512` | `HS512` | `HMAC.Key` | Optional | Supported | |
+| `JwsAlgorithm.RS256` | `RS256` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Recommended | Supported | |
+| `JwsAlgorithm.RS384` | `RS384` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Optional | Supported | |
+| `JwsAlgorithm.RS512` | `RS512` | `RSA.PKCS1.PrivateKey` / `RSA.PKCS1.PublicKey` | Optional | Supported | |
+| `JwsAlgorithm.PS256` | `PS256` | `RSA.PSS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported | Android: not supported by default JDK provider¹ |
+| `JwsAlgorithm.PS384` | `PS384` | `RSA.PSS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported | Android: not supported by default JDK provider¹ |
+| `JwsAlgorithm.PS512` | `PS512` | `RSA.PSS.PrivateKey` / `RSA.PSS.PublicKey` | Optional | Supported | Android: not supported by default JDK provider¹ |
+| `JwsAlgorithm.ES256` | `ES256` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-256) | Recommended+ | Supported | |
+| `JwsAlgorithm.ES384` | `ES384` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-384) | Optional | Supported | |
+| `JwsAlgorithm.ES512` | `ES512` | `ECDSA.PrivateKey` / `ECDSA.PublicKey` (P-521) | Optional | Supported | |
+| `JwsAlgorithm.None` | `none` | — | Required | Supported (opt-in only) | |
 
 ### Unsecured JWT (`none`)
 
 `alg=none` is supported but **rejected by the parser by default**. Opt in via `parser.allowUnsecured(true)` or `parser.noVerify()`. See [usage.md](usage.md#unsecured-jwts-algnone) for details.
+
+¹ RSA-PSS (`PS*`) is not available in Android's default JDK security provider. To use PS256/PS384/PS512 on Android, register BouncyCastle as the security provider. Android Native targets are unaffected — they use OpenSSL3, which supports RSA-PSS.
 
 ---
 
