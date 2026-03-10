@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
@@ -8,7 +9,9 @@ import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
 import dev.whyoleg.cryptography.materials.key.Key
+import kotlinx.serialization.Serializable
 
+@Serializable(SigningAlgorithmSerializer::class)
 sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override val id: String,
 ) : Jwa<PublicKey, PrivateKey> {

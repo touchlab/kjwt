@@ -4,6 +4,7 @@
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.serializers.EncryptionAlgorithmSerializer
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.AES
@@ -14,7 +15,9 @@ import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
 import dev.whyoleg.cryptography.materials.key.Key
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
+@Serializable(EncryptionAlgorithmSerializer::class)
 sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override val id: String,
 ) : Jwa<PublicKey, PrivateKey> {
