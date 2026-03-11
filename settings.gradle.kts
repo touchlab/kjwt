@@ -1,4 +1,4 @@
-rootProject.name = "kjwt"
+rootProject.name = "kotlin-jwt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -29,4 +29,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":lib")
+include(":kjwt")
+project(":kjwt").projectDir = file("lib")

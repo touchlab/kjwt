@@ -3,6 +3,7 @@ import helpers.configureTests
 
 plugins {
     kotlin("multiplatform")
+    `maven-publish`
 }
 
 kotlin {
