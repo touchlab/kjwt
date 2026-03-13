@@ -116,7 +116,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
                 tag = tag.decodeBase64Url(),
                 aad = aad
             )
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             throw SignatureException("JWE decryption or authentication tag verification failed", e)
         }
 

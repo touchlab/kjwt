@@ -15,20 +15,5 @@ kotlin {
             implementation(libs.cryptography.serialization.asn1)
             implementation(libs.cryptography.serialization.asn1.modules)
         }
-        commonTest.dependencies {
-            implementation(libs.kotlinx.coroutines.test)
-        }
-
-        jvmTest.dependencies {
-            implementation(libs.cryptography.provider.jdk)
-        }
-
-        webTest.dependencies {
-            implementation(libs.cryptography.provider.web)
-        }
-
-        nativeTest.dependencies {
-            implementation(libs.cryptography.provider.openssl)
-        }
     }
 }

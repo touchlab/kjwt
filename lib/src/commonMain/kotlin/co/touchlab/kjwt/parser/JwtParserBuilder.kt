@@ -112,7 +112,7 @@ internal data class JwsKeyVerifier<PublicKey : Key, PrivateKey : Key>(
 ) {
     suspend fun verify(signingInput: ByteArray, signature: ByteArray): Boolean = try {
         algorithm.verify(publicKey, signingInput, signature)
-    } catch (_: Exception) {
+    } catch (_: Throwable) {
         false
     }
 }

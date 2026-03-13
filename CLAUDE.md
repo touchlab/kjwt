@@ -72,3 +72,4 @@ Providers are registered per-platform; all crypto is delegated to the [cryptogra
 - kotlinx-serialization
 - kotlinx-coroutines
 - cryptography-kotlin 0.5.0
+  - For an overview of the API, use the official webpage https://whyoleg.github.io/cryptography-kotlin/api/ 

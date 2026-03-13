@@ -23,7 +23,7 @@ internal fun <T> Json.decodeBase64Url(
 ): T {
     val bytes = try {
         base64UrlString.decodeBase64Url()
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         throw MalformedJwtException(
             "Invalid base64url encoding in JWT" + (if (name != null) " $name" else ""),
             e
@@ -32,7 +32,7 @@ internal fun <T> Json.decodeBase64Url(
 
     return try {
         decodeFromString(deserializer, bytes.decodeToString())
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         throw MalformedJwtException("JWT $name is not valid JSON", e)
     }
 }

@@ -19,232 +19,225 @@ import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
+import io.kotest.core.spec.style.FunSpec
 import kotlin.random.Random
-import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.test.runTest
 
-class JwtBuilderExtTest {
+class JwtBuilderExtTest : FunSpec({
 
-    // ---- signWith(String key) — HMAC ----
+    context("signWith(String key) - HMAC") {
 
-    @Test
-    fun signHs256_stringKey_roundTrip() = runTest {
-        val token = Jwt.builder()
-            .subject("ext-hs256")
-            .signWith(SigningAlgorithm.HS256, hs256Secret.decodeToString(), HMAC.Key.Format.RAW)
-            .compact()
+        test("sign Hs256 string key round trip") {
+            val token = Jwt.builder()
+                .subject("ext-hs256")
+                .signWith(SigningAlgorithm.HS256, hs256Secret.decodeToString(), HMAC.Key.Format.RAW)
+                .compact()
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.HS256, hs256Key())
-            .build()
-            .parseSigned(token)
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.HS256, hs256Key())
+                .build()
+                .parseSigned(token)
 
-        assertEquals("HS256", jws.header.algorithm)
-        assertEquals("ext-hs256", jws.payload.subjectOrNull)
+            assertEquals("HS256", jws.header.algorithm)
+            assertEquals("ext-hs256", jws.payload.subjectOrNull)
+        }
+
+        test("sign Hs384 string key round trip") {
+            val token = Jwt.builder()
+                .subject("ext-hs384")
+                .signWith(SigningAlgorithm.HS384, hs384Secret.decodeToString(), HMAC.Key.Format.RAW)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.HS384, hs384Key())
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ext-hs384", jws.payload.subjectOrNull)
+        }
+
+        test("sign Hs512 string key round trip") {
+            val token = Jwt.builder()
+                .subject("ext-hs512")
+                .signWith(SigningAlgorithm.HS512, hs512Secret.decodeToString(), HMAC.Key.Format.RAW)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.HS512, hs512Key())
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ext-hs512", jws.payload.subjectOrNull)
+        }
     }
 
-    @Test
-    fun signHs384_stringKey_roundTrip() = runTest {
-        val token = Jwt.builder()
-            .subject("ext-hs384")
-            .signWith(SigningAlgorithm.HS384, hs384Secret.decodeToString(), HMAC.Key.Format.RAW)
-            .compact()
+    context("signWith(String key) - RSA PKCS1") {
+        // PEM is used because PEM is ASCII and survives the String → encodeToByteArray() round-trip.
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.HS384, hs384Key())
-            .build()
-            .parseSigned(token)
+        test("sign Rs256 string PEM key round trip") {
+            val keyPair = rsaPkcs1KeyPair()
+            val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
 
-        assertEquals("ext-hs384", jws.payload.subjectOrNull)
+            val token = Jwt.builder()
+                .subject("ext-rs256")
+                .signWith(SigningAlgorithm.RS256, privatePem, RSA.PrivateKey.Format.PEM)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.RS256, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("RS256", jws.header.algorithm)
+            assertEquals("ext-rs256", jws.payload.subjectOrNull)
+        }
+
+        test("sign Rs512 string PEM key round trip") {
+            val keyPair = rsaPkcs1KeyPair(SHA512)
+            val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
+
+            val token = Jwt.builder()
+                .subject("ext-rs512")
+                .signWith(SigningAlgorithm.RS512, privatePem, RSA.PrivateKey.Format.PEM)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.RS512, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ext-rs512", jws.payload.subjectOrNull)
+        }
     }
 
-    @Test
-    fun signHs512_stringKey_roundTrip() = runTest {
-        val token = Jwt.builder()
-            .subject("ext-hs512")
-            .signWith(SigningAlgorithm.HS512, hs512Secret.decodeToString(), HMAC.Key.Format.RAW)
-            .compact()
+    context("signWith(String key) - RSA PSS") {
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.HS512, hs512Key())
-            .build()
-            .parseSigned(token)
+        test("sign Ps256 string PEM key round trip") {
+            val keyPair = rsaPssKeyPair()
+            val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
 
-        assertEquals("ext-hs512", jws.payload.subjectOrNull)
+            val token = Jwt.builder()
+                .subject("ext-ps256")
+                .signWith(SigningAlgorithm.PS256, privatePem, RSA.PrivateKey.Format.PEM)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.PS256, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("PS256", jws.header.algorithm)
+            assertEquals("ext-ps256", jws.payload.subjectOrNull)
+        }
+
+        test("sign Ps384 string PEM key round trip") {
+            val keyPair = rsaPssKeyPair(SHA384)
+            val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
+
+            val token = Jwt.builder()
+                .subject("ext-ps384")
+                .signWith(SigningAlgorithm.PS384, privatePem, RSA.PrivateKey.Format.PEM)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.PS384, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ext-ps384", jws.payload.subjectOrNull)
+        }
     }
 
-    // ---- signWith(String key) — RSA PKCS1 ----
-    // PEM is used because PEM is ASCII and survives the String → encodeToByteArray() round-trip.
+    context("signWith(String key) - ECDSA") {
 
-    @Test
-    fun signRs256_stringPemKey_roundTrip() = runTest {
-        val keyPair = rsaPkcs1KeyPair()
-        val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
+        test("sign Es256 string PEM key round trip") {
+            val keyPair = ecKeyPair(EC.Curve.P256)
+            val privatePem = keyPair.privateKey.encodeToByteArray(EC.PrivateKey.Format.PEM).decodeToString()
 
-        val token = Jwt.builder()
-            .subject("ext-rs256")
-            .signWith(SigningAlgorithm.RS256, privatePem, RSA.PrivateKey.Format.PEM)
-            .compact()
+            val token = Jwt.builder()
+                .subject("ext-es256")
+                .signWith(SigningAlgorithm.ES256, privatePem, EC.PrivateKey.Format.PEM)
+                .compact()
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.RS256, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.ES256, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
 
-        assertEquals("RS256", jws.header.algorithm)
-        assertEquals("ext-rs256", jws.payload.subjectOrNull)
+            assertEquals("ES256", jws.header.algorithm)
+            assertEquals("ext-es256", jws.payload.subjectOrNull)
+        }
+
+        test("sign Es512 string PEM key round trip") {
+            val keyPair = ecKeyPair(EC.Curve.P521)
+            val privatePem = keyPair.privateKey.encodeToByteArray(EC.PrivateKey.Format.PEM).decodeToString()
+
+            val token = Jwt.builder()
+                .subject("ext-es512")
+                .signWith(SigningAlgorithm.ES512, privatePem, EC.PrivateKey.Format.PEM)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.ES512, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ext-es512", jws.payload.subjectOrNull)
+        }
     }
 
-    @Test
-    fun signRs512_stringPemKey_roundTrip() = runTest {
-        val keyPair = rsaPkcs1KeyPair(SHA512)
-        val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
+    context("encryptWith(ByteArray)") {
 
-        val token = Jwt.builder()
-            .subject("ext-rs512")
-            .signWith(SigningAlgorithm.RS512, privatePem, RSA.PrivateKey.Format.PEM)
-            .compact()
+        test("encrypt with byte array key round trip") {
+            val keyBytes = Random.nextBytes(32) // 256-bit key for A256GCM
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.RS512, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
+            val token = Jwt.builder()
+                .subject("ext-encrypt-bytes")
+                .encryptWith(keyBytes, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                .compact()
 
-        assertEquals("ext-rs512", jws.payload.subjectOrNull)
+            val jwe = Jwt.parser()
+                .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
+                .build()
+                .parseEncrypted(token)
+
+            assertEquals("ext-encrypt-bytes", jwe.payload.subjectOrNull)
+        }
+
+        test("encrypt with byte array key CBC algorithm round trip") {
+            val keyBytes = Random.nextBytes(64) // 512-bit key for A256CBC-HS512
+
+            val token = Jwt.builder()
+                .subject("ext-encrypt-cbc")
+                .encryptWith(keyBytes, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256CbcHs512)
+                .compact()
+
+            val jwe = Jwt.parser()
+                .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
+                .build()
+                .parseEncrypted(token)
+
+            assertEquals("ext-encrypt-cbc", jwe.payload.subjectOrNull)
+        }
     }
 
-    // ---- signWith(String key) — RSA PSS ----
+    context("encryptWith(String)") {
 
-    @Test
-    fun signPs256_stringPemKey_roundTrip() = runTest {
-        val keyPair = rsaPssKeyPair()
-        val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
+        test("encrypt with string key round trip") {
+            // 32 ASCII chars → 32 bytes → 256-bit key for A256GCM
+            val keyString = "12345678901234567890123456789012"
 
-        val token = Jwt.builder()
-            .subject("ext-ps256")
-            .signWith(SigningAlgorithm.PS256, privatePem, RSA.PrivateKey.Format.PEM)
-            .compact()
+            val token = Jwt.builder()
+                .subject("ext-encrypt-string")
+                .encryptWith(keyString, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                .compact()
 
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.PS256, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
+            val jwe = Jwt.parser()
+                .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyString.encodeToByteArray()))
+                .build()
+                .parseEncrypted(token)
 
-        assertEquals("PS256", jws.header.algorithm)
-        assertEquals("ext-ps256", jws.payload.subjectOrNull)
+            assertEquals("ext-encrypt-string", jwe.payload.subjectOrNull)
+        }
     }
-
-    @Test
-    fun signPs384_stringPemKey_roundTrip() = runTest {
-        val keyPair = rsaPssKeyPair(SHA384)
-        val privatePem = keyPair.privateKey.encodeToByteArray(RSA.PrivateKey.Format.PEM).decodeToString()
-
-        val token = Jwt.builder()
-            .subject("ext-ps384")
-            .signWith(SigningAlgorithm.PS384, privatePem, RSA.PrivateKey.Format.PEM)
-            .compact()
-
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.PS384, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
-
-        assertEquals("ext-ps384", jws.payload.subjectOrNull)
-    }
-
-    // ---- signWith(String key) — ECDSA ----
-
-    @Test
-    fun signEs256_stringPemKey_roundTrip() = runTest {
-        val keyPair = ecKeyPair(EC.Curve.P256)
-        val privatePem = keyPair.privateKey.encodeToByteArray(EC.PrivateKey.Format.PEM).decodeToString()
-
-        val token = Jwt.builder()
-            .subject("ext-es256")
-            .signWith(SigningAlgorithm.ES256, privatePem, EC.PrivateKey.Format.PEM)
-            .compact()
-
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.ES256, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
-
-        assertEquals("ES256", jws.header.algorithm)
-        assertEquals("ext-es256", jws.payload.subjectOrNull)
-    }
-
-    @Test
-    fun signEs512_stringPemKey_roundTrip() = runTest {
-        val keyPair = ecKeyPair(EC.Curve.P521)
-        val privatePem = keyPair.privateKey.encodeToByteArray(EC.PrivateKey.Format.PEM).decodeToString()
-
-        val token = Jwt.builder()
-            .subject("ext-es512")
-            .signWith(SigningAlgorithm.ES512, privatePem, EC.PrivateKey.Format.PEM)
-            .compact()
-
-        val jws = Jwt.parser()
-            .verifyWith(SigningAlgorithm.ES512, keyPair.publicKey)
-            .build()
-            .parseSigned(token)
-
-        assertEquals("ext-es512", jws.payload.subjectOrNull)
-    }
-
-    // ---- encryptWith(ByteArray) ----
-
-    @Test
-    fun encryptWith_byteArrayKey_roundTrip() = runTest {
-        val keyBytes = Random.nextBytes(32) // 256-bit key for A256GCM
-
-        val token = Jwt.builder()
-            .subject("ext-encrypt-bytes")
-            .encryptWith(keyBytes, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
-            .compact()
-
-        val jwe = Jwt.parser()
-            .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
-            .build()
-            .parseEncrypted(token)
-
-        assertEquals("ext-encrypt-bytes", jwe.payload.subjectOrNull)
-    }
-
-    @Test
-    fun encryptWith_byteArrayKey_cbcAlgorithm_roundTrip() = runTest {
-        val keyBytes = Random.nextBytes(64) // 512-bit key for A256CBC-HS512
-
-        val token = Jwt.builder()
-            .subject("ext-encrypt-cbc")
-            .encryptWith(keyBytes, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256CbcHs512)
-            .compact()
-
-        val jwe = Jwt.parser()
-            .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
-            .build()
-            .parseEncrypted(token)
-
-        assertEquals("ext-encrypt-cbc", jwe.payload.subjectOrNull)
-    }
-
-    // ---- encryptWith(String) ----
-
-    @Test
-    fun encryptWith_stringKey_roundTrip() = runTest {
-        // 32 ASCII chars → 32 bytes → 256-bit key for A256GCM
-        val keyString = "12345678901234567890123456789012"
-
-        val token = Jwt.builder()
-            .subject("ext-encrypt-string")
-            .encryptWith(keyString, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
-            .compact()
-
-        val jwe = Jwt.parser()
-            .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyString.encodeToByteArray()))
-            .build()
-            .parseEncrypted(token)
-
-        assertEquals("ext-encrypt-string", jwe.payload.subjectOrNull)
-    }
-}
+})

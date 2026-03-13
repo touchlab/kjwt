@@ -17,114 +17,99 @@ import co.touchlab.kjwt.ext.notBeforeOrNull
 import co.touchlab.kjwt.ext.subject
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.JwtPayload
-import kotlin.test.Test
+import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
-class ClaimsTest {
+class ClaimsTest : FunSpec({
 
-    private fun emptyClaims() = JwtPayload.Builder().build()
+    fun emptyClaims() = JwtPayload.Builder().build()
 
-    private fun claimsWithSubject() = JwtPayload.Builder().apply {
+    fun claimsWithSubject() = JwtPayload.Builder().apply {
         subject = "test-subject"
     }.build()
 
-    // ---- Registered claims: missing throws NullPointerException ----
+    context("registered claims missing throws NullPointerException") {
 
-    @Test
-    fun issuer_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().issuer }
+        test("issuer missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().issuer }
+        }
+
+        test("subject missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().subject }
+        }
+
+        test("audience missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().audience }
+        }
+
+        test("expiration missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().expiration }
+        }
+
+        test("notBefore missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().notBefore }
+        }
+
+        test("issuedAt missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().issuedAt }
+        }
+
+        test("jwtId missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().jwtId }
+        }
     }
 
-    @Test
-    fun subject_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().subject }
+    context("registered claims missing returns null") {
+
+        test("issuerOrNull missing returns null") {
+            assertNull(emptyClaims().issuerOrNull)
+        }
+
+        test("subjectOrNull missing returns null") {
+            assertNull(emptyClaims().subjectOrNull)
+        }
+
+        test("audienceOrNull missing returns null") {
+            assertNull(emptyClaims().audienceOrNull)
+        }
+
+        test("expirationOrNull missing returns null") {
+            assertNull(emptyClaims().expirationOrNull)
+        }
+
+        test("notBeforeOrNull missing returns null") {
+            assertNull(emptyClaims().notBeforeOrNull)
+        }
+
+        test("issuedAtOrNull missing returns null") {
+            assertNull(emptyClaims().issuedAtOrNull)
+        }
+
+        test("jwtIdOrNull missing returns null") {
+            assertNull(emptyClaims().jwtIdOrNull)
+        }
     }
 
-    @Test
-    fun audience_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().audience }
+    context("custom claims") {
+
+        test("getClaim missing throws NullPointerException") {
+            assertFailsWith<NullPointerException> { emptyClaims().getClaim<String>("role") }
+        }
+
+        test("getClaimOrNull missing returns null") {
+            assertNull(emptyClaims().getClaimOrNull<String>("role"))
+        }
+
+        test("getClaim present returns value") {
+            val claims = claimsWithSubject()
+            assertEquals("test-subject", claims.subject)
+        }
+
+        test("getClaimOrNull present returns value") {
+            val claims = claimsWithSubject()
+            assertEquals("test-subject", claims.subjectOrNull)
+        }
     }
-
-    @Test
-    fun expiration_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().expiration }
-    }
-
-    @Test
-    fun notBefore_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().notBefore }
-    }
-
-    @Test
-    fun issuedAt_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().issuedAt }
-    }
-
-    @Test
-    fun jwtId_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().jwtId }
-    }
-
-    // ---- Registered claims: missing returns null ----
-
-    @Test
-    fun issuerOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().issuerOrNull)
-    }
-
-    @Test
-    fun subjectOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().subjectOrNull)
-    }
-
-    @Test
-    fun audienceOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().audienceOrNull)
-    }
-
-    @Test
-    fun expirationOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().expirationOrNull)
-    }
-
-    @Test
-    fun notBeforeOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().notBeforeOrNull)
-    }
-
-    @Test
-    fun issuedAtOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().issuedAtOrNull)
-    }
-
-    @Test
-    fun jwtIdOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().jwtIdOrNull)
-    }
-
-    // ---- Custom claims ----
-
-    @Test
-    fun getClaim_missing_throwsNullPointerException() {
-        assertFailsWith<NullPointerException> { emptyClaims().getClaim<String>("role") }
-    }
-
-    @Test
-    fun getClaimOrNull_missing_returnsNull() {
-        assertNull(emptyClaims().getClaimOrNull<String>("role"))
-    }
-
-    @Test
-    fun getClaim_present_returnsValue() {
-        val claims = claimsWithSubject()
-        assertEquals("test-subject", claims.subject)
-    }
-
-    @Test
-    fun getClaimOrNull_present_returnsValue() {
-        val claims = claimsWithSubject()
-        assertEquals("test-subject", claims.subjectOrNull)
-    }
-}
+})

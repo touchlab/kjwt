@@ -96,8 +96,3 @@ fun decodeBase64Url(segment: String): ByteArray {
     }
     return Base64.UrlSafe.decode(padded)
 }
-
-// ---- Assertion helpers ----
-
-inline fun <reified T : JwtException> assertThrowsJwt(block: () -> Unit): T =
-    assertFailsWith<T>(block = block)

@@ -1,8 +1,11 @@
 package helpers
 
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 
 fun KotlinMultiplatformExtension.configureTests() {
@@ -11,40 +14,37 @@ fun KotlinMultiplatformExtension.configureTests() {
 }
 
 private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
-    sourceSets.configureEach {
-        when (name) {
-            "commonTest" -> "test"
-            "jvmTest"    -> "test-junit"
-            else         -> null
-        }?.let { testDependency ->
-            dependencies {
-                implementation(kotlin(testDependency))
-            }
+    val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+    sourceSets.commonTest.dependencies {
+        implementation(kotlin("test"))
+        implementation(libs.findLibrary("kotest-engine").get())
+    }
+
+    sourceSets.jvmTest.dependencies {
+        implementation(libs.findLibrary("kotest-runner-junit5").get())
+        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+    }
+
+    sourceSets.nativeTest.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+    }
+
+    sourceSets.webTest.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-web").get())
+    }
+
+    project.tasks.named<Test>("jvmTest") {
+        useJUnitPlatform()
+        filter {
+            isFailOnNoMatchingTests = false
         }
     }
 }
 
 private fun KotlinMultiplatformExtension.configureJSTests() {
     targets.withType<KotlinJsIrTarget>().configureEach {
-        // Wasm tests are not behaving as expected
-        // TODO: Revisit Wasm Tests
-        if (platformType == KotlinPlatformType.wasm) {
-            whenBrowserConfigured {
-                testTask {
-                    enabled = false
-                }
-            }
-
-            whenNodejsConfigured {
-                testTask {
-                    enabled = false
-                }
-            }
-
-            return@configureEach
-        }
-
-
         whenBrowserConfigured {
             testTask {
                 useKarma {
