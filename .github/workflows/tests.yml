@@ -18,9 +18,9 @@ jobs:
             os: ubuntu-latest
             tasks: jvmTest
 
-          - name: js
+          - name: js/wasm
             os: ubuntu-latest
-            tasks: jsTest
+            tasks: jsTest wasmJsTest
 
           - name: linux
             os: ubuntu-latest

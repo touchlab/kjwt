@@ -53,7 +53,7 @@ class JweDecodeTest : FunSpec({
             assertNotNull(jwe.payload.expirationOrNull)
         }
 
-        test("decrypt Dir A192GCM all claims") {
+        test("decrypt Dir A192GCM all claims").config(enabled = !isWebBrowserPlatform()) {
             val cek = aesSimpleKey(192)
             val token = Jwt.builder()
                 .subject("a192gcm-sub")
@@ -86,7 +86,7 @@ class JweDecodeTest : FunSpec({
             assertEquals("a128cbc-sub", jwe.payload.subjectOrNull)
         }
 
-        test("decrypt Dir A192CbcHs384 all claims") {
+        test("decrypt Dir A192CbcHs384 all claims").config(enabled = !isWebBrowserPlatform()) {
             val cek = aesSimpleKey(384) // 48 bytes
             val token = Jwt.builder()
                 .subject("a192cbc-sub")

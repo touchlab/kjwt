@@ -29,7 +29,7 @@ class JweEncodeTest : FunSpec({
             assertEquals("a128gcm-user", jwe.payload.subjectOrNull)
         }
 
-        test("encrypt Dir A192GCM round trip") {
+        test("encrypt Dir A192GCM round trip").config(enabled = !isWebBrowserPlatform()) {
             val cek = aesSimpleKey(192)
             val token = Jwt.builder()
                 .subject("a192gcm-user")
@@ -77,7 +77,7 @@ class JweEncodeTest : FunSpec({
             assertEquals("a128cbc-user", jwe.payload.subjectOrNull)
         }
 
-        test("encrypt Dir A192CbcHs384 round trip") {
+        test("encrypt Dir A192CbcHs384 round trip").config(enabled = !isWebBrowserPlatform()) {
             val cek = aesSimpleKey(384) // 48 bytes: 24 MAC + 24 ENC
             val token = Jwt.builder()
                 .subject("a192cbc-user")

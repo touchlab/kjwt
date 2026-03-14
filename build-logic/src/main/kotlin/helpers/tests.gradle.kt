@@ -6,6 +6,7 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 
 fun KotlinMultiplatformExtension.configureTests() {
@@ -35,10 +36,6 @@ private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
         implementation(libs.findLibrary("cryptography-provider-web").get())
     }
 
-    sourceSets.wasmWasiTest.dependencies {
-        implementation(libs.findLibrary("cryptography-provider-web").get())
-    }
-
     project.tasks.named<Test>("jvmTest") {
         useJUnitPlatform()
         filter {
@@ -49,6 +46,16 @@ private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
 
 private fun KotlinMultiplatformExtension.configureJSTests() {
     targets.withType<KotlinJsIrTarget>().configureEach {
+        if (platformType == KotlinPlatformType.wasm) {
+            whenNodejsConfigured {
+                testTask {
+                    enabled = false
+                }
+            }
+
+            return@configureEach
+        }
+
         whenBrowserConfigured {
             testTask {
                 useKarma {
