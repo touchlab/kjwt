@@ -8,9 +8,11 @@ on:
 permissions:
   checks: write
   pull-requests: write
+  contents: read
+  security-events: write
 
 jobs:
-  test:
+  detekt:
     name: Detekt Checks
     runs-on: ubuntu-latest
 
@@ -33,11 +35,36 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/libs.versions.toml') }}
           restore-keys: gradle-${{ runner.os }}-
 
-      - name: Run detekt
+      # Push to main: generate SARIF and upload to GitHub Security tab
+      - name: Run detekt (SARIF)
+        if: github.event_name == 'push'
         run: ./gradlew mergedDetektReport
 
-      - name: Upload SARIF to GitHub using the upload-sarif action
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
+      - name: Upload SARIF to GitHub
+        uses: github/codeql-action/upload-sarif@v3
+        if: github.event_name == 'push' && (success() || failure())
         with:
           sarif_file: build/reports/detekt/merged-report.sarif
+
+      # Pull request: generate XML and report inline via reviewdog
+      - name: Run detekt (XML)
+        if: github.event_name == 'pull_request'
+        run: ./gradlew mergedDetektXmlReport
+
+      - name: Setup reviewdog
+        if: github.event_name == 'pull_request'
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: Run reviewdog
+        if: github.event_name == 'pull_request'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          reviewdog -f=checkstyle \
+            -name="detekt" \
+            -reporter=github-pr-review \
+            -filter-mode=added \
+            -fail-on-error \
+            < build/reports/detekt/merged-report.xml

@@ -21,7 +21,7 @@ tasks.withType<Detekt>().configureEach {
     exclude { it.file.path.contains("generated/") }
 
     reports {
-        xml.required.set(false)
+        xml.required.set(true)
         html.required.set(false)
         txt.required.set(false)
         md.required.set(false)
@@ -31,7 +31,7 @@ tasks.withType<Detekt>().configureEach {
 
 val mergedDetektReport by tasks.registering(ReportMergeTask::class) {
     group = "verification"
-    description = "Runs over whole code base and merge all reports into one"
+    description = "Merges all detekt SARIF reports into one"
 
     output.set(project.layout.buildDirectory.file("reports/detekt/merged-report.sarif"))
     input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
@@ -39,8 +39,21 @@ val mergedDetektReport by tasks.registering(ReportMergeTask::class) {
     dependsOn(tasks.withType<Detekt>())
 }
 
+val mergedDetektXmlReport by tasks.registering(ReportMergeTask::class) {
+    group = "verification"
+    description = "Merges all detekt XML reports into one (checkstyle format for reviewdog)"
+
+    output.set(project.layout.buildDirectory.file("reports/detekt/merged-report.xml"))
+    input.from(tasks.withType<Detekt>().map { it.xmlReportFile })
+
+    dependsOn(tasks.withType<Detekt>())
+}
+
 subprojects {
     mergedDetektReport {
+        input.from(input.from + tasks.withType<ReportMergeTask>().map { it.output })
+    }
+    mergedDetektXmlReport {
         input.from(input.from + tasks.withType<ReportMergeTask>().map { it.output })
     }
 }

@@ -57,7 +57,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         val signature = parts[2]
 
         if (algorithm != SigningAlgorithm.None) {
-            val verifier = requireNotNull(
+            val verifier = checkNotNull(
                 config.jwsKeyVerifier?.takeIf {
                     it.algorithm == algorithm || it.algorithm == SigningAlgorithm.None && config.allowUnsecured
                 }
