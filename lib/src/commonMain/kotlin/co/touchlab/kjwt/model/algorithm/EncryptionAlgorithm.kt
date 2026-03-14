@@ -1,6 +1,5 @@
 @file:OptIn(DelicateCryptographyApi::class)
 
-
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.cryptography.SimpleKey
@@ -17,8 +16,8 @@ import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
 import dev.whyoleg.cryptography.materials.key.Key
-import kotlin.random.Random
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 @Serializable(EncryptionAlgorithmSerializer::class)
 sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
@@ -112,8 +111,9 @@ sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
         internal val entries by lazy { listOf(Dir, RsaOaep, RsaOaep256) }
 
         fun fromId(id: String): EncryptionAlgorithm<*, *> =
-            entries.firstOrNull { it.id == id }
-                ?: throw IllegalArgumentException("Unknown JWE key algorithm: '$id'")
+            requireNotNull(entries.firstOrNull { it.id == id }) {
+                "Unknown JWE key algorithm: '$id'"
+            }
     }
 }
 
@@ -223,8 +223,8 @@ sealed class EncryptionContentAlgorithm(val id: String) {
             val encKey = cek.copyOfRange(half, cek.size)
 
             val expectedTag = computeCbcHmacTag(macKey, aad, iv, ciphertext)
-            if (!expectedTag.contentEquals(tag)) {
-                throw IllegalArgumentException("JWE authentication tag verification failed")
+            require(expectedTag.contentEquals(tag)) {
+                "JWE authentication tag verification failed"
             }
 
             val aesKey = CryptographyProvider.Default.get(AES.CBC)
@@ -268,23 +268,28 @@ sealed class EncryptionContentAlgorithm(val id: String) {
                 A128GCM -> 16
                 A192GCM -> 24
                 A256GCM -> 32
-                A128CbcHs256 -> 32  // 16 mac + 16 enc
-                A192CbcHs384 -> 48  // 24 mac + 24 enc
-                A256CbcHs512 -> 64  // 32 mac + 32 enc
+                A128CbcHs256 -> 32 // 16 mac + 16 enc
+                A192CbcHs384 -> 48 // 24 mac + 24 enc
+                A256CbcHs512 -> 64 // 32 mac + 32 enc
             }
         )
 
     companion object {
         internal val entries: List<EncryptionContentAlgorithm> by lazy {
             listOf(
-                A128GCM, A192GCM, A256GCM,
-                A128CbcHs256, A192CbcHs384, A256CbcHs512,
+                A128GCM,
+                A192GCM,
+                A256GCM,
+                A128CbcHs256,
+                A192CbcHs384,
+                A256CbcHs512,
             )
         }
 
         fun fromId(id: String): EncryptionContentAlgorithm =
-            entries.firstOrNull { it.id == id }
-                ?: throw IllegalArgumentException("Unknown JWE content algorithm: '$id'")
+            requireNotNull(entries.firstOrNull { it.id == id }) {
+                "Unknown JWE content algorithm: '$id'"
+            }
     }
 }
 

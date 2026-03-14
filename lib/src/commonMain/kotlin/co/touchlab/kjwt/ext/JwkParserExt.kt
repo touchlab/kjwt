@@ -65,7 +65,7 @@ suspend fun JwtParserBuilder.decryptWith(
     jwk: Jwk.Rsa,
 ): JwtParserBuilder {
     val digest = when (algorithm) {
-        EncryptionAlgorithm.RsaOaep    -> SHA1
+        EncryptionAlgorithm.RsaOaep -> SHA1
         EncryptionAlgorithm.RsaOaep256 -> SHA256
     }
     return decryptWith(algorithm, jwk.toRsaOaepPrivateKey(digest))

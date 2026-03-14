@@ -52,13 +52,16 @@ suspend fun Jwk.Oct.toHmacKey(digest: CryptographyAlgorithmId<Digest>): HMAC.Key
 
 /**
  * Converts a base64url-encoded unsigned big-endian integer (JWK "Base64urlUInt")
- * to a [BigInt] by treating it as a positive two's-complement value.
+ * to a [dev.whyoleg.cryptography.bigint.BigInt] by treating it as a positive two's-complement value.
  */
 private fun String.decodeJwkBigInt() =
     decodeBase64Url().let { bytes ->
         // DER INTEGER uses two's complement; prepend 0x00 to ensure positive if MSB is set
-        if (bytes.isNotEmpty() && bytes[0].toInt() and 0x80 != 0) (byteArrayOf(0x00) + bytes).decodeToBigInt()
-        else bytes.decodeToBigInt()
+        if (bytes.isNotEmpty() && bytes[0].toInt() and 0x80 != 0) {
+            (byteArrayOf(0x00) + bytes).decodeToBigInt()
+        } else {
+            bytes.decodeToBigInt()
+        }
     }
 
 private fun Jwk.Rsa.toSpkiDer(): ByteArray {
@@ -151,21 +154,21 @@ private fun ecCurveOid(crv: String): ObjectIdentifier = when (crv) {
     "P-256" -> ObjectIdentifier("1.2.840.10045.3.1.7")
     "P-384" -> ObjectIdentifier("1.3.132.0.34")
     "P-521" -> ObjectIdentifier("1.3.132.0.35")
-    else -> throw IllegalArgumentException("Unsupported EC curve: '$crv'")
+    else -> error("Unsupported EC curve: '$crv'")
 }
 
 private fun ecCurve(crv: String): EC.Curve = when (crv) {
     "P-256" -> EC.Curve.P256
     "P-384" -> EC.Curve.P384
     "P-521" -> EC.Curve.P521
-    else -> throw IllegalArgumentException("Unsupported EC curve: '$crv'")
+    else -> error("Unsupported EC curve: '$crv'")
 }
 
 private fun ecCoordSize(crv: String): Int = when (crv) {
     "P-256" -> 32
     "P-384" -> 48
     "P-521" -> 66
-    else -> throw IllegalArgumentException("Unsupported EC curve: '$crv'")
+    else -> error("Unsupported EC curve: '$crv'")
 }
 
 private fun ByteArray.padToLength(length: Int): ByteArray = when {
@@ -176,7 +179,9 @@ private fun ByteArray.padToLength(length: Int): ByteArray = when {
 
 private fun Jwk.Ec.toSpkiDer(): ByteArray {
     val coordSize = ecCoordSize(crv)
-    val point = byteArrayOf(0x04) + x.decodeBase64Url().padToLength(coordSize) + y.decodeBase64Url().padToLength(coordSize)
+    val point = byteArrayOf(0x04) +
+        x.decodeBase64Url().padToLength(coordSize) +
+        y.decodeBase64Url().padToLength(coordSize)
     val spki = SubjectPublicKeyInfo(
         algorithm = EcKeyAlgorithmIdentifier(EcParameters(ecCurveOid(crv))),
         subjectPublicKey = BitArray(0, point),
@@ -187,7 +192,9 @@ private fun Jwk.Ec.toSpkiDer(): ByteArray {
 private fun Jwk.Ec.toPkcs8Der(): ByteArray {
     val d = requireNotNull(d) { "EC private key requires 'd' parameter" }
     val coordSize = ecCoordSize(crv)
-    val point = byteArrayOf(0x04) + x.decodeBase64Url().padToLength(coordSize) + y.decodeBase64Url().padToLength(coordSize)
+    val point = byteArrayOf(0x04) +
+        x.decodeBase64Url().padToLength(coordSize) +
+        y.decodeBase64Url().padToLength(coordSize)
     val ecPrivKey = EcPrivateKey(
         version = 1,
         privateKey = d.decodeBase64Url().padToLength(coordSize),

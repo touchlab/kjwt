@@ -11,11 +11,11 @@ import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import dev.whyoleg.cryptography.materials.key.Key
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.JsonElement
 import kotlin.time.Duration
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.json.JsonElement
 
 /**
  * Fluent builder for creating JWS (signed) and JWE (encrypted) compact tokens.

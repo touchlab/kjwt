@@ -4,7 +4,10 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+
+permissions:
+  checks: write
+  pull-requests: write
 
 jobs:
   test:
@@ -61,10 +64,4 @@ jobs:
         if: success() || failure() # always run even if the previous step fails
         with:
           report_paths: '**/build/test-results/**/TEST-*.xml'
-
-      - name: Upload test reports
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports-${{ matrix.name }}
-          path: '**/build/reports/tests/'
+          comment: ${{ github.event_name == 'pull_request' }}

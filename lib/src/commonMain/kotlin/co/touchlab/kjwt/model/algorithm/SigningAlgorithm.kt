@@ -132,7 +132,8 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
         }
 
         fun fromId(id: String): SigningAlgorithm<*, *> =
-            entries.firstOrNull { it.id == id }
-                ?: throw IllegalArgumentException("Unknown JWS algorithm: '$id'")
+            requireNotNull(entries.firstOrNull { it.id == id }) {
+                "Unknown JWS algorithm: '$id'"
+            }
     }
 }

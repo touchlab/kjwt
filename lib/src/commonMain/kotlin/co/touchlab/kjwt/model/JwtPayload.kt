@@ -5,16 +5,16 @@ import co.touchlab.kjwt.internal.decodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
 import co.touchlab.kjwt.serializers.InstantEpochSecondsSerializer
 import co.touchlab.kjwt.serializers.JwtPayloadSerializer
-import kotlin.time.Clock
-import kotlin.time.Duration
-import kotlin.time.Instant
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.Instant
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Serializable(with = JwtPayloadSerializer::class)
 class JwtPayload internal constructor(
@@ -155,4 +155,3 @@ class JwtPayload internal constructor(
         const val JTI = "jti"
     }
 }
-

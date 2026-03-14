@@ -167,8 +167,10 @@ object JwkSerializer : KSerializer<Jwk> {
         val input = decoder as? JsonDecoder
             ?: throw SerializationException("JwkSerializer requires JSON input")
         val obj = input.decodeJsonElement().jsonObject
-        return when (val kty = (obj["kty"] as? JsonPrimitive)?.content
-            ?: throw MalformedJwkException("Missing 'kty' in JWK")) {
+        return when (
+            val kty = (obj["kty"] as? JsonPrimitive)?.content
+                ?: throw MalformedJwkException("Missing 'kty' in JWK")
+        ) {
             Jwk.Rsa.KTY -> input.json.decodeFromJsonElement(JwkRsaSerializer, obj)
             Jwk.Ec.KTY -> input.json.decodeFromJsonElement(JwkEcSerializer, obj)
             Jwk.Oct.KTY -> input.json.decodeFromJsonElement(JwkOctSerializer, obj)
@@ -281,8 +283,10 @@ object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
         val input = decoder as? JsonDecoder
             ?: throw SerializationException("JwkThumbprintSerializer requires JSON input")
         val obj = input.decodeJsonElement().jsonObject
-        return when (val kty = (obj["kty"] as? JsonPrimitive)?.content
-            ?: throw MalformedJwkException("Missing 'kty' in JWK thumbprint")) {
+        return when (
+            val kty = (obj["kty"] as? JsonPrimitive)?.content
+                ?: throw MalformedJwkException("Missing 'kty' in JWK thumbprint")
+        ) {
             Jwk.Rsa.KTY -> input.json.decodeFromJsonElement(JwkRsaThumbprintSerializer, obj)
             Jwk.Ec.KTY -> input.json.decodeFromJsonElement(JwkEcThumbprintSerializer, obj)
             Jwk.Oct.KTY -> input.json.decodeFromJsonElement(JwkOctThumbprintSerializer, obj)

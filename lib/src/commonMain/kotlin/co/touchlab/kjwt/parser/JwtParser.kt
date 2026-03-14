@@ -57,10 +57,11 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
         val signature = parts[2]
 
         if (algorithm != SigningAlgorithm.None) {
-            val verifier =
-                config.jwsKeyVerifier
-                    ?.takeIf { it.algorithm == algorithm || it.algorithm == SigningAlgorithm.None && config.allowUnsecured }
-                    ?: throw IllegalStateException("No verification key configured. Call verifyWith() or noVerify() on the parser builder.")
+            val verifier = requireNotNull(
+                config.jwsKeyVerifier?.takeIf {
+                    it.algorithm == algorithm || it.algorithm == SigningAlgorithm.None && config.allowUnsecured
+                }
+            ) { "No verification key configured. Call verifyWith() or noVerify() on the parser builder." }
             val signingInput = "${parts[0]}.${parts[1]}".encodeToByteArray()
             val signature = signature.decodeBase64Url()
 
@@ -97,8 +98,9 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
             throw UnsupportedJwtException("Unsupported JWE content algorithm: '${header.encryption}'", e)
         }
 
-        val decryptor = config.jweKeyDecryptor?.takeIf { it.algorithm == keyAlgorithm }
-            ?: throw IllegalStateException("No decryption key configured. Call decryptWith() on the parser builder.")
+        val decryptor = requireNotNull(config.jweKeyDecryptor?.takeIf { it.algorithm == keyAlgorithm }) {
+            "No decryption key configured. Call decryptWith() on the parser builder."
+        }
 
         // AAD is the ASCII bytes of the raw base64url header string (part[0])
         val aad = parts[0].encodeToByteArray()

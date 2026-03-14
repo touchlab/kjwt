@@ -20,7 +20,8 @@ sealed interface Jwa<PublicKey : Key, PrivateKey : Key> {
         }
 
         fun fromId(id: String): Jwa<*, *> =
-            entries.firstOrNull { it.id == id }
-                ?: throw IllegalArgumentException("Unknown JSON Web Algorithm: '$id'")
+            requireNotNull(entries.firstOrNull { it.id == id }) {
+                "Unknown JSON Web Algorithm: '$id'"
+            }
     }
 }
