@@ -1,0 +1,745 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>co.touchlab.kjwt.ext</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../index.html" tabindex="1">
+                    kotlin-jwt
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">0.1.0-SNAPSHOT
+        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":kjwt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kjwt/commonMain" data-filter=":kjwt/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kotlin-jwt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageids="kjwt::co.touchlab.kjwt.ext////PointingToDeclaration//2073764679">
+  <div class="breadcrumbs"><a href="../index.html">kjwt</a><span class="delimiter">/</span><span class="current">co.touchlab.kjwt.ext</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="EXTENSION_PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="-450458608%2FProperties%2F2073764679" anchor-label="audience" id="-450458608%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="audience.html"><span><span>audience</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-450458608%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="audience.html">audience</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2383098%2FProperties%2F2073764679" anchor-label="audienceOrNull" id="2383098%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="audience-or-null.html"><span>audience</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2383098%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="audience-or-null.html">audienceOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1517701554%2FProperties%2F2073764679" anchor-label="contentType" id="1517701554%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="content-type.html"><span>content</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1517701554%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="content-type.html">contentType</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-94748856%2FProperties%2F2073764679" anchor-label="contentTypeOrNull" id="-94748856%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="content-type-or-null.html"><span>content</span><wbr><span>Type</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-94748856%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="content-type-or-null.html">contentTypeOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1174555576%2FProperties%2F2073764679" anchor-label="encryption" id="-1174555576%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="encryption.html"><span><span>encryption</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1174555576%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="encryption.html">encryption</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1408179874%2FProperties%2F2073764679" anchor-label="encryptionOrNull" id="-1408179874%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="encryption-or-null.html"><span>encryption</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1408179874%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="encryption-or-null.html">encryptionOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1876746683%2FProperties%2F2073764679" anchor-label="expiration" id="1876746683%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expiration.html"><span><span>expiration</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1876746683%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="expiration.html">expiration</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-237992347%2FProperties%2F2073764679" anchor-label="expirationOrNull" id="-237992347%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expiration-or-null.html"><span>expiration</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-237992347%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="expiration-or-null.html">expirationOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1394278858%2FProperties%2F2073764679" anchor-label="issuedAt" id="1394278858%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="issued-at.html"><span>issued</span><wbr><span><span>At</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1394278858%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="issued-at.html">issuedAt</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-814473420%2FProperties%2F2073764679" anchor-label="issuedAtOrNull" id="-814473420%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="issued-at-or-null.html"><span>issued</span><wbr><span>At</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-814473420%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="issued-at-or-null.html">issuedAtOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1277261765%2FProperties%2F2073764679" anchor-label="issuer" id="1277261765%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="issuer.html"><span><span>issuer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1277261765%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="issuer.html">issuer</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2100630289%2FProperties%2F2073764679" anchor-label="issuerOrNull" id="-2100630289%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="issuer-or-null.html"><span>issuer</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2100630289%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="issuer-or-null.html">issuerOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1170764844%2FProperties%2F2073764679" anchor-label="jwtId" id="-1170764844%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="jwt-id.html"><span>jwt</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1170764844%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="jwt-id.html">jwtId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1635812930%2FProperties%2F2073764679" anchor-label="jwtIdOrNull" id="-1635812930%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="jwt-id-or-null.html"><span>jwt</span><wbr><span>Id</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1635812930%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="jwt-id-or-null.html">jwtIdOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="900407499%2FProperties%2F2073764679" anchor-label="keyId" id="900407499%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="key-id.html"><span>key</span><wbr><span><span>Id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="900407499%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="key-id.html">keyId</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="617455521%2FProperties%2F2073764679" anchor-label="keyIdOrNull" id="617455521%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="key-id-or-null.html"><span>key</span><wbr><span>Id</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="617455521%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="key-id-or-null.html">keyIdOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622893636%2FProperties%2F2073764679" anchor-label="notBefore" id="622893636%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="not-before.html"><span>not</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622893636%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="not-before.html">notBefore</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="849343534%2FProperties%2F2073764679" anchor-label="notBeforeOrNull" id="849343534%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="not-before-or-null.html"><span>not</span><wbr><span>Before</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="849343534%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="not-before-or-null.html">notBeforeOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.time/-instant/index.html">Instant</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="139460478%2FProperties%2F2073764679" anchor-label="subject" id="139460478%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subject.html"><span><span>subject</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="139460478%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="subject.html">subject</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2011626008%2FProperties%2F2073764679" anchor-label="subjectOrNull" id="-2011626008%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subject-or-null.html"><span>subject</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2011626008%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="subject-or-null.html">subjectOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1859913393%2FProperties%2F2073764679" anchor-label="type" id="1859913393%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type.html"><span><span>type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1859913393%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="type.html">type</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="869794055%2FProperties%2F2073764679" anchor-label="typeOrNull" id="869794055%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="type-or-null.html"><span>type</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="869794055%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="type-or-null.html">typeOrNull</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="1506061741%2FFunctions%2F2073764679" anchor-label="decryptWith" id="1506061741%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="decrypt-with.html"><span>decrypt</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1506061741%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a><span class="token punctuation">.</span><a href="decrypt-with.html"><span class="token function">decryptWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-algorithm/-o-a-e-p-based/index.html">EncryptionAlgorithm.OAEPBased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="348282300%2FFunctions%2F2073764679" anchor-label="encryptWith" id="348282300%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="encrypt-with.html"><span>encrypt</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="348282300%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="encrypt-with.html"><span class="token function">encryptWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">, </span></span><span class="parameter ">keyAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-algorithm/-o-a-e-p-based/index.html">EncryptionAlgorithm.OAEPBased</a><span class="token punctuation">, </span></span><span class="parameter ">contentAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-content-algorithm/index.html">EncryptionContentAlgorithm</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jwe/index.html">JwtInstance.Jwe</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="encrypt-with.html"><span class="token function">encryptWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">, </span></span><span class="parameter ">keyAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-algorithm/-dir/index.html">EncryptionAlgorithm.Dir</a><span class="token punctuation">, </span></span><span class="parameter ">contentAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-content-algorithm/index.html">EncryptionContentAlgorithm</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jwe/index.html">JwtInstance.Jwe</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="encrypt-with.html"><span class="token function">encryptWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-algorithm/-dir/index.html">EncryptionAlgorithm.Dir</a><span class="token punctuation">, </span></span><span class="parameter ">contentAlgorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-encryption-content-algorithm/index.html">EncryptionContentAlgorithm</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jwe/index.html">JwtInstance.Jwe</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-825191374%2FFunctions%2F2073764679" anchor-label="getClaim" id="-825191374%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-claim.html"><span>get</span><wbr><span><span>Claim</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-825191374%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="get-claim.html">T</a><span class="token operator">&gt; </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="get-claim.html"><span class="token function">getClaim</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="get-claim.html">T</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1651878152%2FFunctions%2F2073764679" anchor-label="getClaimOrNull" id="1651878152%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-claim-or-null.html"><span>get</span><wbr><span>Claim</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1651878152%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="get-claim-or-null.html">T</a><span class="token operator">&gt; </span><a href="../co.touchlab.kjwt.model/-jwt-payload/index.html">JwtPayload</a><span class="token punctuation">.</span><a href="get-claim-or-null.html"><span class="token function">getClaimOrNull</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="get-claim-or-null.html">T</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-610836606%2FFunctions%2F2073764679" anchor-label="getHeader" id="-610836606%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-header.html"><span>get</span><wbr><span><span>Header</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-610836606%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="get-header.html">T</a><span class="token operator">&gt; </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="get-header.html"><span class="token function">getHeader</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="get-header.html">T</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1529395628%2FFunctions%2F2073764679" anchor-label="getHeaderOrNull" id="1529395628%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-header-or-null.html"><span>get</span><wbr><span>Header</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1529395628%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="get-header-or-null.html">T</a><span class="token operator">&gt; </span><a href="../co.touchlab.kjwt.model/-jwt-header/index.html">JwtHeader</a><span class="token punctuation">.</span><a href="get-header-or-null.html"><span class="token function">getHeaderOrNull</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="get-header-or-null.html">T</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-790592375%2FFunctions%2F2073764679" anchor-label="hashed" id="-790592375%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="hashed.html"><span><span>hashed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-790592375%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-thumbprint/index.html">Jwk.Thumbprint</a><span class="token punctuation">.</span><a href="hashed.html"><span class="token function">hashed</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1996967027%2FFunctions%2F2073764679" anchor-label="impliedDigest" id="1996967027%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="implied-digest.html"><span>implied</span><wbr><span><span>Digest</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1996967027%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/index.html">Jwk</a><span class="token punctuation">.</span><a href="implied-digest.html"><span class="token function">impliedDigest</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Returns the SHA digest implied by the JWK's <a href="../co.touchlab.kjwt.model.jwk/-jwk/alg.html">Jwk.alg</a> field, or null if absent/unrecognised.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-541391386%2FFunctions%2F2073764679" anchor-label="signWith" id="-541391386%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="sign-with.html"><span>sign</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-541391386%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-e-c-d-s-a-based/index.html">SigningAlgorithm.ECDSABased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-ec/index.html">Jwk.Ec</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-hash-based/index.html">SigningAlgorithm.HashBased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-oct/index.html">Jwk.Oct</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-k-c-s1-based/index.html">SigningAlgorithm.PKCS1Based</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-s-s-based/index.html">SigningAlgorithm.PSSBased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-e-c-d-s-a-based/index.html">SigningAlgorithm.ECDSABased</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyFormat<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c/-private-key/-format/index.html">EC.PrivateKey.Format</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-hash-based/index.html">SigningAlgorithm.HashBased</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyFormat<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-h-m-a-c/-key/-format/index.html">HMAC.Key.Format</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-k-c-s1-based/index.html">SigningAlgorithm.PKCS1Based</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyFormat<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-private-key/-format/index.html">RSA.PrivateKey.Format</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.builder/-jwt-builder/index.html">JwtBuilder</a><span class="token punctuation">.</span><a href="sign-with.html"><span class="token function">signWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-s-s-based/index.html">SigningAlgorithm.PSSBased</a><span class="token punctuation">, </span></span><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">keyFormat<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-private-key/-format/index.html">RSA.PrivateKey.Format</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.model/-jwt-instance/-jws/index.html">JwtInstance.Jws</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1785067006%2FFunctions%2F2073764679" anchor-label="toEcdsaPrivateKey" id="1785067006%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-ecdsa-private-key.html"><span>to</span><wbr><span>Ecdsa</span><wbr><span>Private</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1785067006%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-ec/index.html">Jwk.Ec</a><span class="token punctuation">.</span><a href="to-ecdsa-private-key.html"><span class="token function">toEcdsaPrivateKey</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/-private-key/index.html">ECDSA.PrivateKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/-private-key/index.html">ECDSA.PrivateKey</a> for ES256/ES384/ES512 signing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1740584896%2FFunctions%2F2073764679" anchor-label="toEcdsaPublicKey" id="1740584896%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-ecdsa-public-key.html"><span>to</span><wbr><span>Ecdsa</span><wbr><span>Public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1740584896%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-ec/index.html">Jwk.Ec</a><span class="token punctuation">.</span><a href="to-ecdsa-public-key.html"><span class="token function">toEcdsaPublicKey</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/-public-key/index.html">ECDSA.PublicKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-e-c-d-s-a/-public-key/index.html">ECDSA.PublicKey</a> for ES256/ES384/ES512 verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622927746%2FFunctions%2F2073764679" anchor-label="toHmacKey" id="622927746%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-hmac-key.html"><span>to</span><wbr><span>Hmac</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622927746%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-oct/index.html">Jwk.Oct</a><span class="token punctuation">.</span><a href="to-hmac-key.html"><span class="token function">toHmacKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-h-m-a-c/-key/index.html">HMAC.Key</a></div><div class="brief "><p class="paragraph">Converts this <a href="../co.touchlab.kjwt.model.jwk/-jwk/-oct/index.html">Jwk.Oct</a> to an <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-h-m-a-c/-key/index.html">HMAC.Key</a> for the given <a href="to-hmac-key.html">digest</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1609739361%2FFunctions%2F2073764679" anchor-label="toRsaOaepPrivateKey" id="1609739361%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-oaep-private-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Oaep</span><wbr><span>Private</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1609739361%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-oaep-private-key.html"><span class="token function">toRsaOaepPrivateKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-o-a-e-p/-private-key/index.html">RSA.OAEP.PrivateKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-o-a-e-p/-private-key/index.html">RSA.OAEP.PrivateKey</a> for RSA-OAEP / RSA-OAEP-256 key decryption.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1063482577%2FFunctions%2F2073764679" anchor-label="toRsaOaepPublicKey" id="1063482577%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-oaep-public-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Oaep</span><wbr><span>Public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1063482577%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-oaep-public-key.html"><span class="token function">toRsaOaepPublicKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-o-a-e-p/-public-key/index.html">RSA.OAEP.PublicKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-o-a-e-p/-public-key/index.html">RSA.OAEP.PublicKey</a> for RSA-OAEP / RSA-OAEP-256 key encryption.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2000340488%2FFunctions%2F2073764679" anchor-label="toRsaPkcs1PrivateKey" id="2000340488%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-pkcs1-private-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Pkcs1Private</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2000340488%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-pkcs1-private-key.html"><span class="token function">toRsaPkcs1PrivateKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-k-c-s1/-private-key/index.html">RSA.PKCS1.PrivateKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-k-c-s1/-private-key/index.html">RSA.PKCS1.PrivateKey</a> for RS256/RS384/RS512 signing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1768819274%2FFunctions%2F2073764679" anchor-label="toRsaPkcs1PublicKey" id="1768819274%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-pkcs1-public-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Pkcs1Public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1768819274%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-pkcs1-public-key.html"><span class="token function">toRsaPkcs1PublicKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-k-c-s1/-public-key/index.html">RSA.PKCS1.PublicKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-k-c-s1/-public-key/index.html">RSA.PKCS1.PublicKey</a> for RS256/RS384/RS512 verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1979009954%2FFunctions%2F2073764679" anchor-label="toRsaPssPrivateKey" id="-1979009954%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-pss-private-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Pss</span><wbr><span>Private</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1979009954%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-pss-private-key.html"><span class="token function">toRsaPssPrivateKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-s-s/-private-key/index.html">RSA.PSS.PrivateKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-s-s/-private-key/index.html">RSA.PSS.PrivateKey</a> for PS256/PS384/PS512 signing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1269040844%2FFunctions%2F2073764679" anchor-label="toRsaPssPublicKey" id="-1269040844%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-rsa-pss-public-key.html"><span>to</span><wbr><span>Rsa</span><wbr><span>Pss</span><wbr><span>Public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1269040844%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a><span class="token punctuation">.</span><a href="to-rsa-pss-public-key.html"><span class="token function">toRsaPssPublicKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">digest<span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography/-cryptography-algorithm-id/index.html">CryptographyAlgorithmId</a><span class="token operator">&lt;</span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-digest/index.html">Digest</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-s-s/-public-key/index.html">RSA.PSS.PublicKey</a></div><div class="brief "><p class="paragraph">Converts to <a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.algorithms/-r-s-a/-p-s-s/-public-key/index.html">RSA.PSS.PublicKey</a> for PS256/PS384/PS512 verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="887328664%2FFunctions%2F2073764679" anchor-label="verifyWith" id="887328664%2FFunctions%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="verify-with.html"><span>verify</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="887328664%2FFunctions%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a><span class="token punctuation">.</span><a href="verify-with.html"><span class="token function">verifyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-e-c-d-s-a-based/index.html">SigningAlgorithm.ECDSABased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-ec/index.html">Jwk.Ec</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a><span class="token punctuation">.</span><a href="verify-with.html"><span class="token function">verifyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-hash-based/index.html">SigningAlgorithm.HashBased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-oct/index.html">Jwk.Oct</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a><span class="token punctuation">.</span><a href="verify-with.html"><span class="token function">verifyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-k-c-s1-based/index.html">SigningAlgorithm.PKCS1Based</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a><span class="token punctuation">.</span><a href="verify-with.html"><span class="token function">verifyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">algorithm<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.algorithm/-signing-algorithm/-p-s-s-based/index.html">SigningAlgorithm.PSSBased</a><span class="token punctuation">, </span></span><span class="parameter ">jwk<span class="token operator">: </span><a href="../co.touchlab.kjwt.model.jwk/-jwk/-rsa/index.html">Jwk.Rsa</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../co.touchlab.kjwt.parser/-jwt-parser-builder/index.html">JwtParserBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
