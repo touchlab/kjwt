@@ -30,6 +30,9 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/libs.versions.toml') }}
           restore-keys: gradle-${{ runner.os }}-
 
+      - name: Fetch previous versions from gh-pages
+        run: bash scripts/dokka-fetch-old-from-pages.sh
+
       - name: Run Dokka build
         run: ./gradlew :dokkaGenerate
 
