@@ -15,6 +15,14 @@ import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
 
+/**
+ * Signs the JWT using an HMAC algorithm with a key decoded from a String.
+ *
+ * @param algorithm the HMAC-based signing algorithm (HS256, HS384, or HS512).
+ * @param key the HMAC key material encoded as a String.
+ * @param keyFormat the format in which [key] is encoded.
+ * @return the signed [JwtInstance.Jws] token.
+ */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.HashBased,
     key: String,
@@ -33,6 +41,14 @@ public suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
+/**
+ * Signs the JWT using an RSA PKCS#1 algorithm with a private key decoded from a String.
+ *
+ * @param algorithm the RSA PKCS#1-based signing algorithm (RS256, RS384, or RS512).
+ * @param key the RSA private key material encoded as a String.
+ * @param keyFormat the format in which [key] is encoded.
+ * @return the signed [JwtInstance.Jws] token.
+ */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PKCS1Based,
     key: String,
@@ -51,6 +67,14 @@ public suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
+/**
+ * Signs the JWT using an RSA PSS algorithm with a private key decoded from a String.
+ *
+ * @param algorithm the RSA PSS-based signing algorithm (PS256, PS384, or PS512).
+ * @param key the RSA private key material encoded as a String.
+ * @param keyFormat the format in which [key] is encoded.
+ * @return the signed [JwtInstance.Jws] token.
+ */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PSSBased,
     key: String,
@@ -69,6 +93,14 @@ public suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
+/**
+ * Signs the JWT using an ECDSA algorithm with a private key decoded from a String.
+ *
+ * @param algorithm the ECDSA-based signing algorithm (ES256, ES384, or ES512).
+ * @param key the EC private key material encoded as a String.
+ * @param keyFormat the format in which [key] is encoded.
+ * @return the signed [JwtInstance.Jws] token.
+ */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.ECDSABased,
     key: String,
@@ -87,12 +119,30 @@ public suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
+/**
+ * Encrypts the JWT using the direct key algorithm (`dir`) with a raw key supplied as a [ByteArray].
+ *
+ * @param key the raw symmetric key bytes used for direct encryption.
+ * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir]).
+ * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload.
+ * @return the encrypted [JwtInstance.Jwe] token.
+ */
 public suspend fun JwtBuilder.encryptWith(
     key: ByteArray,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,
 ): JwtInstance.Jwe = encryptWith(SimpleKey(key), keyAlgorithm, contentAlgorithm)
 
+/**
+ * Encrypts the JWT using the direct key algorithm (`dir`) with a key supplied as a UTF-8 String.
+ *
+ * The string is converted to bytes using UTF-8 encoding before being used as the symmetric key.
+ *
+ * @param key the symmetric key as a UTF-8 string.
+ * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir]).
+ * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload.
+ * @return the encrypted [JwtInstance.Jwe] token.
+ */
 public suspend fun JwtBuilder.encryptWith(
     key: String,
     keyAlgorithm: EncryptionAlgorithm.Dir,

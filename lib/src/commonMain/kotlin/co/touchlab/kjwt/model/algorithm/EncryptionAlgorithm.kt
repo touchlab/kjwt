@@ -81,6 +81,11 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
         encryptedKey: ByteArray,
     ): ByteArray
 
+    /**
+     * Base class for RSA OAEP key encryption variants ([RsaOaep] and [RsaOaep256]).
+     *
+     * Subclasses wrap the Content Encryption Key (CEK) using RSA-OAEP with the appropriate digest.
+     */
     public sealed class OAEPBased(
         id: String,
     ) : EncryptionAlgorithm<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey>(id), Jwa.UsesHashingAlgorithm {
@@ -108,8 +113,18 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override fun toString(): String = id
 
     public companion object {
+        /**
+         * List of all supported [EncryptionAlgorithm] instances.
+         */
         internal val entries by lazy { listOf(Dir, RsaOaep, RsaOaep256) }
 
+        /**
+         * Returns the [EncryptionAlgorithm] whose [id] matches the given string.
+         *
+         * @param id the JWE key algorithm identifier to look up (e.g. `"RSA-OAEP"`)
+         * @return the matching [EncryptionAlgorithm] instance
+         * @throws IllegalArgumentException if no algorithm with the given [id] is registered
+         */
         public fun fromId(id: String): EncryptionAlgorithm<*, *> =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWE key algorithm: '$id'"
@@ -118,12 +133,22 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
 }
 
 public sealed class EncryptionContentAlgorithm(public val id: String) {
+    /** AES-128 in GCM mode (`A128GCM`) content encryption algorithm. */
     public data object A128GCM : AesGCMBased("A128GCM")
+
+    /** AES-192 in GCM mode (`A192GCM`) content encryption algorithm. */
     public data object A192GCM : AesGCMBased("A192GCM")
+
+    /** AES-256 in GCM mode (`A256GCM`) content encryption algorithm. */
     public data object A256GCM : AesGCMBased("A256GCM")
 
+    /** AES-128 CBC with HMAC-SHA-256 (`A128CBC-HS256`) content encryption algorithm. */
     public data object A128CbcHs256 : AesCBCBased("A128CBC-HS256")
+
+    /** AES-192 CBC with HMAC-SHA-384 (`A192CBC-HS384`) content encryption algorithm. */
     public data object A192CbcHs384 : AesCBCBased("A192CBC-HS384")
+
+    /** AES-256 CBC with HMAC-SHA-512 (`A256CBC-HS512`) content encryption algorithm. */
     public data object A256CbcHs512 : AesCBCBased("A256CBC-HS512")
 
     internal abstract suspend fun encrypt(
@@ -141,6 +166,11 @@ public sealed class EncryptionContentAlgorithm(public val id: String) {
         aad: ByteArray,
     ): ByteArray
 
+    /**
+     * Base class for AES GCM content encryption algorithms (A128GCM, A192GCM, A256GCM).
+     *
+     * Uses AES in Galois/Counter Mode, which provides both confidentiality and integrity.
+     */
     public sealed class AesGCMBased(id: String) : EncryptionContentAlgorithm(id) {
         public companion object {
             private const val GCM_IV_SIZE = 12
@@ -184,6 +214,11 @@ public sealed class EncryptionContentAlgorithm(public val id: String) {
         }
     }
 
+    /**
+     * Base class for AES CBC + HMAC content encryption algorithms (A128CBC-HS256, A192CBC-HS384, A256CBC-HS512).
+     *
+     * Uses AES in CBC mode combined with an HMAC tag for authenticated encryption per RFC 7516.
+     */
     public sealed class AesCBCBased(id: String) : EncryptionContentAlgorithm(id) {
         public companion object {
             private const val CBC_IV_SIZE = 16
@@ -262,6 +297,11 @@ public sealed class EncryptionContentAlgorithm(public val id: String) {
 
     override fun toString(): String = id
 
+    /**
+     * Generates a random Content Encryption Key (CEK) of the appropriate byte length for this algorithm.
+     *
+     * @return a freshly generated random CEK as a [ByteArray]
+     */
     internal fun generateCek(): ByteArray =
         Random.nextBytes(
             when (this) {
@@ -275,6 +315,9 @@ public sealed class EncryptionContentAlgorithm(public val id: String) {
         )
 
     public companion object {
+        /**
+         * List of all supported [EncryptionContentAlgorithm] instances.
+         */
         internal val entries: List<EncryptionContentAlgorithm> by lazy {
             listOf(
                 A128GCM,
@@ -286,6 +329,13 @@ public sealed class EncryptionContentAlgorithm(public val id: String) {
             )
         }
 
+        /**
+         * Returns the [EncryptionContentAlgorithm] whose [id] matches the given string.
+         *
+         * @param id the JWE content algorithm identifier to look up (e.g. `"A256GCM"`)
+         * @return the matching [EncryptionContentAlgorithm] instance
+         * @throws IllegalArgumentException if no algorithm with the given [id] is registered
+         */
         public fun fromId(id: String): EncryptionContentAlgorithm =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWE content algorithm: '$id'"

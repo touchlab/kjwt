@@ -26,6 +26,9 @@ fun DokkaSourceSetSpec.registerExternalDocumentation() {
     externalDocumentationLinks.register("cryptography-kotlin") {
         url("https://whyoleg.github.io/cryptography-kotlin/api/")
     }
+    externalDocumentationLinks.register("kotlinx-serialization") {
+        url("https://kotlinlang.org/api/kotlinx.serialization/")
+    }
 }
 
 fun DokkaExtension.registerVersioningPlugin(project: Project) {

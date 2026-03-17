@@ -27,6 +27,11 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPrivateKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPublicKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.SubjectPublicKeyInfo
 
+/**
+ * Computes the base64url-encoded SHA-256 hash of this JWK Thumbprint as defined by RFC 7638.
+ *
+ * @return The base64url-encoded SHA-256 digest of the canonical JSON representation of this thumbprint.
+ */
 public suspend fun Jwk.Thumbprint.hashed(): String {
     val bytes = JwtJson.encodeToString(this).encodeToByteArray()
     val hash = CryptographyProvider.Default.get(SHA256).hasher().hash(bytes)

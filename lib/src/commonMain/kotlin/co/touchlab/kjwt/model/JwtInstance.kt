@@ -10,9 +10,15 @@ public sealed class JwtInstance {
 
     override fun toString(): String = compact()
 
+    /**
+     * Deserializes the token payload as type [T].
+     *
+     * @return the payload deserialized into an instance of [T]
+     */
     public inline fun <reified T> getPayload(): T =
         JwtJson.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), payload.jsonData)
 
+    /** Represents a JWE (encrypted) token with five compact-serialization parts. */
     public class Jwe internal constructor(
         override val header: JwtHeader,
         override val payload: JwtPayload,
@@ -21,26 +27,19 @@ public sealed class JwtInstance {
         public val cipherText: String,
         public val tag: String,
     ) : JwtInstance() {
-        // All strings are Base64 URLEncoded
-        internal constructor(
-            headerB64: String,
-            payloadB64: String,
-            encryptedKey: String,
-            iv: String,
-            cipherText: String,
-            tag: String,
-        ) : this(
-            header = JwtHeader(headerB64),
-            payload = JwtPayload(payloadB64),
-            encryptedKey = encryptedKey,
-            iv = iv,
-            cipherText = cipherText,
-            tag = tag,
-        )
-
+        /**
+         * The Additional Authenticated Data (AAD) for this JWE token, which is the
+         * base64url-encoded header string used during encryption and decryption.
+         */
         public val aad: String
             get() = header.base64Encoded
 
+        /**
+         * Returns the compact five-part JWE serialization:
+         * `header.encryptedKey.iv.ciphertext.tag`.
+         *
+         * @return the compact JWE token string
+         */
         override fun compact(): String = buildString {
             append(aad)
             append('.')
@@ -80,6 +79,7 @@ public sealed class JwtInstance {
         }
     }
 
+    /** Represents a JWS (signed) token with one or more signatures. */
     public class Jws internal constructor(
         override val payload: JwtPayload,
         public val signatures: List<Signature>,
@@ -93,22 +93,20 @@ public sealed class JwtInstance {
             signatures = listOf(Signature(header, signature)),
         )
 
-        internal constructor(
-            headerB64: String, // Base64 URLEncoded
-            payloadB64: String, // Base64 URLEncoded
-            signature: String,
-        ) : this(
-            header = JwtHeader(headerB64),
-            payload = JwtPayload(payloadB64),
-            signature = signature,
-        )
-
         override val header: JwtHeader
             get() = signatures.first().header
 
+        /**
+         * The signature string for this token, taken from the first entry in [signatures].
+         */
         public val signature: String
             get() = signatures.first().signature
 
+        /**
+         * Returns the compact three-part JWS serialization: `header.payload.signature`.
+         *
+         * @return the compact JWS token string
+         */
         override fun compact(): String =
             "$header.$payload.$signature"
 
@@ -131,8 +129,11 @@ public sealed class JwtInstance {
             return result
         }
 
+        /** Represents a single signature entry within a JWS token. */
         public class Signature(
+            /** The JOSE header associated with this signature. */
             public val header: JwtHeader,
+            /** The base64url-encoded signature value. */
             public val signature: String,
         )
     }

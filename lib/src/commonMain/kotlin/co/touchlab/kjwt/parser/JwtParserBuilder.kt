@@ -36,11 +36,26 @@ public class JwtParserBuilder {
     internal var clockSkewSeconds: Long = 0L
     internal var allowUnsecured: Boolean = false
 
+    /**
+     * Disables signature verification entirely, accepting any token regardless of its signature.
+     *
+     * **Warning:** This is unsafe and should never be used in production. It is intended only
+     * for debugging or testing scenarios where signature validation is not required.
+     *
+     * @return this builder for chaining
+     */
     public fun noVerify(): JwtParserBuilder = apply {
         allowUnsecured = true
         jwsKeyVerifier = JwsKeyVerifier(SigningAlgorithm.None, SimpleKey.Empty)
     }
 
+    /**
+     * Sets the algorithm and public key used to verify JWS token signatures.
+     *
+     * @param algorithm the signing algorithm to use for verification
+     * @param key the public key (or symmetric key) for signature verification
+     * @return this builder for chaining
+     */
     public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
         algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
         key: PublicKey
@@ -48,6 +63,13 @@ public class JwtParserBuilder {
         jwsKeyVerifier = JwsKeyVerifier(algorithm, key)
     }
 
+    /**
+     * Sets the algorithm and private key used to decrypt JWE tokens.
+     *
+     * @param algorithm the key encryption algorithm used to unwrap the content encryption key
+     * @param privateKey the private key for decrypting the JWE token
+     * @return this builder for chaining
+     */
     public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
         algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
         privateKey: PrivateKey
@@ -55,6 +77,15 @@ public class JwtParserBuilder {
         jweKeyDecryptor = JweKeyDecryptor(algorithm, privateKey)
     }
 
+    /**
+     * Adds a validator that requires the `iss` claim to equal the given value.
+     *
+     * @param iss the expected issuer string
+     * @param ignoreCase when `true`, the comparison is case-insensitive; defaults to `false`
+     * @return this builder for chaining
+     * @throws MissingClaimException if the `iss` claim is absent during parsing
+     * @throws IncorrectClaimException if the `iss` claim does not match the expected value
+     */
     public fun requireIssuer(iss: String, ignoreCase: Boolean = false): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.issuerOrNull ?: throw MissingClaimException(JwtPayload.ISS)
@@ -64,6 +95,14 @@ public class JwtParserBuilder {
         }
     }
 
+    /**
+     * Adds a validator that requires the `sub` claim to equal the given value.
+     *
+     * @param sub the expected subject string
+     * @return this builder for chaining
+     * @throws MissingClaimException if the `sub` claim is absent during parsing
+     * @throws IncorrectClaimException if the `sub` claim does not match the expected value
+     */
     public fun requireSubject(sub: String): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.subjectOrNull ?: throw MissingClaimException(JwtPayload.SUB)
@@ -73,6 +112,14 @@ public class JwtParserBuilder {
         }
     }
 
+    /**
+     * Adds a validator that requires the `aud` claim to contain the given value.
+     *
+     * @param aud the audience value that must be present in the token's `aud` claim
+     * @return this builder for chaining
+     * @throws MissingClaimException if the `aud` claim is absent during parsing
+     * @throws IncorrectClaimException if the `aud` claim does not contain the expected value
+     */
     public fun requireAudience(aud: String): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.audienceOrNull ?: throw MissingClaimException(JwtPayload.AUD)
@@ -83,6 +130,15 @@ public class JwtParserBuilder {
         }
     }
 
+    /**
+     * Adds a validator that requires the named claim to equal the given value.
+     *
+     * @param claimName the name of the claim to validate
+     * @param value the expected value for the claim
+     * @return this builder for chaining
+     * @throws MissingClaimException if the claim is absent during parsing
+     * @throws IncorrectClaimException if the claim does not match the expected value
+     */
     public inline fun <reified T> requireClaim(claimName: String, value: T): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.getClaimOrNull<T>(claimName) ?: throw MissingClaimException(claimName)
@@ -92,6 +148,12 @@ public class JwtParserBuilder {
         }
     }
 
+    /**
+     * Sets the acceptable clock skew when validating time-based claims (`exp`, `nbf`, `iat`).
+     *
+     * @param seconds the number of seconds of permitted clock skew
+     * @return this builder for chaining
+     */
     public fun clockSkew(seconds: Long): JwtParserBuilder = apply {
         clockSkewSeconds = seconds
     }
@@ -103,6 +165,11 @@ public class JwtParserBuilder {
         allowUnsecured = allow
     }
 
+    /**
+     * Builds the configured [JwtParser].
+     *
+     * @return a [JwtParser] ready to parse and validate tokens
+     */
     public fun build(): JwtParser = JwtParser(this)
 }
 

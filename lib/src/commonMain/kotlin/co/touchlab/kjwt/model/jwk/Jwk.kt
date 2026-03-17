@@ -12,14 +12,43 @@ import kotlinx.serialization.Serializable
 
 @Serializable(with = JwkSerializer::class)
 public sealed class Jwk {
+    /**
+     * The `use` parameter (RFC 7517 §4.2); indicates the intended use of the public key ("sig" for signature or "enc"
+     * for encryption).
+     */
     public abstract val use: String?
+
+    /**
+     * The `key_ops` parameter (RFC 7517 §4.3); lists the operations for which this key is intended to be used.
+     */
     public abstract val keyOps: List<String>?
+
+    /**
+     * The `alg` parameter (RFC 7517 §4.4); identifies the algorithm intended for use with this key.
+     */
     public abstract val alg: String?
+
+    /**
+     * The `kid` parameter (RFC 7517 §4.5); a hint used to identify a specific key within a key set.
+     */
     public abstract val kid: String?
+
+    /**
+     * Whether this JWK contains private key material.
+     */
     public abstract val isPrivate: Boolean
 
+    /**
+     * The JWK Thumbprint for this key as defined by RFC 7638.
+     */
     public abstract val thumbprint: Thumbprint
 
+    /**
+     * Base class for typed JWK Thumbprints as defined by RFC 7638.
+     *
+     * Each subclass holds the required members for a specific key type in lexicographic order,
+     * ready to be serialized and hashed to produce the thumbprint value.
+     */
     @Serializable(with = JwkThumbprintSerializer::class)
     public sealed class Thumbprint
 
@@ -49,6 +78,9 @@ public sealed class Jwk {
             RSAThumbprint(e, n)
         }
 
+        /**
+         * Thumbprint computed from the RSA key parameters `e` (public exponent) and `n` (modulus).
+         */
         @Serializable(with = JwkRsaThumbprintSerializer::class)
         public data class RSAThumbprint(
             public val e: String,
@@ -81,6 +113,9 @@ public sealed class Jwk {
             ECThumbprint(crv, x, y)
         }
 
+        /**
+         * Thumbprint computed from the EC key parameters `crv` (curve), `x`, and `y` (public key coordinates).
+         */
         @Serializable(with = JwkEcThumbprintSerializer::class)
         public data class ECThumbprint(
             public val crv: String,
@@ -111,6 +146,9 @@ public sealed class Jwk {
             OctThumbprint(k)
         }
 
+        /**
+         * Thumbprint computed from the symmetric key material `k` (the raw key bytes encoded as base64url).
+         */
         @Serializable(with = JwkOctThumbprintSerializer::class)
         public data class OctThumbprint(val k: String) : Thumbprint()
 

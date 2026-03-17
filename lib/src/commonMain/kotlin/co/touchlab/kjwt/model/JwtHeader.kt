@@ -38,15 +38,41 @@ public class JwtHeader internal constructor(
         )
     )
 
+    /**
+     * The algorithm (`alg`) header parameter identifying the cryptographic algorithm used.
+     *
+     * @throws MissingHeaderException if the `alg` header is absent
+     */
     public val algorithm: String =
         getHeaderOrNull(String.serializer(), ALG) ?: throw MissingHeaderException(ALG)
 
+    /**
+     * Returns `true` if a header parameter with the given name exists.
+     *
+     * @param name the header parameter name to look up
+     * @return `true` if the header is present, `false` otherwise
+     */
     public fun hasHeader(name: String): Boolean =
         jsonData.containsKey(name)
 
+    /**
+     * Returns the value of the named header parameter deserialized using the given [serializer].
+     *
+     * @param serializer the deserialization strategy for type [T]
+     * @param name the header parameter name
+     * @return the deserialized header value
+     * @throws NullPointerException if the header parameter is absent
+     */
     public fun <T> getHeader(serializer: DeserializationStrategy<T>, name: String): T =
         getHeaderOrNull(serializer, name) ?: throw NullPointerException("Header '$name' not found")
 
+    /**
+     * Returns the value of the named header parameter deserialized using the given [serializer], or `null` if absent.
+     *
+     * @param serializer the deserialization strategy for type [T]
+     * @param name the header parameter name
+     * @return the deserialized header value, or `null` if the parameter is not present
+     */
     public fun <T> getHeaderOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
         val element = jsonData[name] ?: return null
         return JwtJson.decodeFromJsonElement(serializer, element)
@@ -65,29 +91,39 @@ public class JwtHeader internal constructor(
 
     override fun toString(): String = base64Encoded
 
+    /** Builder for constructing a [JwtHeader] with standard and extra parameters. */
     public class Builder {
         private val content: MutableMap<String, JsonElement> = mutableMapOf(
             TYP to JsonPrimitive("JWT")
         )
 
+        /** The token type (`typ`) header parameter; defaults to `"JWT"`. */
         public var type: String? = "JWT"
             set(value) {
                 field = value
                 extra(TYP, value)
             }
 
+        /** The content type (`cty`) header parameter, used when the payload is itself a JWT. */
         public var contentType: String? = null
             set(value) {
                 field = value
                 extra(CTY, value)
             }
 
+        /** The key ID (`kid`) header parameter identifying the key used to sign or encrypt the token. */
         public var keyId: String? = null
             set(value) {
                 field = value
                 extra(KID, value)
             }
 
+        /**
+         * Sets an extra header parameter using a pre-built [JsonElement], or removes it if [value] is `null`.
+         *
+         * @param name the header parameter name
+         * @param value the header value, or `null` to remove the parameter
+         */
         public fun extra(name: String, value: JsonElement?) {
             if (value == null) {
                 content.remove(name)
@@ -96,10 +132,23 @@ public class JwtHeader internal constructor(
             }
         }
 
+        /**
+         * Sets an extra header parameter using an explicit [SerializationStrategy].
+         *
+         * @param name the header parameter name
+         * @param serializer the serialization strategy for [T]
+         * @param value the header value, or `null` to remove the parameter
+         */
         public fun <T> extra(name: String, serializer: SerializationStrategy<T>, value: T?) {
             extra(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
         }
 
+        /**
+         * Sets an extra header parameter, inferring the serializer from the reified type [T].
+         *
+         * @param name the header parameter name
+         * @param value the header value
+         */
         public inline fun <reified T> extra(name: String, value: T) {
             extra(name, kotlinx.serialization.serializer<T>(), value)
         }

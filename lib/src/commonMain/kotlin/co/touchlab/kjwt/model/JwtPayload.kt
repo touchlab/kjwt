@@ -35,12 +35,33 @@ public class JwtPayload internal constructor(
         )
     )
 
+    /**
+     * Returns `true` if a claim with the given name exists in the payload.
+     *
+     * @param name the claim name to look up
+     * @return `true` if the claim is present, `false` otherwise
+     */
     public fun hasClaim(name: String): Boolean =
         jsonData.containsKey(name)
 
+    /**
+     * Returns the value of the named claim, deserialized using the given [serializer].
+     *
+     * @param serializer the deserialization strategy for type [T]
+     * @param name the claim name
+     * @return the deserialized claim value
+     * @throws NullPointerException if the claim is absent
+     */
     public fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw NullPointerException(name)
 
+    /**
+     * Returns the value of the named claim deserialized using the given [serializer], or `null` if absent.
+     *
+     * @param serializer the deserialization strategy for type [T]
+     * @param name the claim name
+     * @return the deserialized claim value, or `null` if the claim is not present
+     */
     public fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
         val element = jsonData[name] ?: return null
         return JwtJson.decodeFromJsonElement(serializer, element)
@@ -59,22 +80,30 @@ public class JwtPayload internal constructor(
 
     override fun toString(): String = base64Encoded
 
+    /** Builder for constructing a [JwtPayload] with standard and custom claims. */
     public class Builder {
         @PublishedApi
         internal val content: MutableMap<String, JsonElement> = mutableMapOf()
 
+        /** The issuer (`iss`) claim identifying the principal that issued the token. */
         public var issuer: String? = null
             set(value) {
                 field = value
                 claim(ISS, value)
             }
 
+        /** The subject (`sub`) claim identifying the principal that is the subject of the token. */
         public var subject: String? = null
             set(value) {
                 field = value
                 claim(SUB, value)
             }
 
+        /**
+         * The audience (`aud`) claim identifying the recipients that the token is intended for.
+         *
+         * A single-element set is serialized as a plain string; multiple elements are serialized as a JSON array.
+         */
         public var audience: Set<String>? = null
             set(value) {
                 field = value
@@ -85,30 +114,40 @@ public class JwtPayload internal constructor(
                 }
             }
 
+        /** The expiration time (`exp`) claim, expressed as an epoch-seconds timestamp. */
         public var expiration: Instant? = null
             set(value) {
                 field = value
                 claim(EXP, InstantEpochSecondsSerializer, value)
             }
 
+        /** The not-before (`nbf`) claim; the token must not be accepted before this time. */
         public var notBefore: Instant? = null
             set(value) {
                 field = value
                 claim(NBF, InstantEpochSecondsSerializer, value)
             }
 
+        /** The issued-at (`iat`) claim identifying the time at which the token was issued. */
         public var issuedAt: Instant? = null
             set(value) {
                 field = value
                 claim(IAT, InstantEpochSecondsSerializer, value)
             }
 
+        /** The JWT ID (`jti`) claim providing a unique identifier for this token. */
         public var id: String? = null
             set(value) {
                 field = value
                 claim(JTI, value)
             }
 
+        /**
+         * Sets a raw claim using a pre-built [JsonElement], or removes it if [value] is `null`.
+         *
+         * @param name the claim name
+         * @param value the claim value, or `null` to remove the claim
+         */
         public fun claim(name: String, value: JsonElement?) {
             if (value != null) {
                 content[name] = value
@@ -117,26 +156,47 @@ public class JwtPayload internal constructor(
             }
         }
 
+        /**
+         * Sets a typed claim using an explicit [SerializationStrategy].
+         *
+         * @param name the claim name
+         * @param serializer the serialization strategy for [T]
+         * @param value the claim value, or `null` to remove the claim
+         */
         public fun <T> claim(name: String, serializer: SerializationStrategy<T>, value: T?) {
             claim(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
         }
 
+        /**
+         * Sets a typed claim, inferring the serializer from the reified type [T].
+         *
+         * @param name the claim name
+         * @param value the claim value
+         */
         public inline fun <reified T> claim(name: String, value: T) {
             claim(name, kotlinx.serialization.serializer<T>(), value)
         }
 
+        /**
+         * Sets the expiration time (`exp`) claim relative to the current time.
+         *
+         * @param duration the duration from now until the token expires
+         */
         public fun expiresIn(duration: Duration) {
             expiration = Clock.System.now() + duration
         }
 
+        /** Sets the not-before (`nbf`) claim to the current time. */
         public fun notBeforeNow() {
             notBefore = Clock.System.now()
         }
 
+        /** Sets the issued-at (`iat`) claim to the current time. */
         public fun issuedNow() {
             issuedAt = Clock.System.now()
         }
 
+        /** Sets the JWT ID (`jti`) claim to a randomly generated UUID. */
         @ExperimentalUuidApi
         public fun randomId() {
             id = Uuid.random().toString()

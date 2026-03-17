@@ -8,7 +8,12 @@ import kotlinx.serialization.Serializable
  * Typically served from a JWKS discovery endpoint (e.g. `/.well-known/jwks.json`).
  */
 @Serializable
-public data class JwkSet(val keys: List<Jwk>) {
+public data class JwkSet(
+    /**
+     * The list of JWK values contained in this key set (RFC 7517 §5.1 `keys` parameter).
+     */
+    val keys: List<Jwk>,
+) {
     /** Returns the first key whose [Jwk.kid] matches [kid], or null if not found. */
     public fun findById(kid: String): Jwk? = keys.firstOrNull { it.kid == kid }
 
