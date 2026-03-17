@@ -27,7 +27,7 @@ import dev.whyoleg.cryptography.materials.key.Key
  * val jws = parser.parse(token)
  * ```
  */
-class JwtParserBuilder {
+public class JwtParserBuilder {
     internal var jwsKeyVerifier: JwsKeyVerifier<*, *>? = null
     internal var jweKeyDecryptor: JweKeyDecryptor<*, *>? = null
 
@@ -36,26 +36,26 @@ class JwtParserBuilder {
     internal var clockSkewSeconds: Long = 0L
     internal var allowUnsecured: Boolean = false
 
-    fun noVerify(): JwtParserBuilder = apply {
+    public fun noVerify(): JwtParserBuilder = apply {
         allowUnsecured = true
         jwsKeyVerifier = JwsKeyVerifier(SigningAlgorithm.None, SimpleKey.Empty)
     }
 
-    fun <PublicKey : Key, PrivateKey : Key> verifyWith(
+    public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
         algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
         key: PublicKey
     ): JwtParserBuilder = apply {
         jwsKeyVerifier = JwsKeyVerifier(algorithm, key)
     }
 
-    fun <PublicKey : Key, PrivateKey : Key> decryptWith(
+    public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
         algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
         privateKey: PrivateKey
     ): JwtParserBuilder = apply {
         jweKeyDecryptor = JweKeyDecryptor(algorithm, privateKey)
     }
 
-    fun requireIssuer(iss: String, ignoreCase: Boolean = false): JwtParserBuilder = apply {
+    public fun requireIssuer(iss: String, ignoreCase: Boolean = false): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.issuerOrNull ?: throw MissingClaimException(JwtPayload.ISS)
             if (!currentValue.equals(iss, ignoreCase)) {
@@ -64,7 +64,7 @@ class JwtParserBuilder {
         }
     }
 
-    fun requireSubject(sub: String): JwtParserBuilder = apply {
+    public fun requireSubject(sub: String): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.subjectOrNull ?: throw MissingClaimException(JwtPayload.SUB)
             if (currentValue != sub) {
@@ -73,7 +73,7 @@ class JwtParserBuilder {
         }
     }
 
-    fun requireAudience(aud: String): JwtParserBuilder = apply {
+    public fun requireAudience(aud: String): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.audienceOrNull ?: throw MissingClaimException(JwtPayload.AUD)
 
@@ -83,7 +83,7 @@ class JwtParserBuilder {
         }
     }
 
-    inline fun <reified T> requireClaim(claimName: String, value: T): JwtParserBuilder = apply {
+    public inline fun <reified T> requireClaim(claimName: String, value: T): JwtParserBuilder = apply {
         validators.add { payload, _ ->
             val currentValue = payload.getClaimOrNull<T>(claimName) ?: throw MissingClaimException(claimName)
             if (currentValue != value) {
@@ -92,18 +92,18 @@ class JwtParserBuilder {
         }
     }
 
-    fun clockSkew(seconds: Long): JwtParserBuilder = apply {
+    public fun clockSkew(seconds: Long): JwtParserBuilder = apply {
         clockSkewSeconds = seconds
     }
 
     /**
      * Allow unsigned ("none" algorithm) JWTs. Disabled by default for security.
      */
-    fun allowUnsecured(allow: Boolean): JwtParserBuilder = apply {
+    public fun allowUnsecured(allow: Boolean): JwtParserBuilder = apply {
         allowUnsecured = allow
     }
 
-    fun build(): JwtParser = JwtParser(this)
+    public fun build(): JwtParser = JwtParser(this)
 }
 
 internal data class JwsKeyVerifier<PublicKey : Key, PrivateKey : Key>(

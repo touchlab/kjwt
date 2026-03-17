@@ -2,24 +2,24 @@ package co.touchlab.kjwt.model
 
 import co.touchlab.kjwt.internal.JwtJson
 
-sealed class JwtInstance {
-    abstract val header: JwtHeader
-    abstract val payload: JwtPayload
+public sealed class JwtInstance {
+    public abstract val header: JwtHeader
+    public abstract val payload: JwtPayload
 
-    abstract fun compact(): String
+    public abstract fun compact(): String
 
     override fun toString(): String = compact()
 
-    inline fun <reified T> getPayload(): T =
+    public inline fun <reified T> getPayload(): T =
         JwtJson.decodeFromJsonElement(kotlinx.serialization.serializer<T>(), payload.jsonData)
 
-    class Jwe internal constructor(
+    public class Jwe internal constructor(
         override val header: JwtHeader,
         override val payload: JwtPayload,
-        val encryptedKey: String,
-        val iv: String,
-        val cipherText: String,
-        val tag: String,
+        public val encryptedKey: String,
+        public val iv: String,
+        public val cipherText: String,
+        public val tag: String,
     ) : JwtInstance() {
         // All strings are Base64 URLEncoded
         internal constructor(
@@ -38,7 +38,7 @@ sealed class JwtInstance {
             tag = tag,
         )
 
-        val aad: String
+        public val aad: String
             get() = header.base64Encoded
 
         override fun compact(): String = buildString {
@@ -80,9 +80,9 @@ sealed class JwtInstance {
         }
     }
 
-    class Jws internal constructor(
+    public class Jws internal constructor(
         override val payload: JwtPayload,
-        val signatures: List<Signature>,
+        public val signatures: List<Signature>,
     ) : JwtInstance() {
         internal constructor(
             header: JwtHeader,
@@ -106,7 +106,7 @@ sealed class JwtInstance {
         override val header: JwtHeader
             get() = signatures.first().header
 
-        val signature: String
+        public val signature: String
             get() = signatures.first().signature
 
         override fun compact(): String =
@@ -131,9 +131,9 @@ sealed class JwtInstance {
             return result
         }
 
-        class Signature(
-            val header: JwtHeader,
-            val signature: String,
+        public class Signature(
+            public val header: JwtHeader,
+            public val signature: String,
         )
     }
 }

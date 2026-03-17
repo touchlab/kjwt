@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
-object AudienceDeserializer : DeserializationStrategy<Set<String>> {
+public object AudienceDeserializer : DeserializationStrategy<Set<String>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Audience")
 
     override fun deserialize(decoder: Decoder): Set<String> =

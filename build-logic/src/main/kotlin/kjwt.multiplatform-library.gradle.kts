@@ -13,4 +13,5 @@ plugins {
 kotlin {
     allTargets()
     configureTests()
+    explicitApi()
 }

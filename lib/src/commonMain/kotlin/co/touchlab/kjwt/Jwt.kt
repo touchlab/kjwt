@@ -44,7 +44,7 @@ import co.touchlab.kjwt.parser.JwtParserBuilder
  * `CryptographyProvider` before use. The recommended approach is to add
  * `cryptography-provider-optimal` to your app dependencies — it auto-registers on startup.
  */
-object Jwt {
-    fun builder(): JwtBuilder = JwtBuilder()
-    fun parser(): JwtParserBuilder = JwtParserBuilder()
+public object Jwt {
+    public fun builder(): JwtBuilder = JwtBuilder()
+    public fun parser(): JwtParserBuilder = JwtParserBuilder()
 }

@@ -14,29 +14,29 @@ import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.Serializable
 
 @Serializable(SigningAlgorithmSerializer::class)
-sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
+public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override val id: String,
 ) : Jwa<PublicKey, PrivateKey> {
     internal abstract suspend fun sign(key: PrivateKey, signingInput: ByteArray): ByteArray
     internal abstract suspend fun verify(key: PublicKey, signingInput: ByteArray, signature: ByteArray): Boolean
 
-    data object HS256 : HashBased("HS256")
-    data object HS384 : HashBased("HS384")
-    data object HS512 : HashBased("HS512")
+    public data object HS256 : HashBased("HS256")
+    public data object HS384 : HashBased("HS384")
+    public data object HS512 : HashBased("HS512")
 
-    data object RS256 : PKCS1Based("RS256")
-    data object RS384 : PKCS1Based("RS384")
-    data object RS512 : PKCS1Based("RS512")
+    public data object RS256 : PKCS1Based("RS256")
+    public data object RS384 : PKCS1Based("RS384")
+    public data object RS512 : PKCS1Based("RS512")
 
-    data object PS256 : PSSBased("PS256")
-    data object PS384 : PSSBased("PS384")
-    data object PS512 : PSSBased("PS512")
+    public data object PS256 : PSSBased("PS256")
+    public data object PS384 : PSSBased("PS384")
+    public data object PS512 : PSSBased("PS512")
 
-    data object ES256 : ECDSABased("ES256")
-    data object ES384 : ECDSABased("ES384")
-    data object ES512 : ECDSABased("ES512")
+    public data object ES256 : ECDSABased("ES256")
+    public data object ES384 : ECDSABased("ES384")
+    public data object ES512 : ECDSABased("ES512")
 
-    sealed class HashBased(
+    public sealed class HashBased(
         id: String,
     ) : SigningAlgorithm<HMAC.Key, HMAC.Key>(id), Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
@@ -55,7 +55,7 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
         }
     }
 
-    sealed class PKCS1Based(
+    public sealed class PKCS1Based(
         id: String,
     ) : SigningAlgorithm<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey>(id), Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
@@ -74,7 +74,7 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
         }
     }
 
-    sealed class PSSBased(
+    public sealed class PSSBased(
         id: String,
     ) : SigningAlgorithm<RSA.PSS.PublicKey, RSA.PSS.PrivateKey>(id), Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
@@ -93,7 +93,7 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
         }
     }
 
-    sealed class ECDSABased(
+    public sealed class ECDSABased(
         id: String,
     ) : SigningAlgorithm<ECDSA.PublicKey, ECDSA.PrivateKey>(id), Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
@@ -113,14 +113,14 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     }
 
     /** Unsecured JWT — opt-in only. Rejected by parser unless `allowUnsecured(true)`. */
-    data object None : SigningAlgorithm<SimpleKey, SimpleKey>("none") {
+    public data object None : SigningAlgorithm<SimpleKey, SimpleKey>("none") {
         override suspend fun sign(key: SimpleKey, signingInput: ByteArray): ByteArray = ByteArray(0)
         override suspend fun verify(key: SimpleKey, signingInput: ByteArray, signature: ByteArray): Boolean = true
     }
 
     override fun toString(): String = id
 
-    companion object {
+    public companion object {
         internal val entries: List<SigningAlgorithm<*, *>> by lazy {
             listOf(
                 HS256, HS384, HS512,
@@ -131,7 +131,7 @@ sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
             )
         }
 
-        fun fromId(id: String): SigningAlgorithm<*, *> =
+        public fun fromId(id: String): SigningAlgorithm<*, *> =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWS algorithm: '$id'"
             }

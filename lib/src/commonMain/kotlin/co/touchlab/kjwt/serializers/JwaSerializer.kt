@@ -10,7 +10,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-object JwaSerializer : KSerializer<Jwa<*, *>> {
+public object JwaSerializer : KSerializer<Jwa<*, *>> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("Jwa", PrimitiveKind.STRING)
 
@@ -25,7 +25,7 @@ object JwaSerializer : KSerializer<Jwa<*, *>> {
         Jwa.fromId(decoder.decodeString())
 }
 
-object EncryptionAlgorithmSerializer : KSerializer<EncryptionAlgorithm<*, *>> {
+public object EncryptionAlgorithmSerializer : KSerializer<EncryptionAlgorithm<*, *>> {
     override val descriptor: SerialDescriptor = JwaSerializer.descriptor
 
     override fun serialize(encoder: Encoder, value: EncryptionAlgorithm<*, *>) {
@@ -36,7 +36,7 @@ object EncryptionAlgorithmSerializer : KSerializer<EncryptionAlgorithm<*, *>> {
         EncryptionAlgorithm.fromId(decoder.decodeString())
 }
 
-object SigningAlgorithmSerializer : KSerializer<SigningAlgorithm<*, *>> {
+public object SigningAlgorithmSerializer : KSerializer<SigningAlgorithm<*, *>> {
     override val descriptor: SerialDescriptor = JwaSerializer.descriptor
 
     override fun serialize(encoder: Encoder, value: SigningAlgorithm<*, *>) {

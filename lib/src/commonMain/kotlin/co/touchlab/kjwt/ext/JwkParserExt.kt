@@ -13,7 +13,7 @@ import dev.whyoleg.cryptography.algorithms.SHA512
 // verifyWith — HMAC (oct)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.HashBased, jwk: Jwk.Oct): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.HashBased, jwk: Jwk.Oct): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.HS256 -> SHA256
         SigningAlgorithm.HS384 -> SHA384
@@ -26,7 +26,7 @@ suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.HashBased, j
 // verifyWith — RSA PKCS1 (RS*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PKCS1Based, jwk: Jwk.Rsa): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PKCS1Based, jwk: Jwk.Rsa): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.RS256 -> SHA256
         SigningAlgorithm.RS384 -> SHA384
@@ -39,7 +39,7 @@ suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PKCS1Based, 
 // verifyWith — RSA PSS (PS*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PSSBased, jwk: Jwk.Rsa): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PSSBased, jwk: Jwk.Rsa): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.PS256 -> SHA256
         SigningAlgorithm.PS384 -> SHA384
@@ -52,7 +52,7 @@ suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PSSBased, jw
 // verifyWith — ECDSA (ES*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk.Ec): JwtParserBuilder =
+public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk.Ec): JwtParserBuilder =
     verifyWith(algorithm, jwk.toEcdsaPublicKey())
 
 // ---------------------------------------------------------------------------
@@ -60,7 +60,7 @@ suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.ECDSABased, 
 // ---------------------------------------------------------------------------
 
 @OptIn(dev.whyoleg.cryptography.DelicateCryptographyApi::class)
-suspend fun JwtParserBuilder.decryptWith(
+public suspend fun JwtParserBuilder.decryptWith(
     algorithm: EncryptionAlgorithm.OAEPBased,
     jwk: Jwk.Rsa,
 ): JwtParserBuilder {

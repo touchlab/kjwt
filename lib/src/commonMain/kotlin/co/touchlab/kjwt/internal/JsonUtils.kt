@@ -6,7 +6,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
 @PublishedApi
-internal val JwtJson = Json {
+internal val JwtJson: Json = Json {
     ignoreUnknownKeys = true
     explicitNulls = false
 }

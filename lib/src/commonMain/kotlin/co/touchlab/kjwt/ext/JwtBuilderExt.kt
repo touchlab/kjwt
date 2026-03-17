@@ -15,7 +15,7 @@ import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
 
-suspend fun JwtBuilder.signWith(
+public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.HashBased,
     key: String,
     keyFormat: HMAC.Key.Format,
@@ -33,7 +33,7 @@ suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
-suspend fun JwtBuilder.signWith(
+public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PKCS1Based,
     key: String,
     keyFormat: RSA.PrivateKey.Format,
@@ -51,7 +51,7 @@ suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
-suspend fun JwtBuilder.signWith(
+public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PSSBased,
     key: String,
     keyFormat: RSA.PrivateKey.Format,
@@ -69,7 +69,7 @@ suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
-suspend fun JwtBuilder.signWith(
+public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.ECDSABased,
     key: String,
     keyFormat: EC.PrivateKey.Format,
@@ -87,13 +87,13 @@ suspend fun JwtBuilder.signWith(
     return signWith(algorithm, parsedKey)
 }
 
-suspend fun JwtBuilder.encryptWith(
+public suspend fun JwtBuilder.encryptWith(
     key: ByteArray,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,
 ): JwtInstance.Jwe = encryptWith(SimpleKey(key), keyAlgorithm, contentAlgorithm)
 
-suspend fun JwtBuilder.encryptWith(
+public suspend fun JwtBuilder.encryptWith(
     key: String,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,

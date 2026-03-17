@@ -36,41 +36,41 @@ import kotlin.uuid.ExperimentalUuidApi
  *     .encryptWith(rsaPublicKey, JweKeyAlgorithm.RsaOaep256, JweContentAlgorithm.A256GCM)
  * ```
  */
-class JwtBuilder {
+public class JwtBuilder {
     @PublishedApi
-    internal val payloadBuilder = JwtPayload.Builder()
-    private val headerBuilder = JwtHeader.Builder()
+    internal val payloadBuilder: JwtPayload.Builder = JwtPayload.Builder()
+    private val headerBuilder: JwtHeader.Builder = JwtHeader.Builder()
 
-    fun issuer(iss: String): JwtBuilder = apply { payloadBuilder.issuer = iss }
-    fun subject(sub: String): JwtBuilder = apply { payloadBuilder.subject = sub }
-    fun audience(vararg aud: String): JwtBuilder = apply { payloadBuilder.audience = aud.toSet() }
-    fun expiration(exp: Instant): JwtBuilder = apply { payloadBuilder.expiration = exp }
-    fun expiresIn(duration: Duration): JwtBuilder = apply { payloadBuilder.expiresIn(duration) }
-    fun notBefore(nbf: Instant): JwtBuilder = apply { payloadBuilder.notBefore = nbf }
-    fun notBeforeNow(): JwtBuilder = apply { payloadBuilder.notBeforeNow() }
-    fun issuedAt(iat: Instant): JwtBuilder = apply { payloadBuilder.issuedAt = iat }
-    fun issuedNow(): JwtBuilder = apply { payloadBuilder.issuedNow() }
-    fun id(jti: String): JwtBuilder = apply { payloadBuilder.id = jti }
+    public fun issuer(iss: String): JwtBuilder = apply { payloadBuilder.issuer = iss }
+    public fun subject(sub: String): JwtBuilder = apply { payloadBuilder.subject = sub }
+    public fun audience(vararg aud: String): JwtBuilder = apply { payloadBuilder.audience = aud.toSet() }
+    public fun expiration(exp: Instant): JwtBuilder = apply { payloadBuilder.expiration = exp }
+    public fun expiresIn(duration: Duration): JwtBuilder = apply { payloadBuilder.expiresIn(duration) }
+    public fun notBefore(nbf: Instant): JwtBuilder = apply { payloadBuilder.notBefore = nbf }
+    public fun notBeforeNow(): JwtBuilder = apply { payloadBuilder.notBeforeNow() }
+    public fun issuedAt(iat: Instant): JwtBuilder = apply { payloadBuilder.issuedAt = iat }
+    public fun issuedNow(): JwtBuilder = apply { payloadBuilder.issuedNow() }
+    public fun id(jti: String): JwtBuilder = apply { payloadBuilder.id = jti }
 
     @ExperimentalUuidApi
-    fun randomId(): JwtBuilder = apply { payloadBuilder.randomId() }
+    public fun randomId(): JwtBuilder = apply { payloadBuilder.randomId() }
 
-    fun claim(name: String, value: JsonElement): JwtBuilder =
+    public fun claim(name: String, value: JsonElement): JwtBuilder =
         apply { payloadBuilder.claim(name, value) }
 
-    fun <T> claim(name: String, serializer: SerializationStrategy<T>, value: T?): JwtBuilder =
+    public fun <T> claim(name: String, serializer: SerializationStrategy<T>, value: T?): JwtBuilder =
         apply { payloadBuilder.claim(name, serializer, value) }
 
-    inline fun <reified T> claim(name: String, value: T): JwtBuilder =
+    public inline fun <reified T> claim(name: String, value: T): JwtBuilder =
         apply { payloadBuilder.claim(name, value) }
 
-    fun claims(block: JwtPayload.Builder.() -> Unit): JwtBuilder =
+    public fun claims(block: JwtPayload.Builder.() -> Unit): JwtBuilder =
         apply { payloadBuilder.block() }
 
-    fun header(block: JwtHeader.Builder.() -> Unit): JwtBuilder =
+    public fun header(block: JwtHeader.Builder.() -> Unit): JwtBuilder =
         apply { headerBuilder.block() }
 
-    fun keyId(kid: String): JwtBuilder =
+    public fun keyId(kid: String): JwtBuilder =
         apply { headerBuilder.keyId = kid }
 
     /**
@@ -78,7 +78,7 @@ class JwtBuilder {
      *
      * For [SigningAlgorithm.None] the signature part is empty, producing `header.payload.`
      */
-    suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
+    public suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
         algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
         key: PrivateKey
     ): JwtInstance.Jws {
@@ -91,14 +91,14 @@ class JwtBuilder {
         return JwtInstance.Jws(header, payload, signature.encodeBase64Url())
     }
 
-    suspend fun signWith(algorithm: SigningAlgorithm.None): JwtInstance.Jws =
+    public suspend fun signWith(algorithm: SigningAlgorithm.None): JwtInstance.Jws =
         signWith(algorithm, SimpleKey.Empty)
 
     /**
      * Builds and returns a JWE compact serialization:
      * `header.encryptedKey.iv.ciphertext.tag`
      */
-    suspend fun <PublicKey : Key, PrivateKey : Key> encryptWith(
+    public suspend fun <PublicKey : Key, PrivateKey : Key> encryptWith(
         key: PublicKey,
         keyAlgorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
         contentAlgorithm: EncryptionContentAlgorithm,

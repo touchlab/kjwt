@@ -23,7 +23,7 @@ import kotlin.time.Clock
 /**
  * Thread-safe JWT parser. Obtain via [JwtParserBuilder.build].
  */
-class JwtParser internal constructor(private val config: JwtParserBuilder) {
+public class JwtParser internal constructor(private val config: JwtParserBuilder) {
     /**
      * Parses and validates a JWS compact token, returning the signed JwtInstance.
      *
@@ -35,7 +35,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
      * @throws MissingClaimException if a required claim is absent
      * @throws IncorrectClaimException if a required claim has an unexpected value
      */
-    suspend fun parseSigned(token: String): JwtInstance.Jws {
+    public suspend fun parseSigned(token: String): JwtInstance.Jws {
         val parts = token.split('.')
         if (parts.size != 3) throw MalformedJwtException("JWS token must have exactly 3 parts, got ${parts.size}")
 
@@ -81,7 +81,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
      * @throws MalformedJwtException if the token is not a valid 5-part JWE
      * @throws SignatureException if decryption or authentication tag verification fails
      */
-    suspend fun parseEncrypted(token: String): JwtInstance.Jwe {
+    public suspend fun parseEncrypted(token: String): JwtInstance.Jwe {
         val parts = token.split('.')
         if (parts.size != 5) throw MalformedJwtException("JWE token must have exactly 5 parts, got ${parts.size}")
 
@@ -140,7 +140,7 @@ class JwtParser internal constructor(private val config: JwtParserBuilder) {
     /**
      * Auto-detects JWS (3 parts) or JWE (5 parts) and delegates accordingly.
      */
-    suspend fun parse(token: String): JwtInstance {
+    public suspend fun parse(token: String): JwtInstance {
         val partCount = token.count { it == '.' } + 1
         return when (partCount) {
             3 -> parseSigned(token)

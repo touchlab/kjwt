@@ -7,19 +7,19 @@ import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.Serializable
 
 @Serializable(JwaSerializer::class)
-sealed interface Jwa<PublicKey : Key, PrivateKey : Key> {
-    val id: String
+public sealed interface Jwa<PublicKey : Key, PrivateKey : Key> {
+    public val id: String
 
-    interface UsesHashingAlgorithm {
-        val digest: CryptographyAlgorithmId<Digest>
+    public interface UsesHashingAlgorithm {
+        public val digest: CryptographyAlgorithmId<Digest>
     }
 
-    companion object {
+    public companion object {
         internal val entries: List<Jwa<*, *>> by lazy {
             EncryptionAlgorithm.entries + SigningAlgorithm.entries
         }
 
-        fun fromId(id: String): Jwa<*, *> =
+        public fun fromId(id: String): Jwa<*, *> =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JSON Web Algorithm: '$id'"
             }

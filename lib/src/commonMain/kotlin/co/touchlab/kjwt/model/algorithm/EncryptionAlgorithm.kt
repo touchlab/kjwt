@@ -20,23 +20,23 @@ import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
 @Serializable(EncryptionAlgorithmSerializer::class)
-sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
+public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override val id: String,
 ) : Jwa<PublicKey, PrivateKey> {
     /**
      * RSA-OAEP with SHA-1.
      * Key must be created with `RSA.OAEP.keyPairGenerator(SHA1)` or equivalent.
      */
-    data object RsaOaep : OAEPBased("RSA-OAEP")
+    public data object RsaOaep : OAEPBased("RSA-OAEP")
 
     /**
      * RSA-OAEP with SHA-256.
      * Key must be created with `RSA.OAEP.keyPairGenerator(SHA256)` or equivalent.
      */
-    data object RsaOaep256 : OAEPBased("RSA-OAEP-256")
+    public data object RsaOaep256 : OAEPBased("RSA-OAEP-256")
 
     /** Direct use of a shared symmetric CEK — no key wrapping. */
-    data object Dir : EncryptionAlgorithm<SimpleKey, SimpleKey>("dir") {
+    public data object Dir : EncryptionAlgorithm<SimpleKey, SimpleKey>("dir") {
         override suspend fun generateContentEncryptionKey(
             key: SimpleKey,
             contentAlgorithm: EncryptionContentAlgorithm,
@@ -81,7 +81,7 @@ sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
         encryptedKey: ByteArray,
     ): ByteArray
 
-    sealed class OAEPBased(
+    public sealed class OAEPBased(
         id: String,
     ) : EncryptionAlgorithm<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey>(id), Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
@@ -107,24 +107,24 @@ sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
 
     override fun toString(): String = id
 
-    companion object {
+    public companion object {
         internal val entries by lazy { listOf(Dir, RsaOaep, RsaOaep256) }
 
-        fun fromId(id: String): EncryptionAlgorithm<*, *> =
+        public fun fromId(id: String): EncryptionAlgorithm<*, *> =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWE key algorithm: '$id'"
             }
     }
 }
 
-sealed class EncryptionContentAlgorithm(val id: String) {
-    data object A128GCM : AesGCMBased("A128GCM")
-    data object A192GCM : AesGCMBased("A192GCM")
-    data object A256GCM : AesGCMBased("A256GCM")
+public sealed class EncryptionContentAlgorithm(public val id: String) {
+    public data object A128GCM : AesGCMBased("A128GCM")
+    public data object A192GCM : AesGCMBased("A192GCM")
+    public data object A256GCM : AesGCMBased("A256GCM")
 
-    data object A128CbcHs256 : AesCBCBased("A128CBC-HS256")
-    data object A192CbcHs384 : AesCBCBased("A192CBC-HS384")
-    data object A256CbcHs512 : AesCBCBased("A256CBC-HS512")
+    public data object A128CbcHs256 : AesCBCBased("A128CBC-HS256")
+    public data object A192CbcHs384 : AesCBCBased("A192CBC-HS384")
+    public data object A256CbcHs512 : AesCBCBased("A256CBC-HS512")
 
     internal abstract suspend fun encrypt(
         cek: ByteArray,
@@ -141,8 +141,8 @@ sealed class EncryptionContentAlgorithm(val id: String) {
         aad: ByteArray,
     ): ByteArray
 
-    sealed class AesGCMBased(id: String) : EncryptionContentAlgorithm(id) {
-        companion object {
+    public sealed class AesGCMBased(id: String) : EncryptionContentAlgorithm(id) {
+        public companion object {
             private const val GCM_IV_SIZE = 12
             private const val GCM_TAG_SIZE = 16
         }
@@ -184,8 +184,8 @@ sealed class EncryptionContentAlgorithm(val id: String) {
         }
     }
 
-    sealed class AesCBCBased(id: String) : EncryptionContentAlgorithm(id) {
-        companion object {
+    public sealed class AesCBCBased(id: String) : EncryptionContentAlgorithm(id) {
+        public companion object {
             private const val CBC_IV_SIZE = 16
         }
 
@@ -274,7 +274,7 @@ sealed class EncryptionContentAlgorithm(val id: String) {
             }
         )
 
-    companion object {
+    public companion object {
         internal val entries: List<EncryptionContentAlgorithm> by lazy {
             listOf(
                 A128GCM,
@@ -286,7 +286,7 @@ sealed class EncryptionContentAlgorithm(val id: String) {
             )
         }
 
-        fun fromId(id: String): EncryptionContentAlgorithm =
+        public fun fromId(id: String): EncryptionContentAlgorithm =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWE content algorithm: '$id'"
             }

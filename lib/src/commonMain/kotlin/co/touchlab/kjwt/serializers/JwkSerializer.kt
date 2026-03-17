@@ -29,7 +29,7 @@ private fun JsonObject.optStringList(key: String): List<String>? =
 // RSA
 // ---------------------------------------------------------------------------
 
-object JwkRsaSerializer : KSerializer<Jwk.Rsa> {
+public object JwkRsaSerializer : KSerializer<Jwk.Rsa> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -77,7 +77,7 @@ object JwkRsaSerializer : KSerializer<Jwk.Rsa> {
 // EC
 // ---------------------------------------------------------------------------
 
-object JwkEcSerializer : KSerializer<Jwk.Ec> {
+public object JwkEcSerializer : KSerializer<Jwk.Ec> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -117,7 +117,7 @@ object JwkEcSerializer : KSerializer<Jwk.Ec> {
 // Oct
 // ---------------------------------------------------------------------------
 
-object JwkOctSerializer : KSerializer<Jwk.Oct> {
+public object JwkOctSerializer : KSerializer<Jwk.Oct> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -151,7 +151,7 @@ object JwkOctSerializer : KSerializer<Jwk.Oct> {
 // Jwk (polymorphic dispatcher)
 // ---------------------------------------------------------------------------
 
-object JwkSerializer : KSerializer<Jwk> {
+public object JwkSerializer : KSerializer<Jwk> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -183,7 +183,7 @@ object JwkSerializer : KSerializer<Jwk> {
 // RSAThumbprint
 // ---------------------------------------------------------------------------
 
-object JwkRsaThumbprintSerializer : KSerializer<Jwk.Rsa.RSAThumbprint> {
+public object JwkRsaThumbprintSerializer : KSerializer<Jwk.Rsa.RSAThumbprint> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -211,7 +211,7 @@ object JwkRsaThumbprintSerializer : KSerializer<Jwk.Rsa.RSAThumbprint> {
 // ECThumbprint
 // ---------------------------------------------------------------------------
 
-object JwkEcThumbprintSerializer : KSerializer<Jwk.Ec.ECThumbprint> {
+public object JwkEcThumbprintSerializer : KSerializer<Jwk.Ec.ECThumbprint> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -241,7 +241,7 @@ object JwkEcThumbprintSerializer : KSerializer<Jwk.Ec.ECThumbprint> {
 // OctThumbprint
 // ---------------------------------------------------------------------------
 
-object JwkOctThumbprintSerializer : KSerializer<Jwk.Oct.OctThumbprint> {
+public object JwkOctThumbprintSerializer : KSerializer<Jwk.Oct.OctThumbprint> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 
@@ -267,7 +267,7 @@ object JwkOctThumbprintSerializer : KSerializer<Jwk.Oct.OctThumbprint> {
 // Jwk.Thumbprint (polymorphic dispatcher)
 // ---------------------------------------------------------------------------
 
-object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
+public object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 

@@ -11,17 +11,17 @@ import co.touchlab.kjwt.serializers.JwkThumbprintSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable(with = JwkSerializer::class)
-sealed class Jwk {
-    abstract val use: String?
-    abstract val keyOps: List<String>?
-    abstract val alg: String?
-    abstract val kid: String?
-    abstract val isPrivate: Boolean
+public sealed class Jwk {
+    public abstract val use: String?
+    public abstract val keyOps: List<String>?
+    public abstract val alg: String?
+    public abstract val kid: String?
+    public abstract val isPrivate: Boolean
 
-    abstract val thumbprint: Thumbprint
+    public abstract val thumbprint: Thumbprint
 
     @Serializable(with = JwkThumbprintSerializer::class)
-    sealed class Thumbprint
+    public sealed class Thumbprint
 
     /**
      * RSA key (kty = "RSA"). Public key requires [n] and [e].
@@ -29,15 +29,15 @@ sealed class Jwk {
      * are optional but required for key conversion to cryptography-kotlin types.
      */
     @Serializable(with = JwkRsaSerializer::class)
-    data class Rsa(
-        val n: String,
-        val e: String,
-        val d: String? = null,
-        val p: String? = null,
-        val q: String? = null,
-        val dp: String? = null,
-        val dq: String? = null,
-        val qi: String? = null,
+    public data class Rsa(
+        public val n: String,
+        public val e: String,
+        public val d: String? = null,
+        public val p: String? = null,
+        public val q: String? = null,
+        public val dp: String? = null,
+        public val dq: String? = null,
+        public val qi: String? = null,
         override val use: String? = null,
         override val keyOps: List<String>? = null,
         override val alg: String? = null,
@@ -50,13 +50,13 @@ sealed class Jwk {
         }
 
         @Serializable(with = JwkRsaThumbprintSerializer::class)
-        data class RSAThumbprint(
-            val e: String,
-            val n: String,
+        public data class RSAThumbprint(
+            public val e: String,
+            public val n: String,
         ) : Thumbprint()
 
-        companion object {
-            const val KTY = "RSA"
+        public companion object {
+            public const val KTY: String = "RSA"
         }
     }
 
@@ -65,11 +65,11 @@ sealed class Jwk {
      * Private key additionally requires [d]. Supported curves: "P-256", "P-384", "P-521".
      */
     @Serializable(with = JwkEcSerializer::class)
-    data class Ec(
-        val crv: String,
-        val x: String,
-        val y: String,
-        val d: String? = null,
+    public data class Ec(
+        public val crv: String,
+        public val x: String,
+        public val y: String,
+        public val d: String? = null,
         override val use: String? = null,
         override val keyOps: List<String>? = null,
         override val alg: String? = null,
@@ -82,14 +82,14 @@ sealed class Jwk {
         }
 
         @Serializable(with = JwkEcThumbprintSerializer::class)
-        data class ECThumbprint(
-            val crv: String,
-            val x: String,
-            val y: String,
+        public data class ECThumbprint(
+            public val crv: String,
+            public val x: String,
+            public val y: String,
         ) : Thumbprint()
 
-        companion object {
-            const val KTY = "EC"
+        public companion object {
+            public const val KTY: String = "EC"
         }
     }
 
@@ -98,8 +98,8 @@ sealed class Jwk {
      * encoded as base64url. Always considered private key material.
      */
     @Serializable(with = JwkOctSerializer::class)
-    data class Oct(
-        val k: String,
+    public data class Oct(
+        public val k: String,
         override val use: String? = null,
         override val keyOps: List<String>? = null,
         override val alg: String? = null,
@@ -112,10 +112,10 @@ sealed class Jwk {
         }
 
         @Serializable(with = JwkOctThumbprintSerializer::class)
-        data class OctThumbprint(val k: String) : Thumbprint()
+        public data class OctThumbprint(val k: String) : Thumbprint()
 
-        companion object {
-            const val KTY = "oct"
+        public companion object {
+            public const val KTY: String = "oct"
         }
     }
 }

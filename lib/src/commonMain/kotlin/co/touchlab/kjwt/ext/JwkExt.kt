@@ -27,7 +27,7 @@ import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPrivateKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPublicKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.SubjectPublicKeyInfo
 
-suspend fun Jwk.Thumbprint.hashed(): String {
+public suspend fun Jwk.Thumbprint.hashed(): String {
     val bytes = JwtJson.encodeToString(this).encodeToByteArray()
     val hash = CryptographyProvider.Default.get(SHA256).hasher().hash(bytes)
     return hash.encodeBase64Url()
@@ -40,7 +40,7 @@ suspend fun Jwk.Thumbprint.hashed(): String {
 /**
  * Converts this [Jwk.Oct] to an [HMAC.Key] for the given [digest].
  */
-suspend fun Jwk.Oct.toHmacKey(digest: CryptographyAlgorithmId<Digest>): HMAC.Key =
+public suspend fun Jwk.Oct.toHmacKey(digest: CryptographyAlgorithmId<Digest>): HMAC.Key =
     CryptographyProvider.Default
         .get(HMAC)
         .keyDecoder(digest)
@@ -103,28 +103,28 @@ private fun Jwk.Rsa.toPkcs8Der(): ByteArray {
 }
 
 /** Converts to [RSA.PKCS1.PublicKey] for RS256/RS384/RS512 verification. */
-suspend fun Jwk.Rsa.toRsaPkcs1PublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.PKCS1.PublicKey =
+public suspend fun Jwk.Rsa.toRsaPkcs1PublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.PKCS1.PublicKey =
     CryptographyProvider.Default
         .get(RSA.PKCS1)
         .publicKeyDecoder(digest)
         .decodeFromByteArray(RSA.PublicKey.Format.DER, toSpkiDer())
 
 /** Converts to [RSA.PKCS1.PrivateKey] for RS256/RS384/RS512 signing. */
-suspend fun Jwk.Rsa.toRsaPkcs1PrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.PKCS1.PrivateKey =
+public suspend fun Jwk.Rsa.toRsaPkcs1PrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.PKCS1.PrivateKey =
     CryptographyProvider.Default
         .get(RSA.PKCS1)
         .privateKeyDecoder(digest)
         .decodeFromByteArray(RSA.PrivateKey.Format.DER, toPkcs8Der())
 
 /** Converts to [RSA.PSS.PublicKey] for PS256/PS384/PS512 verification. */
-suspend fun Jwk.Rsa.toRsaPssPublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.PSS.PublicKey =
+public suspend fun Jwk.Rsa.toRsaPssPublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.PSS.PublicKey =
     CryptographyProvider.Default
         .get(RSA.PSS)
         .publicKeyDecoder(digest)
         .decodeFromByteArray(RSA.PublicKey.Format.DER, toSpkiDer())
 
 /** Converts to [RSA.PSS.PrivateKey] for PS256/PS384/PS512 signing. */
-suspend fun Jwk.Rsa.toRsaPssPrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.PSS.PrivateKey =
+public suspend fun Jwk.Rsa.toRsaPssPrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.PSS.PrivateKey =
     CryptographyProvider.Default
         .get(RSA.PSS)
         .privateKeyDecoder(digest)
@@ -132,7 +132,7 @@ suspend fun Jwk.Rsa.toRsaPssPrivateKey(digest: CryptographyAlgorithmId<Digest>):
 
 /** Converts to [RSA.OAEP.PublicKey] for RSA-OAEP / RSA-OAEP-256 key encryption. */
 @OptIn(dev.whyoleg.cryptography.DelicateCryptographyApi::class)
-suspend fun Jwk.Rsa.toRsaOaepPublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.OAEP.PublicKey =
+public suspend fun Jwk.Rsa.toRsaOaepPublicKey(digest: CryptographyAlgorithmId<Digest>): RSA.OAEP.PublicKey =
     CryptographyProvider.Default
         .get(RSA.OAEP)
         .publicKeyDecoder(digest)
@@ -140,7 +140,7 @@ suspend fun Jwk.Rsa.toRsaOaepPublicKey(digest: CryptographyAlgorithmId<Digest>):
 
 /** Converts to [RSA.OAEP.PrivateKey] for RSA-OAEP / RSA-OAEP-256 key decryption. */
 @OptIn(dev.whyoleg.cryptography.DelicateCryptographyApi::class)
-suspend fun Jwk.Rsa.toRsaOaepPrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.OAEP.PrivateKey =
+public suspend fun Jwk.Rsa.toRsaOaepPrivateKey(digest: CryptographyAlgorithmId<Digest>): RSA.OAEP.PrivateKey =
     CryptographyProvider.Default
         .get(RSA.OAEP)
         .privateKeyDecoder(digest)
@@ -209,14 +209,14 @@ private fun Jwk.Ec.toPkcs8Der(): ByteArray {
 }
 
 /** Converts to [ECDSA.PublicKey] for ES256/ES384/ES512 verification. */
-suspend fun Jwk.Ec.toEcdsaPublicKey(): ECDSA.PublicKey =
+public suspend fun Jwk.Ec.toEcdsaPublicKey(): ECDSA.PublicKey =
     CryptographyProvider.Default
         .get(ECDSA)
         .publicKeyDecoder(ecCurve(crv))
         .decodeFromByteArray(EC.PublicKey.Format.DER, toSpkiDer())
 
 /** Converts to [ECDSA.PrivateKey] for ES256/ES384/ES512 signing. */
-suspend fun Jwk.Ec.toEcdsaPrivateKey(): ECDSA.PrivateKey =
+public suspend fun Jwk.Ec.toEcdsaPrivateKey(): ECDSA.PrivateKey =
     CryptographyProvider.Default
         .get(ECDSA)
         .privateKeyDecoder(ecCurve(crv))
@@ -229,7 +229,7 @@ suspend fun Jwk.Ec.toEcdsaPrivateKey(): ECDSA.PrivateKey =
 /**
  * Returns the SHA digest implied by the JWK's [Jwk.alg] field, or null if absent/unrecognised.
  */
-fun Jwk.impliedDigest(): CryptographyAlgorithmId<Digest>? = when (alg) {
+public fun Jwk.impliedDigest(): CryptographyAlgorithmId<Digest>? = when (alg) {
     "HS256", "RS256", "PS256", "ES256", "RSA-OAEP-256" -> SHA256
     "HS384", "RS384", "PS384", "ES384" -> SHA384
     "HS512", "RS512", "PS512", "ES512" -> SHA512

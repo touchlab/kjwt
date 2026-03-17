@@ -17,7 +17,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @Serializable(with = JwtPayloadSerializer::class)
-class JwtPayload internal constructor(
+public class JwtPayload internal constructor(
     internal val base64Encoded: String,
     @PublishedApi internal val jsonData: JsonObject,
 ) {
@@ -35,13 +35,13 @@ class JwtPayload internal constructor(
         )
     )
 
-    fun hasClaim(name: String): Boolean =
+    public fun hasClaim(name: String): Boolean =
         jsonData.containsKey(name)
 
-    fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
+    public fun <T> getClaim(serializer: DeserializationStrategy<T>, name: String): T =
         getClaimOrNull(serializer, name) ?: throw NullPointerException(name)
 
-    fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
+    public fun <T> getClaimOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
         val element = jsonData[name] ?: return null
         return JwtJson.decodeFromJsonElement(serializer, element)
     }
@@ -59,20 +59,23 @@ class JwtPayload internal constructor(
 
     override fun toString(): String = base64Encoded
 
-    class Builder {
-        var issuer: String? = null
+    public class Builder {
+        @PublishedApi
+        internal val content: MutableMap<String, JsonElement> = mutableMapOf()
+
+        public var issuer: String? = null
             set(value) {
                 field = value
                 claim(ISS, value)
             }
 
-        var subject: String? = null
+        public var subject: String? = null
             set(value) {
                 field = value
                 claim(SUB, value)
             }
 
-        var audience: Set<String>? = null
+        public var audience: Set<String>? = null
             set(value) {
                 field = value
                 if (value != null && value.size == 1) {
@@ -82,34 +85,31 @@ class JwtPayload internal constructor(
                 }
             }
 
-        var expiration: Instant? = null
+        public var expiration: Instant? = null
             set(value) {
                 field = value
                 claim(EXP, InstantEpochSecondsSerializer, value)
             }
 
-        var notBefore: Instant? = null
+        public var notBefore: Instant? = null
             set(value) {
                 field = value
                 claim(NBF, InstantEpochSecondsSerializer, value)
             }
 
-        var issuedAt: Instant? = null
+        public var issuedAt: Instant? = null
             set(value) {
                 field = value
                 claim(IAT, InstantEpochSecondsSerializer, value)
             }
 
-        var id: String? = null
+        public var id: String? = null
             set(value) {
                 field = value
                 claim(JTI, value)
             }
 
-        @PublishedApi
-        internal val content: MutableMap<String, JsonElement> = mutableMapOf()
-
-        fun claim(name: String, value: JsonElement?) {
+        public fun claim(name: String, value: JsonElement?) {
             if (value != null) {
                 content[name] = value
             } else {
@@ -117,41 +117,41 @@ class JwtPayload internal constructor(
             }
         }
 
-        fun <T> claim(name: String, serializer: SerializationStrategy<T>, value: T?) {
+        public fun <T> claim(name: String, serializer: SerializationStrategy<T>, value: T?) {
             claim(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
         }
 
-        inline fun <reified T> claim(name: String, value: T) {
+        public inline fun <reified T> claim(name: String, value: T) {
             claim(name, kotlinx.serialization.serializer<T>(), value)
         }
 
-        fun expiresIn(duration: Duration) {
+        public fun expiresIn(duration: Duration) {
             expiration = Clock.System.now() + duration
         }
 
-        fun notBeforeNow() {
+        public fun notBeforeNow() {
             notBefore = Clock.System.now()
         }
 
-        fun issuedNow() {
+        public fun issuedNow() {
             issuedAt = Clock.System.now()
         }
 
         @ExperimentalUuidApi
-        fun randomId() {
+        public fun randomId() {
             id = Uuid.random().toString()
         }
 
         internal fun build() = JwtPayload(JsonObject(content))
     }
 
-    companion object {
-        const val ISS = "iss"
-        const val SUB = "sub"
-        const val AUD = "aud"
-        const val EXP = "exp"
-        const val NBF = "nbf"
-        const val IAT = "iat"
-        const val JTI = "jti"
+    public companion object {
+        public const val ISS: String = "iss"
+        public const val SUB: String = "sub"
+        public const val AUD: String = "aud"
+        public const val EXP: String = "exp"
+        public const val NBF: String = "nbf"
+        public const val IAT: String = "iat"
+        public const val JTI: String = "jti"
     }
 }

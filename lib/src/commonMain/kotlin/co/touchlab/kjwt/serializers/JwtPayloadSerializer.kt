@@ -7,7 +7,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonObject
 
-object JwtPayloadSerializer : KSerializer<JwtPayload> {
+public object JwtPayloadSerializer : KSerializer<JwtPayload> {
     private val delegate = JsonObject.serializer()
     override val descriptor: SerialDescriptor = delegate.descriptor
 

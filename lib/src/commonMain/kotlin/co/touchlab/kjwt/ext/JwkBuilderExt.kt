@@ -11,28 +11,28 @@ import co.touchlab.kjwt.model.jwk.Jwk
 // signWith — HMAC (oct)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.HashBased, jwk: Jwk.Oct): JwtInstance.Jws =
+public suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.HashBased, jwk: Jwk.Oct): JwtInstance.Jws =
     signWith(algorithm, jwk.toHmacKey(algorithm.digest))
 
 // ---------------------------------------------------------------------------
 // signWith — RSA PKCS1 (RS*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.PKCS1Based, jwk: Jwk.Rsa): JwtInstance.Jws =
+public suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.PKCS1Based, jwk: Jwk.Rsa): JwtInstance.Jws =
     signWith(algorithm, jwk.toRsaPkcs1PrivateKey(algorithm.digest))
 
 // ---------------------------------------------------------------------------
 // signWith — RSA PSS (PS*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.PSSBased, jwk: Jwk.Rsa): JwtInstance.Jws =
+public suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.PSSBased, jwk: Jwk.Rsa): JwtInstance.Jws =
     signWith(algorithm, jwk.toRsaPssPrivateKey(algorithm.digest))
 
 // ---------------------------------------------------------------------------
 // signWith — ECDSA (ES*)
 // ---------------------------------------------------------------------------
 
-suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk.Ec): JwtInstance.Jws =
+public suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk.Ec): JwtInstance.Jws =
     signWith(algorithm, jwk.toEcdsaPrivateKey())
 
 // ---------------------------------------------------------------------------
@@ -40,7 +40,7 @@ suspend fun JwtBuilder.signWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk
 // ---------------------------------------------------------------------------
 
 @OptIn(dev.whyoleg.cryptography.DelicateCryptographyApi::class)
-suspend fun JwtBuilder.encryptWith(
+public suspend fun JwtBuilder.encryptWith(
     jwk: Jwk.Rsa,
     keyAlgorithm: EncryptionAlgorithm.OAEPBased,
     contentAlgorithm: EncryptionContentAlgorithm,

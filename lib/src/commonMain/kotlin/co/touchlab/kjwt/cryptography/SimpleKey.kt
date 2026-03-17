@@ -4,8 +4,8 @@ import dev.whyoleg.cryptography.CryptographyProviderApi
 import dev.whyoleg.cryptography.materials.key.Key
 
 @OptIn(CryptographyProviderApi::class)
-class SimpleKey(val value: ByteArray) : Key {
-    companion object {
-        val Empty = SimpleKey(ByteArray(0))
+public class SimpleKey(public val value: ByteArray) : Key {
+    public companion object {
+        public val Empty: SimpleKey = SimpleKey(ByteArray(0))
     }
 }

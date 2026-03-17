@@ -20,7 +20,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 @Serializable(with = JwtHeaderSerializer::class)
-class JwtHeader internal constructor(
+public class JwtHeader internal constructor(
     internal val base64Encoded: String,
     internal val jsonData: JsonObject,
 ) {
@@ -38,16 +38,16 @@ class JwtHeader internal constructor(
         )
     )
 
-    val algorithm: String =
+    public val algorithm: String =
         getHeaderOrNull(String.serializer(), ALG) ?: throw MissingHeaderException(ALG)
 
-    fun hasHeader(name: String): Boolean =
+    public fun hasHeader(name: String): Boolean =
         jsonData.containsKey(name)
 
-    fun <T> getHeader(serializer: DeserializationStrategy<T>, name: String): T =
+    public fun <T> getHeader(serializer: DeserializationStrategy<T>, name: String): T =
         getHeaderOrNull(serializer, name) ?: throw NullPointerException("Header '$name' not found")
 
-    fun <T> getHeaderOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
+    public fun <T> getHeaderOrNull(serializer: DeserializationStrategy<T>, name: String): T? {
         val element = jsonData[name] ?: return null
         return JwtJson.decodeFromJsonElement(serializer, element)
     }
@@ -65,30 +65,30 @@ class JwtHeader internal constructor(
 
     override fun toString(): String = base64Encoded
 
-    class Builder {
-        var type: String? = "JWT"
+    public class Builder {
+        private val content: MutableMap<String, JsonElement> = mutableMapOf(
+            TYP to JsonPrimitive("JWT")
+        )
+
+        public var type: String? = "JWT"
             set(value) {
                 field = value
                 extra(TYP, value)
             }
 
-        var contentType: String? = null
+        public var contentType: String? = null
             set(value) {
                 field = value
                 extra(CTY, value)
             }
 
-        var keyId: String? = null
+        public var keyId: String? = null
             set(value) {
                 field = value
                 extra(KID, value)
             }
 
-        private val content: MutableMap<String, JsonElement> = mutableMapOf(
-            TYP to JsonPrimitive("JWT")
-        )
-
-        fun extra(name: String, value: JsonElement?) {
+        public fun extra(name: String, value: JsonElement?) {
             if (value == null) {
                 content.remove(name)
             } else {
@@ -96,11 +96,11 @@ class JwtHeader internal constructor(
             }
         }
 
-        fun <T> extra(name: String, serializer: SerializationStrategy<T>, value: T?) {
+        public fun <T> extra(name: String, serializer: SerializationStrategy<T>, value: T?) {
             extra(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
         }
 
-        inline fun <reified T> extra(name: String, value: T) {
+        public inline fun <reified T> extra(name: String, value: T) {
             extra(name, kotlinx.serialization.serializer<T>(), value)
         }
 
@@ -126,11 +126,11 @@ class JwtHeader internal constructor(
         }
     }
 
-    companion object {
-        const val ALG = "alg"
-        const val ENC = "enc"
-        const val TYP = "typ"
-        const val CTY = "cty"
-        const val KID = "kid"
+    public companion object {
+        public const val ALG: String = "alg"
+        public const val ENC: String = "enc"
+        public const val TYP: String = "typ"
+        public const val CTY: String = "cty"
+        public const val KID: String = "kid"
     }
 }
