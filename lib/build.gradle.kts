@@ -1,9 +1,9 @@
-//import helpers.allTargets
-
 plugins {
     id("kjwt.multiplatform-library")
     alias(libs.plugins.kotlin.serialization)
 }
+
+description = "Kotlin Multiplaftorm JWT"
 
 kotlin {
     sourceSets {

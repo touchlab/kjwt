@@ -7,6 +7,7 @@ plugins {
     id("io.kotest")
     id("kjwt.linting")
     id("kjwt.dokka")
+    id("kjwt.publish")
     `maven-publish`
 }
 

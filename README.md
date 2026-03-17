@@ -1,5 +1,8 @@
 # KJWT
 
+[![Maven Central](https://img.shields.io/maven-central/v/co.touchlab/kjwt?label=Maven%20Central)](https://search.maven.org/artifact/co.touchlab/kjwt)
+![Maven Central (Snapshots)](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fco%2Ftouchlab%2Fkjwt%2Fmaven-metadata.xml&label=Snapshot)
+
 Kotlin Multiplatform library implementing JWT ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)).
 
 ## Features
@@ -57,6 +60,27 @@ dependencies {
     // Include the provider you want to use from Cryptography Kotlin
     // For more details, see https://whyoleg.github.io/cryptography-kotlin/providers/
     implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:<cryptography-kotlin-version>")
+}
+```
+
+### Snapshot builds
+
+Every merge to `main` is automatically published to the Maven snapshot repository. To use a snapshot version, add the
+repository and use the `-SNAPSHOT` suffix:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven("https://central.sonatype.com/repository/maven-snapshots")
+    }
+}
+```
+
+```kotlin
+// build.gradle.kts
+dependencies {
+    implementation("co.touchlab:kjwt:<kjwt-version>-SNAPSHOT")
 }
 ```
 

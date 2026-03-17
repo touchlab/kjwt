@@ -10,8 +10,3 @@ plugins {
     id("kjwt.linting")
     id("kjwt.dokka")
 }
-
-allprojects {
-    group = Projects.group
-    version = Projects.version
-}

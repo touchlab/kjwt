@@ -9,4 +9,5 @@ dependencies {
     implementation(libs.detekt.plugin)
     implementation(libs.dokka.plugin)
     implementation(libs.dokka.plugin.versioning)
+    implementation(libs.mavenPublish.plugin)
 }
