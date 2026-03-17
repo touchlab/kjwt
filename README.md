@@ -1,11 +1,10 @@
 # KJWT
 
-[![Tests](https://github.com/touchlab/kjwt/actions/workflows/tests.yml/badge.svg?event=push)](https://github.com/touchlab/kjwt/actions/workflows/tests.yml)
-[![Detekt Checks](https://github.com/touchlab/kjwt/actions/workflows/detekt.yml/badge.svg)](https://github.com/touchlab/kjwt/actions/workflows/detekt.yml)
-
-
 [![Maven Central](https://img.shields.io/maven-central/v/co.touchlab/kjwt?label=Maven%20Central)](https://search.maven.org/artifact/co.touchlab/kjwt)
 ![Maven Central (Snapshots)](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fco%2Ftouchlab%2Fkjwt%2Fmaven-metadata.xml&label=Snapshot)
+![Dynamic TOML Badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftouchlab%2Fkjwt%2Frefs%2Fheads%2Fmain%2Fgradle%2Flibs.versions.toml&query=%24.versions.kotlin&logo=kotlin&logoColor=%23dedede&label=Kotlin%20Version&color=%237f52ff)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/touchlab/kjwt/tests.yml?logo=github&label=Tests)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/touchlab/kjwt/detekt.yml?logo=github&label=Detekt)
 
 A JSON Web Token (JWT) is a compact, URL-safe standard for representing data to be transferred between two parties. The
 data within a JWT - referred to as claims - is encoded as a JSON object that serves as the payload for either a JSON Web
