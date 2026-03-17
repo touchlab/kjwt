@@ -46,6 +46,8 @@
         <div class="library-version" id="library-version">
 <dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;index.html&quot;}">0.1.0</dokka-template-command>        </div>
         <div class="navigation-controls">
+                <a class="navigation-controls--btn navigation-controls--btn_homepage" id="homepage-link"
+                   href="https://github.com/touchlab/kjwt"></a>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
                     type="button">Switch theme
             </button>
@@ -78,6 +80,180 @@
 <div class="main-content" id="content" pageIds="kotlin-jwt::.ext/allModules///PointingToDeclaration//0">
   <div class="breadcrumbs"></div>
   <div class="cover ">
+    <div class="cover ">
+      <h1 class="">KJWT</h1>
+      <p class="paragraph"><a href="https://search.maven.org/artifact/co.touchlab/kjwt"></a> </p>
+      <p class="paragraph">Kotlin Multiplatform library implementing JWT (<a href="https://datatracker.ietf.org/doc/html/rfc7519">RFC 7519</a>).</p>
+      <h2 class="">Features</h2>
+      <div class="table--container">
+        <table>
+          <thead>
+            <tr>
+              <th>Operations</th>
+              <th>Signing Algorithms</th>
+              <th>Encryption Algorithms</th>
+              <th>Platforms</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>✅ Sign</td>
+              <td>✅ HS256</td>
+              <td>✅ RSA-OAEP <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ JVM (incl. Android)</td>
+            </tr>
+            <tr>
+              <td>✅ Verify</td>
+              <td>✅ HS384</td>
+              <td>✅ RSA-OAEP-256 <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ JS (node + browser)⁴</td>
+            </tr>
+            <tr>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">iss</code> check¹</td>
+              <td>✅ HS512</td>
+              <td>✅ dir <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ wasmJs (node + browser)⁴</td>
+            </tr>
+            <tr>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">sub</code> check¹</td>
+              <td>✅ RS256</td>
+              <td>❌ A128KW <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>❌ wasmWasi⁵</td>
+            </tr>
+            <tr>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">aud</code> check¹</td>
+              <td>✅ RS384</td>
+              <td>❌ A192KW <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ iOS (arm64, x64, simulatorArm64)⁶</td>
+            </tr>
+            <tr>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">exp</code> check</td>
+              <td>✅ RS512</td>
+              <td>❌ A256KW <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ macOS (x64, arm64)⁶</td>
+            </tr>
+            <tr>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">nbf</code> check</td>
+              <td>✅ ES256</td>
+              <td>❌ ECDH-ES <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(alg)</code></td>
+              <td>✅ watchOS (x64, arm32, arm64, sim, device)⁶</td>
+            </tr>
+            <tr>
+              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">iat</code> check²</td>
+              <td>❌ ES256K</td>
+              <td>✅ A128GCM <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code></td>
+              <td>✅ tvOS (x64, arm64, sim)⁶</td>
+            </tr>
+            <tr>
+              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">jti</code> check²</td>
+              <td>✅ ES384</td>
+              <td>⚠️ A192GCM <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code>⁴</td>
+              <td>✅ Linux (x64, arm64)</td>
+            </tr>
+            <tr>
+              <td>❌ <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">typ</code> check</td>
+              <td>✅ ES512</td>
+              <td>✅ A256GCM <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code></td>
+              <td>✅ Windows/MinGW (x64)</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>✅ PS256³</td>
+              <td>✅ A128CBC-HS256 <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code></td>
+              <td>✅ Android Native (x64, x86, arm64, arm32)</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>✅ PS384³</td>
+              <td>⚠️ A192CBC-HS384 <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code>⁴</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>✅ PS512³</td>
+              <td>✅ A256CBC-HS512 <code class="org.jetbrains.dokka.pages.commenttable@73a25e36 lang-kotlin">(enc)</code></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>❌ EdDSA</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <blockquote class="quotation">
+        <p class="paragraph">¹ Opt-in: call <code class="lang-kotlin">requireIssuer()</code> / <code class="lang-kotlin">requireSubject()</code> / <code class="lang-kotlin">requireAudience()</code> on the parser builder. A missing claim throws <code class="lang-kotlin">MissingClaimException</code>; a mismatched value throws <code class="lang-kotlin">IncorrectClaimException</code>.</p>
+        <p class="paragraph">² Accessible via <code class="lang-kotlin">payload.issuedAtOrNull</code> / <code class="lang-kotlin">payload.jwtIdOrNull</code> but not automatically validated. Use the generic <code class="lang-kotlin">requireClaim()</code> for custom validation.</p>
+        <p class="paragraph">³ PS256 / PS384 / PS512 are not supported by Android's default JDK security provider. Register BouncyCastle as the security provider to enable them. Android Native targets use OpenSSL3 and are unaffected.</p>
+        <p class="paragraph">⁴ JS and wasmJs use WebCrypto, which does not support 192-bit AES keys. <code class="lang-kotlin">A192GCM</code> and <code class="lang-kotlin">A192CBC-HS384</code> are unavailable on these platforms.</p>
+        <p class="paragraph">⁵ wasmWasi has no <code class="lang-kotlin">cryptography-kotlin</code> provider. The library compiles for this target but all cryptographic operations throw at runtime.</p>
+        <p class="paragraph">⁶ Apple targets (iOS, macOS, watchOS, tvOS): use <code class="lang-kotlin">cryptography-provider-optimal</code> for full algorithm support (CryptoKit for AES-GCM; Apple/CommonCrypto for AES-CBC+HMAC and RSA). <code class="lang-kotlin">cryptography-provider-openssl3-prebuilt</code> also supports all algorithms and is a good choice when a single consistent provider is needed across Apple, Linux, and Android Native. With only <code class="lang-kotlin">cryptography-provider-cryptokit</code>, RSA and AES-CBC algorithms are unavailable. With only <code class="lang-kotlin">cryptography-provider-apple</code>, AES-GCM algorithms are unavailable.</p>
+      </blockquote>
+
+      <h2 class="">Setup</h2>
+      <p class="paragraph">Add the library to your project and register a cryptography provider. The <code class="lang-kotlin">cryptography-provider-optimal</code> artifact auto-registers on startup and is the recommended choice:</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation(&quot;co.touchlab:kjwt:&lt;kjwt-version&gt;&quot;)<br><br>    // Include the provider you want to use from Cryptography Kotlin<br>    // For more details, see https://whyoleg.github.io/cryptography-kotlin/providers/<br>    implementation(&quot;dev.whyoleg.cryptography:cryptography-provider-optimal:&lt;cryptography-kotlin-version&gt;&quot;)<br>}</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <h3 class="">Snapshot builds</h3>
+      <p class="paragraph">Every merge to <code class="lang-kotlin">main</code> is automatically published to the Maven snapshot repository. To use a snapshot version, add the repository and use the <code class="lang-kotlin">-SNAPSHOT</code> suffix:</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">// settings.gradle.kts<br>dependencyResolutionManagement {<br>    repositories {<br>        maven(&quot;https://central.sonatype.com/repository/maven-snapshots&quot;)<br>    }<br>}</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation(&quot;co.touchlab:kjwt:&lt;kjwt-version&gt;-SNAPSHOT&quot;)<br>}</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <h2 class="">Why another library?</h2>
+      <p class="paragraph"><a href="https://a-sit-plus.github.io/signum/">Signum</a> is a community KMP library that aims to support many cryptographic operations, such as JWT Operations. Their library is more feature-rich and supports many algorithms. However, it has a requirement of SDK 30+ for Android projects. This limitation is needed as they support hardware backed operations that have such requirement.</p>
+      <p class="paragraph">On the other hand, <a href="https://whyoleg.github.io/cryptography-kotlin/">Cryptography Kotlin</a> is another community library with a much narrow scope. It supports a wide range of platforms and algorithms, but its goal is to provide access to the cryptographic APIs, and not to implement any specific protocol on top of it.</p>
+      <p class="paragraph">Our proposal is to support JWT on top of the cryptographic library. We aim to provide an easy-to-migrate API for Kotlin/Java only applications that are using JJWT for this purpose, supporting the main KMP platforms available. As of now, the library is compliant with Jws and Jwe specifications.</p>
+      <h2 class="">Usage</h2>
+      <p class="paragraph">All actions were designed to be chainable, and start from the <code class="lang-kotlin">Jwt</code> (<code class="lang-kotlin">import co.touchlab.kjwt.Jwt</code>) object. It the entrypoint for most JWT operations. In that object, you will find methods to <code class="lang-kotlin">build</code> and <code class="lang-kotlin">parse</code> JWTs.</p>
+      <h3 class="">Building a JWT</h3>
+      <p class="paragraph">The most common usage of JWTs is to generate signed tokens. You can achieve this by using the <code class="lang-kotlin">.signWith(...)</code> method when building a JWT.</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">val token: JwtInstance = Jwt.builder()<br>    .subject(&quot;1234567890&quot;)<br>    .signWith(JwsAlgorithm.HS256, hmacKey)</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <p class="paragraph">The result of the operation is a <code class="lang-kotlin">JwtInstance</code> object. That object is a Kotlin representation of the JWT. You can use it to access the defined claims and headers, as well as generate the famous compact version of the JWT.</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">val token: JwtInstance = // build the token as shown above<br>val serialized: String = token.compact()<br>// This call will generate the string version of the JWT, in the compact format<br>// Note: the compact format is the one split by the dots, with the header, payload and signature encoded in Base64URL<br>// format. It will look like this:<br>// &lt;header&gt;.&lt;payload&gt;.&lt;signature&gt; 👈This is the compact format template 👇And this a real example<br>// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.yaquqtp1qJ9uDVaWMdRtujneuFqIBkImorBu9hdLVl4</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <h3 class="">Parsing a JWT</h3>
+      <p class="paragraph">Another common usage of JWTs is to verify the authenticity of a token. If you are a backend application, you need to ensure that the user hasn't modified the token on their side. That is achieved by verifying the signature of the token.</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">val compactToken: String = // <br><br>val jwtParser = Jwt.parser()<br>    .verifyWith(JwsAlgorithm.HS256, hmacKey)<br>    .build()<br><br>val parsedToken = jwtParser.parse(compactToken)</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <p class="paragraph">Note that if the content was changed on the client side, the signature will be invalid and the parsing will throw an exception. If the parse succeeds, the token is valid and ready to be used.</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">// Use content from the JWT:<br>val subject = jws.payload.subjectOrNull</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <h3 class="">Keys</h3>
+      <p class="paragraph">As you probably noticed, we skipped the keys part in the previous examples. The main reason for that, is that we do not implement any cryptographic operations. Instead, we rely on the <a href="https://github.com/whyoleg/cryptography-kotlin">Cryptography Kotlin</a> library. It's an amazing and robust library that provides a wide range of cryptographic operations, and providers for most of the Kotlin Multiplatform targets.</p>
+      <p class="paragraph">To generate the <code class="lang-kotlin">hmacKey</code> we used in the previous examples, you can use the following code:</p>
+      <div class="sample-container">
+        <pre><code class="block lang-kotlin" theme="idea">val myKeyString = &quot;a-string-secret-at-least-256-bits-long&quot;<br>    .encodeToByteArray() // Convert the string into byte array to perform the crypto operations <br><br>val hmacKey =<br>    CryptographyProvider.Default // Get the provider you use for your project. CryptographyProvider.Default most common <br>        .get(HMAC) // Get the HMAC algorithm<br>        .keyDecoder(SHA256) // Use the correct digest for your operation. For HS256. For HS384 use SHA384, etc..<br>        .decodeFromByteArray(HMAC.Key.Format.RAW, myKeyString) // Decode your key bytes into a HMAC key<br><br>// Then you can use the HMAC key to sign or verify tokens<br>val token: JwtInstance = Jwt.builder()<br>    .subject(&quot;1234567890&quot;)<br>    .signWith(JwsAlgorithm.HS256, hmacKey)<br><br>val jwtParser = Jwt.parser()<br>    .verifyWith(JwsAlgorithm.HS256, hmacKey)<br>    .build()</code></pre>
+<span class="copy-tooltip">
+          <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
+<span class="copy-icon"></span></span></div>
+      <h3 class="">More features</h3>
+      <p class="paragraph">For a more detailed list of features, check out the usage documentation available at the docs/USAGE.md.</p>
+    </div>
     <h2 class="">All modules:</h2>
     <div class="table"><a data-name="-1180503207%2FMain%2F0" anchor-label="kjwt" id="-1180503207%2FMain%2F0" data-filterable-set=""></a>
       <div class="table-row table-row_multimodule">
@@ -102,7 +278,7 @@
                     <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
                         Dokka
                     </a>
-                    <div>© 2026 Copyright</div>
+                    <div>© 2026 Touchlab</div>
                 </div>
             </div>
         </div>
