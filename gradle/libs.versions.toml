@@ -1,8 +1,7 @@
 [versions]
-kotlin = "2.3.20"
-kotlinxSerializationJson = "1.10.0"
+kotlin = "2.2.21"
+kotlinxSerializationJson = "1.9.0"
 kotlinxCoroutines = "1.10.2"
-kotlinxCoroutinesTest = "1.10.2"
 cryptography = "0.5.0"
 kotest = "6.1.6"
 ksp = "2.3.6"
@@ -19,7 +18,7 @@ cryptography-provider-optimal = { module = "dev.whyoleg.cryptography:cryptograph
 cryptography-provider-web = { module = "dev.whyoleg.cryptography:cryptography-provider-webcrypto", version.ref = "cryptography" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson"}
 
 kotest-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version.ref = "kotest" }
