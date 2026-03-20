@@ -52,8 +52,6 @@ private fun KotlinMultiplatformExtension.configureJSTests() {
                     enabled = false
                 }
             }
-
-            return@configureEach
         }
 
         whenBrowserConfigured {
