@@ -5,6 +5,7 @@ package co.touchlab.kjwt
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
+import co.touchlab.kjwt.model.registry.EncryptionKey
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -15,14 +16,14 @@ class JweEncodeTest : FunSpec({
     context("Dir + GCM round-trips") {
 
         test("encrypt Dir A128GCM round trip") {
-            val cek = aesSimpleKey(128)
+            val encKey = dirEncKey(128)
             val token = Jwt.builder()
                 .subject("a128gcm-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A128GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A128GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -30,14 +31,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt Dir A192GCM round trip").config(enabled = !isWebBrowserPlatform()) {
-            val cek = aesSimpleKey(192)
+            val encKey = dirEncKey(192)
             val token = Jwt.builder()
                 .subject("a192gcm-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A192GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A192GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -45,14 +46,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt Dir A256GCM round trip") {
-            val cek = aesSimpleKey(256)
+            val encKey = dirEncKey(256)
             val token = Jwt.builder()
                 .subject("a256gcm-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -63,14 +64,14 @@ class JweEncodeTest : FunSpec({
     context("Dir + CBC-HMAC round-trips") {
 
         test("encrypt Dir A128CbcHs256 round trip") {
-            val cek = aesSimpleKey(256) // 32 bytes: 16 MAC + 16 ENC
+            val encKey = dirEncKey(256) // 32 bytes: 16 MAC + 16 ENC
             val token = Jwt.builder()
                 .subject("a128cbc-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A128CbcHs256)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A128CbcHs256)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -78,14 +79,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt Dir A192CbcHs384 round trip").config(enabled = !isWebBrowserPlatform()) {
-            val cek = aesSimpleKey(384) // 48 bytes: 24 MAC + 24 ENC
+            val encKey = dirEncKey(384) // 48 bytes: 24 MAC + 24 ENC
             val token = Jwt.builder()
                 .subject("a192cbc-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A192CbcHs384)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A192CbcHs384)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -93,14 +94,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt Dir A256CbcHs512 round trip") {
-            val cek = aesSimpleKey(512) // 64 bytes: 32 MAC + 32 ENC
+            val encKey = dirEncKey(512) // 64 bytes: 32 MAC + 32 ENC
             val token = Jwt.builder()
                 .subject("a256cbc-user")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256CbcHs512)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256CbcHs512)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -111,14 +112,14 @@ class JweEncodeTest : FunSpec({
     context("RSA-OAEP (SHA-1) round-trips") {
 
         test("encrypt RsaOaep A128GCM round trip") {
-            val keyPair = rsaOaepKeyPair()
+            val encKey = rsaOaepEncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep-a128gcm")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep, EncryptionContentAlgorithm.A128GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A128GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -126,14 +127,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt RsaOaep A256GCM round trip") {
-            val keyPair = rsaOaepKeyPair()
+            val encKey = rsaOaepEncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep-a256gcm")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep, EncryptionContentAlgorithm.A256GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -141,14 +142,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt RsaOaep A256CbcHs512 round trip") {
-            val keyPair = rsaOaepKeyPair()
+            val encKey = rsaOaepEncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep-cbc512")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep, EncryptionContentAlgorithm.A256CbcHs512)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256CbcHs512)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -159,14 +160,14 @@ class JweEncodeTest : FunSpec({
     context("RSA-OAEP-256 (SHA-256) round-trips") {
 
         test("encrypt RsaOaep256 A128GCM round trip") {
-            val keyPair = rsaOaep256KeyPair()
+            val encKey = rsaOaep256EncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep256-a128gcm")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep256, EncryptionContentAlgorithm.A128GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A128GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep256, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -174,14 +175,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt RsaOaep256 A256GCM round trip") {
-            val keyPair = rsaOaep256KeyPair()
+            val encKey = rsaOaep256EncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep256-a256gcm")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep256, EncryptionContentAlgorithm.A256GCM)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256GCM)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep256, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -189,14 +190,14 @@ class JweEncodeTest : FunSpec({
         }
 
         test("encrypt RsaOaep256 A256CbcHs512 round trip") {
-            val keyPair = rsaOaep256KeyPair()
+            val encKey = rsaOaep256EncKey()
             val token = Jwt.builder()
                 .subject("rsa-oaep256-cbc512")
-                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep256, EncryptionContentAlgorithm.A256CbcHs512)
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256CbcHs512)
                 .compact()
 
             val jwe = Jwt.parser()
-                .decryptWith(EncryptionAlgorithm.RsaOaep256, keyPair.privateKey)
+                .decryptWith(encKey)
                 .build()
                 .parseEncrypted(token)
 
@@ -276,13 +277,43 @@ class JweEncodeTest : FunSpec({
         test("encrypt Dir A256GCM with kid") {
             val cek = aesSimpleKey(256)
             val token = Jwt.builder()
-                .keyId("enc-key-id")
                 .subject("test")
-                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM, "enc-key-id")
                 .compact()
 
             val headerJson = decodeTokenHeader(token)
             assertTrue(headerJson.contains("\"kid\":\"enc-key-id\""), "Header must contain kid, got: $headerJson")
+        }
+
+        test("encrypt RsaOaep A256GCM with kid") {
+            val keyPair = rsaOaepKeyPair()
+            val token = Jwt.builder()
+                .subject("test")
+                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep, EncryptionContentAlgorithm.A256GCM, "rsa-enc-key-id")
+                .compact()
+
+            val headerJson = decodeTokenHeader(token)
+            assertTrue(headerJson.contains("\"kid\":\"rsa-enc-key-id\""), "Header must contain kid, got: $headerJson")
+        }
+    }
+
+    context("key capability checks") {
+
+        test("encryptWith EncryptionOnlyKey succeeds") {
+            val encKey = rsaOaepEncKey()
+            val encryptionOnlyKey = EncryptionKey.EncryptionOnlyKey(encKey.identifier, encKey.publicKey)
+
+            Jwt.builder()
+                .subject("test")
+                .encryptWith(encryptionOnlyKey, EncryptionContentAlgorithm.A256GCM)
+        }
+
+        test("encryptWith EncryptionKeyPair succeeds") {
+            val encKey = rsaOaepEncKey()
+
+            Jwt.builder()
+                .subject("test")
+                .encryptWith(encKey, EncryptionContentAlgorithm.A256GCM)
         }
     }
 
@@ -300,6 +331,39 @@ class JweEncodeTest : FunSpec({
                 .compact()
 
             assertNotEquals(t1, t2, "Each JWE encryption call must produce a unique token (random IV)")
+        }
+    }
+
+    context("raw key API (backward compat)") {
+
+        test("encryptWith and decryptWith raw Dir key") {
+            val cek = aesSimpleKey(256)
+            val token = Jwt.builder()
+                .subject("dir-compat")
+                .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                .compact()
+
+            val jwe = Jwt.parser()
+                .decryptWith(EncryptionAlgorithm.Dir, cek)
+                .build()
+                .parseEncrypted(token)
+
+            assertEquals("dir-compat", jwe.payload.subjectOrNull)
+        }
+
+        test("encryptWith and decryptWith raw RSA OAEP key pair") {
+            val keyPair = rsaOaepKeyPair()
+            val token = Jwt.builder()
+                .subject("rsa-oaep-compat")
+                .encryptWith(keyPair.publicKey, EncryptionAlgorithm.RsaOaep, EncryptionContentAlgorithm.A256GCM)
+                .compact()
+
+            val jwe = Jwt.parser()
+                .decryptWith(EncryptionAlgorithm.RsaOaep, keyPair.privateKey)
+                .build()
+                .parseEncrypted(token)
+
+            assertEquals("rsa-oaep-compat", jwe.payload.subjectOrNull)
         }
     }
 })

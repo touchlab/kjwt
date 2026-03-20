@@ -6,7 +6,6 @@ import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.exception.PrematureJwtException
 import co.touchlab.kjwt.ext.expirationOrNull
 import co.touchlab.kjwt.ext.subjectOrNull
-import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -20,31 +19,31 @@ class ClaimsValidationTest : FunSpec({
     context("expiration") {
 
         test("parse expired token throws ExpiredJwtException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .expiration(Clock.System.now() - 1.hours) // expired 1 hour ago
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<ExpiredJwtException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .build()
                     .parseSigned(token)
             }
         }
 
         test("parse expired token contains claims in exception") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .subject("expired-user")
                 .expiration(Clock.System.now() - 1.hours)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<ExpiredJwtException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .build()
                     .parseSigned(token)
             }
@@ -55,32 +54,32 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("parse expired token within clock skew passes") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             // Expired 30 seconds ago
             val token = Jwt.builder()
                 .expiration(Clock.System.now() - 30.seconds)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // With 60-second skew, should pass
             Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .clockSkew(60L)
                 .build()
                 .parseSigned(token) // should not throw
         }
 
         test("parse expired token outside clock skew throws") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             // Expired 120 seconds ago
             val token = Jwt.builder()
                 .expiration(Clock.System.now() - 120.seconds)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<ExpiredJwtException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .clockSkew(60L) // skew of 60s is not enough for 120s expired
                     .build()
                     .parseSigned(token)
@@ -91,47 +90,47 @@ class ClaimsValidationTest : FunSpec({
     context("not before") {
 
         test("parse premature token throws PrematureJwtException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .notBefore(Clock.System.now() + 1.hours) // not valid for another hour
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<PrematureJwtException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .build()
                     .parseSigned(token)
             }
         }
 
         test("parse premature token within clock skew passes") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             // Not valid for another 30 seconds
             val token = Jwt.builder()
                 .notBefore(Clock.System.now() + 30.seconds)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // With 60-second skew, should pass
             Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .clockSkew(60L)
                 .build()
                 .parseSigned(token) // should not throw
         }
 
         test("parse premature token outside clock skew throws") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             // Not valid for another 120 seconds
             val token = Jwt.builder()
                 .notBefore(Clock.System.now() + 120.seconds)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<PrematureJwtException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .clockSkew(60L)
                     .build()
                     .parseSigned(token)
@@ -142,15 +141,15 @@ class ClaimsValidationTest : FunSpec({
     context("issuer") {
 
         test("requireIssuer mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .issuer("actual-issuer")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireIssuer("expected-issuer")
                     .build()
                     .parseSigned(token)
@@ -161,16 +160,16 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireIssuer missing throws MissingClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             // Token with no issuer claim
             val token = Jwt.builder()
                 .subject("someone")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<MissingClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireIssuer("expected-issuer")
                     .build()
                     .parseSigned(token)
@@ -180,16 +179,16 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireIssuer case mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .issuer("Auth.MyApp.io")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // Default comparison is case-sensitive
             val ex = assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireIssuer("auth.myapp.io")
                     .build()
                     .parseSigned(token)
@@ -200,15 +199,15 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireIssuer ignore case passes") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .issuer("AUTH.MYAPP.IO")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // Should not throw — comparison is case-insensitive
             Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .requireIssuer("auth.myapp.io", ignoreCase = true)
                 .build()
                 .parseSigned(token)
@@ -218,15 +217,15 @@ class ClaimsValidationTest : FunSpec({
     context("subject") {
 
         test("requireSubject mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .subject("actual-subject")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireSubject("expected-subject")
                     .build()
                     .parseSigned(token)
@@ -236,15 +235,15 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireSubject missing throws MissingClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .issuer("issuer")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<MissingClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireSubject("expected-subject")
                     .build()
                     .parseSigned(token)
@@ -254,16 +253,16 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireSubject case mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .subject("User-123")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // Subject comparison is case-sensitive
             val ex = assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireSubject("user-123")
                     .build()
                     .parseSigned(token)
@@ -276,15 +275,15 @@ class ClaimsValidationTest : FunSpec({
     context("audience") {
 
         test("requireAudience mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .audience("actual-aud")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireAudience("expected-aud")
                     .build()
                     .parseSigned(token)
@@ -292,15 +291,15 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireAudience not in array throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .audience("aud1", "aud2")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireAudience("aud3")
                     .build()
                     .parseSigned(token)
@@ -308,16 +307,16 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireAudience case mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .audience("Mobile-App")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // Audience comparison is case-sensitive
             assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireAudience("mobile-app")
                     .build()
                     .parseSigned(token)
@@ -325,15 +324,15 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireAudience missing throws MissingClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .subject("user")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<MissingClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireAudience("expected-aud")
                     .build()
                     .parseSigned(token)
@@ -346,30 +345,30 @@ class ClaimsValidationTest : FunSpec({
     context("custom required claims") {
 
         test("requireCustomClaim present match passes") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .claim("role", "admin")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             // Should not throw
             Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .requireClaim("role", "admin")
                 .build()
                 .parseSigned(token)
         }
 
         test("requireCustomClaim present mismatch throws IncorrectClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .claim("role", "user")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<IncorrectClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireClaim("role", "admin")
                     .build()
                     .parseSigned(token)
@@ -380,15 +379,15 @@ class ClaimsValidationTest : FunSpec({
         }
 
         test("requireCustomClaim missing throws MissingClaimException") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .subject("user")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val ex = assertFailsWith<MissingClaimException> {
                 Jwt.parser()
-                    .verifyWith(SigningAlgorithm.HS256, key)
+                    .verifyWith(signingKey)
                     .requireClaim("role", "admin")
                     .build()
                     .parseSigned(token)

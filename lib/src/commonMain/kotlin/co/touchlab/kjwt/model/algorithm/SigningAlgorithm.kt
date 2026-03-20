@@ -1,9 +1,11 @@
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
 import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.algorithms.Digest
+import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
@@ -19,6 +21,8 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
 ) : Jwa<PublicKey, PrivateKey> {
     internal abstract suspend fun sign(key: PrivateKey, signingInput: ByteArray): ByteArray
     internal abstract suspend fun verify(key: PublicKey, signingInput: ByteArray, signature: ByteArray): Boolean
+
+    internal fun identifier(keyId: String?) = SigningKey.Identifier(this, keyId)
 
     /** HMAC with SHA-256 (`HS256`) signing algorithm using a symmetric [HMAC.Key]. */
     public data object HS256 : HashBased("HS256")
@@ -141,6 +145,13 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
                 ES256 -> SHA256
                 ES384 -> SHA384
                 ES512 -> SHA512
+            }
+
+        public val curve: EC.Curve
+            get() = when (this) {
+                ES256 -> EC.Curve.P256
+                ES384 -> EC.Curve.P384
+                ES512 -> EC.Curve.P521
             }
 
         override suspend fun sign(key: ECDSA.PrivateKey, signingInput: ByteArray): ByteArray =

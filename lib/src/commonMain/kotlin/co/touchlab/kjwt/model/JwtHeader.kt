@@ -111,13 +111,6 @@ public class JwtHeader internal constructor(
                 extra(CTY, value)
             }
 
-        /** The key ID (`kid`) header parameter identifying the key used to sign or encrypt the token. */
-        public var keyId: String? = null
-            set(value) {
-                field = value
-                extra(KID, value)
-            }
-
         /**
          * Sets an extra header parameter using a pre-built [JsonElement], or removes it if [value] is `null`.
          *
@@ -153,19 +146,22 @@ public class JwtHeader internal constructor(
             extra(name, kotlinx.serialization.serializer<T>(), value)
         }
 
-        internal fun build(algorithm: SigningAlgorithm<*, *>) = JwtHeader(
+        internal fun build(algorithm: SigningAlgorithm<*, *>, keyId: String?) = JwtHeader(
             buildToJson {
                 put(ALG, algorithm.id)
+                if (keyId != null) put(KID, keyId)
             }
         )
 
         internal fun build(
             keyAlgorithm: EncryptionAlgorithm<*, *>,
             contentAlgorithm: EncryptionContentAlgorithm,
+            keyId: String?,
         ) = JwtHeader(
             buildToJson {
                 put(ALG, keyAlgorithm.id)
                 put(ENC, contentAlgorithm.id)
+                if (keyId != null) put(KID, keyId)
             }
         )
 

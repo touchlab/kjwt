@@ -18,15 +18,21 @@ import dev.whyoleg.cryptography.algorithms.SHA512
  *
  * @param algorithm The HMAC-based signing algorithm (HS256, HS384, or HS512).
  * @param jwk The Oct JWK containing the raw symmetric key material.
+ * @param keyId Optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
  * @return This builder, configured with the HMAC verification key.
  */
-public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.HashBased, jwk: Jwk.Oct): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm.HashBased,
+    jwk: Jwk.Oct,
+    keyId: String? = jwk.kid,
+): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.HS256 -> SHA256
         SigningAlgorithm.HS384 -> SHA384
         SigningAlgorithm.HS512 -> SHA512
     }
-    return verifyWith(algorithm, jwk.toHmacKey(digest))
+    return verifyWith(algorithm, jwk.toHmacKey(digest), keyId)
 }
 
 // ---------------------------------------------------------------------------
@@ -38,15 +44,21 @@ public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.HashB
  *
  * @param algorithm The RSA PKCS#1-based signing algorithm (RS256, RS384, or RS512).
  * @param jwk The RSA JWK containing the public key parameters `n` and `e`.
+ * @param keyId Optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
  * @return This builder, configured with the RSA PKCS#1 verification key.
  */
-public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PKCS1Based, jwk: Jwk.Rsa): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm.PKCS1Based,
+    jwk: Jwk.Rsa,
+    keyId: String? = jwk.kid,
+): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.RS256 -> SHA256
         SigningAlgorithm.RS384 -> SHA384
         SigningAlgorithm.RS512 -> SHA512
     }
-    return verifyWith(algorithm, jwk.toRsaPkcs1PublicKey(digest))
+    return verifyWith(algorithm, jwk.toRsaPkcs1PublicKey(digest), keyId)
 }
 
 // ---------------------------------------------------------------------------
@@ -58,15 +70,21 @@ public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PKCS1
  *
  * @param algorithm The RSA PSS-based signing algorithm (PS256, PS384, or PS512).
  * @param jwk The RSA JWK containing the public key parameters `n` and `e`.
+ * @param keyId Optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
  * @return This builder, configured with the RSA PSS verification key.
  */
-public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PSSBased, jwk: Jwk.Rsa): JwtParserBuilder {
+public suspend fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm.PSSBased,
+    jwk: Jwk.Rsa,
+    keyId: String? = jwk.kid,
+): JwtParserBuilder {
     val digest = when (algorithm) {
         SigningAlgorithm.PS256 -> SHA256
         SigningAlgorithm.PS384 -> SHA384
         SigningAlgorithm.PS512 -> SHA512
     }
-    return verifyWith(algorithm, jwk.toRsaPssPublicKey(digest))
+    return verifyWith(algorithm, jwk.toRsaPssPublicKey(digest), keyId)
 }
 
 // ---------------------------------------------------------------------------
@@ -78,10 +96,15 @@ public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.PSSBa
  *
  * @param algorithm The ECDSA-based signing algorithm (ES256, ES384, or ES512).
  * @param jwk The EC JWK containing the public key parameters `crv`, `x`, and `y`.
+ * @param keyId Optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
  * @return This builder, configured with the ECDSA verification key.
  */
-public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.ECDSABased, jwk: Jwk.Ec): JwtParserBuilder =
-    verifyWith(algorithm, jwk.toEcdsaPublicKey())
+public suspend fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm.ECDSABased,
+    jwk: Jwk.Ec,
+    keyId: String? = jwk.kid,
+): JwtParserBuilder = verifyWith(algorithm, jwk.toEcdsaPublicKey(), keyId)
 
 // ---------------------------------------------------------------------------
 // decryptWith — RSA-OAEP / RSA-OAEP-256
@@ -92,16 +115,19 @@ public suspend fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm.ECDSA
  *
  * @param algorithm The OAEP-based key encryption algorithm (RSA-OAEP or RSA-OAEP-256).
  * @param jwk The RSA JWK containing the private key parameters, including `d` and the CRT parameters.
+ * @param keyId Optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
  * @return This builder, configured with the RSA OAEP decryption key.
  */
 @OptIn(dev.whyoleg.cryptography.DelicateCryptographyApi::class)
 public suspend fun JwtParserBuilder.decryptWith(
     algorithm: EncryptionAlgorithm.OAEPBased,
     jwk: Jwk.Rsa,
+    keyId: String? = jwk.kid,
 ): JwtParserBuilder {
     val digest = when (algorithm) {
         EncryptionAlgorithm.RsaOaep -> SHA1
         EncryptionAlgorithm.RsaOaep256 -> SHA256
     }
-    return decryptWith(algorithm, jwk.toRsaOaepPrivateKey(digest))
+    return decryptWith(algorithm, jwk.toRsaOaepPrivateKey(digest), keyId)
 }

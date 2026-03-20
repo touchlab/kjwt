@@ -1,17 +1,24 @@
 package co.touchlab.kjwt
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.ext.key
+import co.touchlab.kjwt.ext.newKey
+import co.touchlab.kjwt.ext.parse
+import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
+import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.registry.EncryptionKey
+import co.touchlab.kjwt.model.registry.SigningKey
+import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.CryptographyProvider
-import dev.whyoleg.cryptography.algorithms.ECDSA
+import dev.whyoleg.cryptography.algorithms.Digest
 import dev.whyoleg.cryptography.algorithms.EC
+import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA1
 import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.algorithms.Digest
-import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import co.touchlab.kjwt.exception.JwtException
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -75,6 +82,43 @@ fun decodeTokenPayload(token: String): String {
     }
     return Base64.UrlSafe.decode(padded).decodeToString()
 }
+
+// ---- SigningKey helpers (library API) ----
+
+// HMAC: parse from known test secrets for deterministic use in tests
+suspend fun hs256SigningKey(keyId: String? = null): SigningKey.SigningKeyPair<HMAC.Key, HMAC.Key> =
+    SigningAlgorithm.HS256.parse(hs256Secret, keyId = keyId)
+
+suspend fun hs384SigningKey(keyId: String? = null): SigningKey.SigningKeyPair<HMAC.Key, HMAC.Key> =
+    SigningAlgorithm.HS384.parse(hs384Secret, keyId = keyId)
+
+suspend fun hs512SigningKey(keyId: String? = null): SigningKey.SigningKeyPair<HMAC.Key, HMAC.Key> =
+    SigningAlgorithm.HS512.parse(hs512Secret, keyId = keyId)
+
+// RSA PKCS1
+suspend fun rs256SigningKey(keyId: String? = null) = SigningAlgorithm.RS256.newKey(keyId = keyId)
+suspend fun rs384SigningKey(keyId: String? = null) = SigningAlgorithm.RS384.newKey(keyId = keyId)
+suspend fun rs512SigningKey(keyId: String? = null) = SigningAlgorithm.RS512.newKey(keyId = keyId)
+
+// RSA PSS
+suspend fun ps256SigningKey(keyId: String? = null) = SigningAlgorithm.PS256.newKey(keyId = keyId)
+suspend fun ps384SigningKey(keyId: String? = null) = SigningAlgorithm.PS384.newKey(keyId = keyId)
+suspend fun ps512SigningKey(keyId: String? = null) = SigningAlgorithm.PS512.newKey(keyId = keyId)
+
+// ECDSA
+suspend fun es256SigningKey(keyId: String? = null) = SigningAlgorithm.ES256.newKey(keyId = keyId)
+suspend fun es384SigningKey(keyId: String? = null) = SigningAlgorithm.ES384.newKey(keyId = keyId)
+suspend fun es512SigningKey(keyId: String? = null) = SigningAlgorithm.ES512.newKey(keyId = keyId)
+
+// ---- EncryptionKey helpers (library API) ----
+
+// Dir: wrap random bytes; not suspend (Dir.key is a plain function)
+fun dirEncKey(bits: Int, keyId: String? = null): EncryptionKey.EncryptionKeyPair<SimpleKey, SimpleKey> =
+    EncryptionAlgorithm.Dir.key(Random.Default.nextBytes(bits / 8), keyId)
+
+// RSA-OAEP
+suspend fun rsaOaepEncKey(keyId: String? = null) = EncryptionAlgorithm.RsaOaep.newKey(keyId = keyId)
+suspend fun rsaOaep256EncKey(keyId: String? = null) = EncryptionAlgorithm.RsaOaep256.newKey(keyId = keyId)
 
 /** Decodes the header (first) part of a compact JWT and returns it as a JSON string. */
 @OptIn(ExperimentalEncodingApi::class)

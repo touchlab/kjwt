@@ -21,12 +21,14 @@ import dev.whyoleg.cryptography.algorithms.SHA512
  * @param algorithm the HMAC-based signing algorithm (HS256, HS384, or HS512).
  * @param key the HMAC key material encoded as a String.
  * @param keyFormat the format in which [key] is encoded.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the signed [JwtInstance.Jws] token.
  */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.HashBased,
     key: String,
     keyFormat: HMAC.Key.Format,
+    keyId: String? = null,
 ): JwtInstance.Jws {
     val parsedKey = CryptographyProvider.Default.get(HMAC)
         .keyDecoder(
@@ -38,7 +40,7 @@ public suspend fun JwtBuilder.signWith(
         )
         .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
-    return signWith(algorithm, parsedKey)
+    return signWith(algorithm, parsedKey, keyId)
 }
 
 /**
@@ -47,12 +49,14 @@ public suspend fun JwtBuilder.signWith(
  * @param algorithm the RSA PKCS#1-based signing algorithm (RS256, RS384, or RS512).
  * @param key the RSA private key material encoded as a String.
  * @param keyFormat the format in which [key] is encoded.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the signed [JwtInstance.Jws] token.
  */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PKCS1Based,
     key: String,
     keyFormat: RSA.PrivateKey.Format,
+    keyId: String? = null,
 ): JwtInstance.Jws {
     val parsedKey = CryptographyProvider.Default.get(RSA.PKCS1)
         .privateKeyDecoder(
@@ -64,7 +68,7 @@ public suspend fun JwtBuilder.signWith(
         )
         .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
-    return signWith(algorithm, parsedKey)
+    return signWith(algorithm, parsedKey, keyId)
 }
 
 /**
@@ -73,12 +77,14 @@ public suspend fun JwtBuilder.signWith(
  * @param algorithm the RSA PSS-based signing algorithm (PS256, PS384, or PS512).
  * @param key the RSA private key material encoded as a String.
  * @param keyFormat the format in which [key] is encoded.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the signed [JwtInstance.Jws] token.
  */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.PSSBased,
     key: String,
     keyFormat: RSA.PrivateKey.Format,
+    keyId: String? = null,
 ): JwtInstance.Jws {
     val parsedKey = CryptographyProvider.Default.get(RSA.PSS)
         .privateKeyDecoder(
@@ -90,7 +96,7 @@ public suspend fun JwtBuilder.signWith(
         )
         .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
-    return signWith(algorithm, parsedKey)
+    return signWith(algorithm, parsedKey, keyId)
 }
 
 /**
@@ -99,24 +105,20 @@ public suspend fun JwtBuilder.signWith(
  * @param algorithm the ECDSA-based signing algorithm (ES256, ES384, or ES512).
  * @param key the EC private key material encoded as a String.
  * @param keyFormat the format in which [key] is encoded.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the signed [JwtInstance.Jws] token.
  */
 public suspend fun JwtBuilder.signWith(
     algorithm: SigningAlgorithm.ECDSABased,
     key: String,
     keyFormat: EC.PrivateKey.Format,
+    keyId: String? = null,
 ): JwtInstance.Jws {
     val parsedKey = CryptographyProvider.Default.get(ECDSA)
-        .privateKeyDecoder(
-            when (algorithm) {
-                SigningAlgorithm.ES256 -> EC.Curve.P256
-                SigningAlgorithm.ES384 -> EC.Curve.P384
-                SigningAlgorithm.ES512 -> EC.Curve.P521
-            }
-        )
+        .privateKeyDecoder(algorithm.curve)
         .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
-    return signWith(algorithm, parsedKey)
+    return signWith(algorithm, parsedKey, keyId)
 }
 
 /**
@@ -125,13 +127,15 @@ public suspend fun JwtBuilder.signWith(
  * @param key the raw symmetric key bytes used for direct encryption.
  * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir]).
  * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the encrypted [JwtInstance.Jwe] token.
  */
 public suspend fun JwtBuilder.encryptWith(
     key: ByteArray,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,
-): JwtInstance.Jwe = encryptWith(SimpleKey(key), keyAlgorithm, contentAlgorithm)
+    keyId: String? = null,
+): JwtInstance.Jwe = encryptWith(SimpleKey(key), keyAlgorithm, contentAlgorithm, keyId)
 
 /**
  * Encrypts the JWT using the direct key algorithm (`dir`) with a key supplied as a UTF-8 String.
@@ -141,10 +145,12 @@ public suspend fun JwtBuilder.encryptWith(
  * @param key the symmetric key as a UTF-8 string.
  * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir]).
  * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload.
+ * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
  * @return the encrypted [JwtInstance.Jwe] token.
  */
 public suspend fun JwtBuilder.encryptWith(
     key: String,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,
-): JwtInstance.Jwe = encryptWith(key.encodeToByteArray(), keyAlgorithm, contentAlgorithm)
+    keyId: String? = null,
+): JwtInstance.Jwe = encryptWith(key.encodeToByteArray(), keyAlgorithm, contentAlgorithm, keyId)

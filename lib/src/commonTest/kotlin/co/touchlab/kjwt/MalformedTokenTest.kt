@@ -163,7 +163,7 @@ class MalformedTokenTest : FunSpec({
         test("parse none without allow unsecured throws UnsupportedJwtException") {
             val noneToken = Jwt.builder()
                 .subject("user")
-                .signWith(SigningAlgorithm.None)
+                .build()
                 .compact()
 
             assertFailsWith<UnsupportedJwtException> {
