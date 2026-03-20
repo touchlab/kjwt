@@ -9,6 +9,7 @@ import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.exception.UnsupportedJwtException
 import co.touchlab.kjwt.ext.encryption
 import co.touchlab.kjwt.ext.expirationOrNull
+import co.touchlab.kjwt.ext.keyIdOrNull
 import co.touchlab.kjwt.ext.notBeforeOrNull
 import co.touchlab.kjwt.internal.decodeBase64Url
 import co.touchlab.kjwt.internal.encodeBase64Url
@@ -56,12 +57,11 @@ public class JwtParser internal constructor(private val config: JwtParserBuilder
         val claims = JwtPayload(parts[1])
         val signature = parts[2]
 
-        if (algorithm != SigningAlgorithm.None) {
+        if (algorithm != SigningAlgorithm.None && !config.skipVerification) {
             val verifier = checkNotNull(
-                config.jwsKeyVerifier?.takeIf {
-                    it.algorithm == algorithm || it.algorithm == SigningAlgorithm.None && config.allowUnsecured
-                }
+                config.keyRegistry.findBestSigningKey(algorithm, header.keyIdOrNull)
             ) { "No verification key configured. Call verifyWith() or noVerify() on the parser builder." }
+
             val signingInput = "${parts[0]}.${parts[1]}".encodeToByteArray()
             val signature = signature.decodeBase64Url()
 
@@ -98,7 +98,7 @@ public class JwtParser internal constructor(private val config: JwtParserBuilder
             throw UnsupportedJwtException("Unsupported JWE content algorithm: '${header.encryption}'", e)
         }
 
-        val decryptor = requireNotNull(config.jweKeyDecryptor?.takeIf { it.algorithm == keyAlgorithm }) {
+        val decryptor = requireNotNull(config.keyRegistry.findBestEncryptionKey(keyAlgorithm, header.keyIdOrNull)) {
             "No decryption key configured. Call decryptWith() on the parser builder."
         }
 

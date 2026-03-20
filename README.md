@@ -157,9 +157,11 @@ The most common usage of JWTs is to generate signed tokens. You can achieve this
 when building a JWT.
 
 ```kotlin
+val signingKey = SigningAlgorithm.HS256.newKey()
+
 val token: JwtInstance = Jwt.builder()
     .subject("1234567890")
-    .signWith(JwsAlgorithm.HS256, hmacKey)
+    .signWith(signingKey)
 ```
 
 The result of the operation is a `JwtInstance` object. That object is a Kotlin representation of the JWT. You can use
@@ -181,10 +183,10 @@ Another common usage of JWTs is to verify the authenticity of a token. If you ar
 ensure that the user hasn't modified the token on their side. That is achieved by verifying the signature of the token.
 
 ```kotlin
-val compactToken: String = // 
+val compactToken: String = //
 
 val jwtParser = Jwt.parser()
-    .verifyWith(JwsAlgorithm.HS256, hmacKey)
+    .verifyWith(signingKey)
     .build()
 
 val parsedToken = jwtParser.parse(compactToken)
@@ -206,27 +208,47 @@ implement any cryptographic operations. Instead, we rely on
 the [Cryptography Kotlin](https://github.com/whyoleg/cryptography-kotlin) library. It's an amazing and robust library
 that provides a wide range of cryptographic operations, and providers for most of the Kotlin Multiplatform targets.
 
-To generate the `hmacKey` we used in the previous examples, you can use the following code:
+KJWT ships extension functions on each algorithm object that generate or decode keys without
+requiring you to touch the `cryptography-kotlin` API directly:
 
 ```kotlin
-val myKeyString = "a-string-secret-at-least-256-bits-long"
-    .encodeToByteArray() // Convert the string into a byte array to perform the crypto operations
+import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 
-val hmacKey =
-    CryptographyProvider.Default // Get the provider you use for your project. CryptographyProvider.Default is most common
-        .get(HMAC) // Get the HMAC algorithm
-        .keyDecoder(SHA256) // Use the correct digest for your operation. For HS256, use SHA256. For HS384 use SHA384, etc.
-        .decodeFromByteArray(HMAC.Key.Format.RAW, myKeyString) // Decode your key bytes into a HMAC key
+// Generate a new random HMAC key
+val key = SigningAlgorithm.HS256.newKey()
 
-// Then you can use the HMAC key to sign or verify tokens
+// Decode an HMAC key from existing bytes
+val key = SigningAlgorithm.HS256.parse(myKeyBytes)
+
+// Generate an RSA key pair (also available for RS384/RS512, PS*, ES*)
+val key = SigningAlgorithm.RS256.newKey()
+
+// Decode individual RSA/ECDSA keys
+val key = SigningAlgorithm.RS256.parsePublicKey(pemBytes)    // verify only
+val key = SigningAlgorithm.RS256.parsePrivateKey(pemBytes)   // sign only
+val key = SigningAlgorithm.RS256.parseKeyPair(pubPem, privPem)
+```
+
+The returned `SigningKey` can be passed directly to `signWith` or `verifyWith`:
+
+```kotlin
+val key = SigningAlgorithm.HS256.parse(myKeyBytes)
+
 val token: JwtInstance = Jwt.builder()
     .subject("1234567890")
-    .signWith(JwsAlgorithm.HS256, hmacKey)
+    .signWith(key)          // Use the key to sign the token
 
 val jwtParser = Jwt.parser()
-    .verifyWith(JwsAlgorithm.HS256, hmacKey)
+    .verifyWith(key)        // Use the key to verify the token
     .build()
+
+val compactToken: String =  // ...
+val parsedToken = jwtParser.parse(compactToken) // Token will get verified using the key used in the builder
 ```
+
+If you prefer to work with `cryptography-kotlin` directly, you can also construct keys manually
+using its API and pass them to `signWith` / `verifyWith`. For a full reference of all key helper
+overloads, see the [usage guide](docs/usage.md#keys).
 
 ### More features
 

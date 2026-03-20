@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.jwk
 
 import co.touchlab.kjwt.Jwt
+import co.touchlab.kjwt.decodeTokenHeader
 import co.touchlab.kjwt.ext.signWith
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.ext.verifyWith
@@ -12,6 +13,7 @@ import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.model.jwk.Jwk
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  * Tests the JWK builder/parser extensions end-to-end.
@@ -96,6 +98,45 @@ class JwkBuilderExtTest : FunSpec({
                 .parseSigned(token)
 
             assertEquals("jwk-cross-verify", jws.payload.subjectOrNull)
+        }
+    }
+
+    context("keyId propagation") {
+
+        test("sign with HS256 JWK defaults kid to jwk.kid") {
+            val jwk = Jwk.Oct(k = hs256Secret.encodeBase64Url(), alg = "HS256", kid = "my-hmac-key")
+
+            val token = Jwt.builder()
+                .subject("test")
+                .signWith(SigningAlgorithm.HS256, jwk)
+                .compact()
+
+            val headerJson = decodeTokenHeader(token)
+            assertTrue(headerJson.contains("\"kid\":\"my-hmac-key\""), "Header must contain jwk kid, got: $headerJson")
+        }
+
+        test("sign with HS256 JWK explicit keyId overrides jwk.kid") {
+            val jwk = Jwk.Oct(k = hs256Secret.encodeBase64Url(), alg = "HS256", kid = "jwk-kid")
+
+            val token = Jwt.builder()
+                .subject("test")
+                .signWith(SigningAlgorithm.HS256, jwk, keyId = "override-kid")
+                .compact()
+
+            val headerJson = decodeTokenHeader(token)
+            assertTrue(headerJson.contains("\"kid\":\"override-kid\""), "Header must contain overridden kid, got: $headerJson")
+        }
+
+        test("sign with HS256 JWK null keyId omits kid from header") {
+            val jwk = Jwk.Oct(k = hs256Secret.encodeBase64Url(), alg = "HS256", kid = "some-kid")
+
+            val token = Jwt.builder()
+                .subject("test")
+                .signWith(SigningAlgorithm.HS256, jwk, keyId = null)
+                .compact()
+
+            val headerJson = decodeTokenHeader(token)
+            assertTrue(!headerJson.contains("\"kid\""), "Header must not contain kid when null, got: $headerJson")
         }
     }
 })

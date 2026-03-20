@@ -1,6 +1,5 @@
 package co.touchlab.kjwt.parser
 
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.exception.IncorrectClaimException
 import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.ext.audienceOrNull
@@ -10,8 +9,10 @@ import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.registry.EncryptionKey
+import co.touchlab.kjwt.model.registry.JwtKeyRegistry
+import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.materials.key.Key
 
 /**
@@ -19,22 +20,23 @@ import dev.whyoleg.cryptography.materials.key.Key
  *
  * Example:
  * ```kotlin
+ * val signingKey = SigningAlgorithm.HS256.newKey()
  * val parser = Jwt.parser()
- *     .verifyWith(JwsAlgorithm.HS256, hmacKey)
+ *     .verifyWith(signingKey)
  *     .requireIssuer("myapp")
- *     .clockSkew(DateTimePeriod(seconds = 30))
+ *     .clockSkew(30L)
  *     .build()
  * val jws = parser.parse(token)
  * ```
  */
 public class JwtParserBuilder {
-    internal var jwsKeyVerifier: JwsKeyVerifier<*, *>? = null
-    internal var jweKeyDecryptor: JweKeyDecryptor<*, *>? = null
+    internal val keyRegistry = JwtKeyRegistry()
 
     @PublishedApi
     internal val validators: MutableList<(JwtPayload, JwtHeader) -> Unit> = mutableListOf()
     internal var clockSkewSeconds: Long = 0L
     internal var allowUnsecured: Boolean = false
+    internal var skipVerification: Boolean = false
 
     /**
      * Disables signature verification entirely, accepting any token regardless of its signature.
@@ -46,7 +48,33 @@ public class JwtParserBuilder {
      */
     public fun noVerify(): JwtParserBuilder = apply {
         allowUnsecured = true
-        jwsKeyVerifier = JwsKeyVerifier(SigningAlgorithm.None, SimpleKey.Empty)
+        skipVerification = true
+    }
+
+    /**
+     * Delegates key look-up to the given [registry] before consulting this parser's own keys.
+     *
+     * Keys registered directly on this builder (via [verifyWith] or [decryptWith]) take
+     * precedence; the [registry] is only consulted when no local key matches. This makes it easy
+     * to share a central key store across multiple parsers while still allowing each parser to
+     * override individual keys locally.
+     *
+     * ```kotlin
+     * val sharedRegistry = JwtKeyRegistry()
+     * // keys are added to sharedRegistry elsewhere
+     *
+     * val parser = Jwt.parser()
+     *     .useKeysFrom(sharedRegistry)
+     *     .requireIssuer("my-app")
+     *     .build()
+     * ```
+     *
+     * @param registry the [JwtKeyRegistry] to fall back to when no local key matches
+     * @return this builder for chaining
+     * @see JwtKeyRegistry
+     */
+    public fun useKeysFrom(registry: JwtKeyRegistry): JwtParserBuilder = apply {
+        keyRegistry.delegateTo(registry)
     }
 
     /**
@@ -54,28 +82,94 @@ public class JwtParserBuilder {
      *
      * @param algorithm the signing algorithm to use for verification
      * @param key the public key (or symmetric key) for signature verification
+     * @param keyId optional key ID to associate with this verifier; when set, the parser will
+     *   only use this key if the token's `kid` header matches. Defaults to `null` (matches any token).
      * @return this builder for chaining
      */
     public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
         algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
-        key: PublicKey
+        key: PublicKey,
+        keyId: String? = null,
     ): JwtParserBuilder = apply {
-        jwsKeyVerifier = JwsKeyVerifier(algorithm, key)
+        keyRegistry.registerSigningKey(
+            SigningKey.VerifyOnlyKey(
+                identifier = SigningKey.Identifier(algorithm, keyId),
+                publicKey = key
+            )
+        )
     }
+
+    /**
+     * Registers a pre-built [SigningKey.VerifyOnlyKey] for JWS signature verification.
+     *
+     * The algorithm and `kid` are taken from [key]'s [SigningKey.Identifier].
+     *
+     * @param key the verify-only signing key to register
+     * @return this builder for chaining
+     */
+    public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
+        key: SigningKey.VerifyOnlyKey<PublicKey, PrivateKey>,
+    ): JwtParserBuilder = apply { keyRegistry.registerSigningKey(key) }
+
+    /**
+     * Registers a pre-built [SigningKey.SigningKeyPair] for JWS signature verification.
+     *
+     * The algorithm and `kid` are taken from [key]'s [SigningKey.Identifier]. Both the public and
+     * private key material are stored, but only the public key is used for verification.
+     *
+     * @param key the signing key pair to register
+     * @return this builder for chaining
+     */
+    public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
+        key: SigningKey.SigningKeyPair<PublicKey, PrivateKey>,
+    ): JwtParserBuilder = apply { keyRegistry.registerSigningKey(key) }
 
     /**
      * Sets the algorithm and private key used to decrypt JWE tokens.
      *
      * @param algorithm the key encryption algorithm used to unwrap the content encryption key
      * @param privateKey the private key for decrypting the JWE token
+     * @param keyId optional key ID to associate with this decryptor; when set, the parser will
+     *   only use this key if the token's `kid` header matches. Defaults to `null` (matches any token).
      * @return this builder for chaining
      */
     public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
         algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
-        privateKey: PrivateKey
+        privateKey: PrivateKey,
+        keyId: String? = null,
     ): JwtParserBuilder = apply {
-        jweKeyDecryptor = JweKeyDecryptor(algorithm, privateKey)
+        keyRegistry.registerEncryptionKey(
+            EncryptionKey.DecryptionOnlyKey(
+                identifier = EncryptionKey.Identifier(algorithm, keyId),
+                privateKey = privateKey,
+            )
+        )
     }
+
+    /**
+     * Registers a pre-built [EncryptionKey.DecryptionOnlyKey] for JWE token decryption.
+     *
+     * The algorithm and `kid` are taken from [key]'s [EncryptionKey.Identifier].
+     *
+     * @param key the decryption-only encryption key to register
+     * @return this builder for chaining
+     */
+    public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
+        key: EncryptionKey.DecryptionOnlyKey<PublicKey, PrivateKey>,
+    ): JwtParserBuilder = apply { keyRegistry.registerEncryptionKey(key) }
+
+    /**
+     * Registers a pre-built [EncryptionKey.EncryptionKeyPair] for JWE token decryption.
+     *
+     * The algorithm and `kid` are taken from [key]'s [EncryptionKey.Identifier]. Both the public
+     * and private key material are stored, but only the private key is used for decryption.
+     *
+     * @param key the encryption key pair to register
+     * @return this builder for chaining
+     */
+    public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
+        key: EncryptionKey.EncryptionKeyPair<PublicKey, PrivateKey>,
+    ): JwtParserBuilder = apply { keyRegistry.registerEncryptionKey(key) }
 
     /**
      * Adds a validator that requires the `iss` claim to equal the given value.
@@ -163,6 +257,7 @@ public class JwtParserBuilder {
      */
     public fun allowUnsecured(allow: Boolean): JwtParserBuilder = apply {
         allowUnsecured = allow
+        if (!allow) skipVerification = false
     }
 
     /**
@@ -171,29 +266,4 @@ public class JwtParserBuilder {
      * @return a [JwtParser] ready to parse and validate tokens
      */
     public fun build(): JwtParser = JwtParser(this)
-}
-
-internal data class JwsKeyVerifier<PublicKey : Key, PrivateKey : Key>(
-    val algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
-    val publicKey: PublicKey,
-) {
-    suspend fun verify(signingInput: ByteArray, signature: ByteArray): Boolean = try {
-        algorithm.verify(publicKey, signingInput, signature)
-    } catch (_: Throwable) {
-        false
-    }
-}
-
-internal data class JweKeyDecryptor<PublicKey : Key, PrivateKey : Key>(
-    val algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
-    val privateKey: PrivateKey,
-) {
-    suspend fun decrypt(
-        contentAlgorithm: EncryptionContentAlgorithm,
-        encryptedKey: ByteArray,
-        iv: ByteArray,
-        ciphertext: ByteArray,
-        tag: ByteArray,
-        aad: ByteArray,
-    ): ByteArray = algorithm.decrypt(privateKey, contentAlgorithm, encryptedKey, iv, ciphertext, tag, aad)
 }

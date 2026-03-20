@@ -10,9 +10,8 @@ import co.touchlab.kjwt.ext.keyId
 import co.touchlab.kjwt.ext.notBeforeOrNull
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.algorithms.EC
-import dev.whyoleg.cryptography.algorithms.SHA384
-import dev.whyoleg.cryptography.algorithms.SHA512
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -81,7 +80,7 @@ class JwsEncodeTest : FunSpec({
     context("all registered claims") {
 
         test("sign Hs256 with all registered claims") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val now = Clock.System.now()
             val token = Jwt.builder()
                 .issuer("test-issuer")
@@ -91,11 +90,11 @@ class JwsEncodeTest : FunSpec({
                 .notBefore(now - 1.hours)
                 .issuedAt(now)
                 .id("unique-jwt-id")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .build()
                 .parseSigned(token)
 
@@ -112,16 +111,16 @@ class JwsEncodeTest : FunSpec({
     context("custom claims") {
 
         test("sign Hs256 with custom claims") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .claim("strClaim", "hello")
                 .claim("numClaim", 42)
                 .claim("boolClaim", true)
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .build()
                 .parseSigned(token)
 
@@ -134,10 +133,10 @@ class JwsEncodeTest : FunSpec({
     context("audience serialization") {
 
         test("sign Hs256 audience single string") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .audience("single-aud")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val payloadJson = decodeTokenPayload(token)
@@ -146,10 +145,10 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Hs256 audience multiple") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .audience("aud1", "aud2", "aud3")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val payloadJson = decodeTokenPayload(token)
@@ -161,27 +160,56 @@ class JwsEncodeTest : FunSpec({
     context("header fields") {
 
         test("sign Hs256 header kid included") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey(keyId = "my-key-id")
             val token = Jwt.builder()
-                .keyId("my-key-id")
                 .subject("test")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.HS256, key)
+                .verifyWith(signingKey)
                 .build()
                 .parseSigned(token)
 
             assertEquals("my-key-id", jws.header.keyId)
         }
 
+        test("sign Rs256 header kid included") {
+            val signingKey = rs256SigningKey(keyId = "rsa-key-id")
+            val token = Jwt.builder()
+                .subject("test")
+                .signWith(signingKey)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(signingKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("rsa-key-id", jws.header.keyId)
+        }
+
+        test("sign Es256 header kid included") {
+            val signingKey = es256SigningKey(keyId = "ec-key-id")
+            val token = Jwt.builder()
+                .subject("test")
+                .signWith(signingKey)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(signingKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("ec-key-id", jws.header.keyId)
+        }
+
         test("sign Hs256 custom header fields") {
-            val key = hs256Key()
+            val signingKey = hs256SigningKey()
             val token = Jwt.builder()
                 .header { extra("x-custom", JsonPrimitive("custom-value")) }
                 .subject("test")
-                .signWith(SigningAlgorithm.HS256, key)
+                .signWith(signingKey)
                 .compact()
 
             val headerJson = decodeTokenHeader(token)
@@ -192,14 +220,14 @@ class JwsEncodeTest : FunSpec({
     context("RSA PKCS1 round-trips") {
 
         test("sign Rs256 round trip") {
-            val keyPair = rsaPkcs1KeyPair()
+            val keyPair = rs256SigningKey()
             val token = Jwt.builder()
                 .subject("rs256-subject")
-                .signWith(SigningAlgorithm.RS256, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.RS256, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -208,14 +236,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Rs384 round trip") {
-            val keyPair = rsaPkcs1KeyPair(SHA384)
+            val keyPair = rs384SigningKey()
             val token = Jwt.builder()
                 .subject("rs384-subject")
-                .signWith(SigningAlgorithm.RS384, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.RS384, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -223,14 +251,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Rs512 round trip") {
-            val keyPair = rsaPkcs1KeyPair(SHA512)
+            val keyPair = rs512SigningKey()
             val token = Jwt.builder()
                 .subject("rs512-subject")
-                .signWith(SigningAlgorithm.RS512, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.RS512, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -241,14 +269,14 @@ class JwsEncodeTest : FunSpec({
     context("RSA PSS round-trips") {
 
         test("sign Ps256 round trip") {
-            val keyPair = rsaPssKeyPair()
+            val keyPair = ps256SigningKey()
             val token = Jwt.builder()
                 .subject("ps256-subject")
-                .signWith(SigningAlgorithm.PS256, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.PS256, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -257,14 +285,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Ps384 round trip") {
-            val keyPair = rsaPssKeyPair(SHA384)
+            val keyPair = ps384SigningKey()
             val token = Jwt.builder()
                 .subject("ps384-subject")
-                .signWith(SigningAlgorithm.PS384, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.PS384, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -272,14 +300,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Ps512 round trip") {
-            val keyPair = rsaPssKeyPair(SHA512)
+            val keyPair = ps512SigningKey()
             val token = Jwt.builder()
                 .subject("ps512-subject")
-                .signWith(SigningAlgorithm.PS512, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.PS512, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -290,14 +318,14 @@ class JwsEncodeTest : FunSpec({
     context("ECDSA round-trips") {
 
         test("sign Es256 round trip") {
-            val keyPair = ecKeyPair(EC.Curve.P256)
+            val keyPair = es256SigningKey()
             val token = Jwt.builder()
                 .subject("es256-subject")
-                .signWith(SigningAlgorithm.ES256, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.ES256, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -306,14 +334,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Es384 round trip") {
-            val keyPair = ecKeyPair(EC.Curve.P384)
+            val keyPair = es384SigningKey()
             val token = Jwt.builder()
                 .subject("es384-subject")
-                .signWith(SigningAlgorithm.ES384, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.ES384, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -321,14 +349,14 @@ class JwsEncodeTest : FunSpec({
         }
 
         test("sign Es512 round trip") {
-            val keyPair = ecKeyPair(EC.Curve.P521)
+            val keyPair = es512SigningKey()
             val token = Jwt.builder()
                 .subject("es512-subject")
-                .signWith(SigningAlgorithm.ES512, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val jws = Jwt.parser()
-                .verifyWith(SigningAlgorithm.ES512, keyPair.publicKey)
+                .verifyWith(keyPair)
                 .build()
                 .parseSigned(token)
 
@@ -337,10 +365,10 @@ class JwsEncodeTest : FunSpec({
 
         test("sign Es256 signature is raw format") {
             // ES256 RAW signature = R‖S, each 32 bytes for P-256 → 64 bytes total
-            val keyPair = ecKeyPair(EC.Curve.P256)
+            val keyPair = es256SigningKey()
             val token = Jwt.builder()
                 .subject("test")
-                .signWith(SigningAlgorithm.ES256, keyPair.privateKey)
+                .signWith(keyPair)
                 .compact()
 
             val signatureB64 = token.split('.')[2]
@@ -354,13 +382,33 @@ class JwsEncodeTest : FunSpec({
         test("sign none produces empty signature part") {
             val token = Jwt.builder()
                 .subject("test")
-                .signWith(SigningAlgorithm.None)
+                .build()
                 .compact()
 
             val parts = token.split('.')
             assertEquals(3, parts.size)
             assertTrue(token.endsWith("."), "None token must end with '.'")
             assertEquals("", parts[2], "Signature part must be empty for alg=none")
+        }
+    }
+
+    context("key capability checks") {
+
+        test("signWith SigningOnlyKey succeeds") {
+            val keyPair = hs256SigningKey()
+            val signingOnlyKey = SigningKey.SigningOnlyKey(keyPair.identifier, keyPair.privateKey)
+
+            Jwt.builder()
+                .subject("test")
+                .signWith(signingOnlyKey)
+        }
+
+        test("signWith SigningKeyPair succeeds") {
+            val keyPair = hs256SigningKey()
+
+            Jwt.builder()
+                .subject("test")
+                .signWith(keyPair)
         }
     }
 
@@ -386,6 +434,39 @@ class JwsEncodeTest : FunSpec({
             val t2 = Jwt.builder().subject("user").issuedAt(iat).signWith(SigningAlgorithm.ES256, keyPair.privateKey)
                 .compact()
             assertNotEquals(t1, t2, "ECDSA signatures should differ across calls due to random nonce")
+        }
+    }
+
+    context("raw key API (backward compat)") {
+
+        test("signWith and verifyWith raw HMAC key") {
+            val key = hs256Key()
+            val token = Jwt.builder()
+                .subject("hs256-compat")
+                .signWith(SigningAlgorithm.HS256, key)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.HS256, key)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("hs256-compat", jws.payload.subjectOrNull)
+        }
+
+        test("signWith and verifyWith raw RSA key pair") {
+            val keyPair = rsaPkcs1KeyPair()
+            val token = Jwt.builder()
+                .subject("rs256-compat")
+                .signWith(SigningAlgorithm.RS256, keyPair.privateKey)
+                .compact()
+
+            val jws = Jwt.parser()
+                .verifyWith(SigningAlgorithm.RS256, keyPair.publicKey)
+                .build()
+                .parseSigned(token)
+
+            assertEquals("rs256-compat", jws.payload.subjectOrNull)
         }
     }
 })
