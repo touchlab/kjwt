@@ -1,0 +1,267 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>SigningKey</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    kotlin-jwt
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;co.touchlab.kjwt.model.registry/-signing-key/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":kjwt/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kjwt/commonMain" data-filter=":kjwt/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+                <a class="navigation-controls--btn navigation-controls--btn_homepage" id="homepage-link" href="https://github.com/touchlab/kjwt"></a>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kotlin-jwt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="kjwt::co.touchlab.kjwt.model.registry/SigningKey///PointingToDeclaration//2073764679">
+  <div class="breadcrumbs"><a href="../../index.html">kjwt</a><span class="delimiter">/</span><a href="../index.html">co.touchlab.kjwt.model.registry</a><span class="delimiter">/</span><span class="current">SigningKey</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Signing</span><wbr><span><span>Key</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="index.html">SigningKey</a><span class="token operator">&lt;</span><a href="index.html">PublicKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token punctuation">, </span><a href="index.html">PrivateKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token operator">&gt;</span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/touchlab/kjwt/tree/0.1.0//lib/src/commonMain/kotlin/co/touchlab/kjwt/model/registry/SigningKey.kt#L25">source</a>)</span></span></div><p class="paragraph">Represents a cryptographic key (or key pair) used for JWS signing and/or verification.</p><p class="paragraph">Instances are identified by a (<a href="../../co.touchlab.kjwt.model.algorithm/-signing-algorithm/index.html">SigningAlgorithm</a>, optional key ID) pair captured in <a href="identifier.html">identifier</a>. Depending on which key material is available, a <a href="index.html">SigningKey</a> may be:</p><ul><li><p class="paragraph"><a href="-signing-only-key/index.html">SigningOnlyKey</a> — holds only a private key; used by <a href="../../co.touchlab.kjwt.builder/-jwt-builder/index.html">co.touchlab.kjwt.builder.JwtBuilder</a> to produce signatures.</p></li><li><p class="paragraph"><a href="-verify-only-key/index.html">VerifyOnlyKey</a> — holds only a public key; used by <a href="../../co.touchlab.kjwt.parser/-jwt-parser/index.html">co.touchlab.kjwt.parser.JwtParser</a> to verify signatures.</p></li><li><p class="paragraph"><a href="-signing-key-pair/index.html">SigningKeyPair</a> — holds both keys; supports both signing and verification.</p></li></ul><p class="paragraph">Complementary keys that share the same <a href="-identifier/index.html">Identifier</a> can be merged into a <a href="-signing-key-pair/index.html">SigningKeyPair</a> via <a href="../../../kjwt/co.touchlab.kjwt.model.registry/-signing-key/merge-with.html">mergeWith</a>. This happens automatically when both are registered with the same <a href="../-jwt-key-registry/index.html">JwtKeyRegistry</a>.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-jwt-key-registry/index.html"><span>Jwt</span><wbr><span>Key</span><wbr><span><span>Registry</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../co.touchlab.kjwt.parser/-jwt-parser-builder/verify-with.html"><span>Jwt</span><wbr><span>Parser</span><wbr><span>Builder.</span><wbr><span>verifyWith</span></a></div></span></div><div></div></div></div></div><h4 class="tableheader">Inheritors</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-signing-only-key/index.html">SigningOnlyKey</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-verify-only-key/index.html">VerifyOnlyKey</a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-signing-key-pair/index.html">SigningKeyPair</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="197959853%2FClasslikes%2F2073764679" anchor-label="Identifier" id="197959853%2FClasslikes%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-identifier/index.html"><span><span>Identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="197959853%2FClasslikes%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="-identifier/index.html">Identifier</a><span class="token operator">&lt;</span><a href="-identifier/index.html">PublicKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token punctuation">, </span><a href="-identifier/index.html">PrivateKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>algorithm<span class="token operator">: </span><a href="../../co.touchlab.kjwt.model.algorithm/-signing-algorithm/index.html">SigningAlgorithm</a><span class="token operator">&lt;</span><a href="-identifier/index.html">PublicKey</a><span class="token punctuation">, </span><a href="-identifier/index.html">PrivateKey</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>keyId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Identifies a <a href="index.html">SigningKey</a> within a <a href="../-jwt-key-registry/index.html">JwtKeyRegistry</a> by algorithm and optional key ID.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="483065890%2FClasslikes%2F2073764679" anchor-label="SigningKeyPair" id="483065890%2FClasslikes%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-signing-key-pair/index.html"><span>Signing</span><wbr><span>Key</span><wbr><span><span>Pair</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="483065890%2FClasslikes%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-signing-key-pair/index.html">SigningKeyPair</a><span class="token operator">&lt;</span><a href="-signing-key-pair/index.html">PublicKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token punctuation">, </span><a href="-signing-key-pair/index.html">PrivateKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token operator">&gt;</span> : <a href="index.html">SigningKey</a><span class="token operator">&lt;</span><a href="-signing-key-pair/index.html">PublicKey</a><span class="token punctuation">, </span><a href="-signing-key-pair/index.html">PrivateKey</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A complete key pair that holds both private and public key material.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="74992680%2FClasslikes%2F2073764679" anchor-label="SigningOnlyKey" id="74992680%2FClasslikes%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-signing-only-key/index.html"><span>Signing</span><wbr><span>Only</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="74992680%2FClasslikes%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-signing-only-key/index.html">SigningOnlyKey</a><span class="token operator">&lt;</span><a href="-signing-only-key/index.html">PublicKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token punctuation">, </span><a href="-signing-only-key/index.html">PrivateKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token operator">&gt;</span> : <a href="index.html">SigningKey</a><span class="token operator">&lt;</span><a href="-signing-only-key/index.html">PublicKey</a><span class="token punctuation">, </span><a href="-signing-only-key/index.html">PrivateKey</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A signing-only key that holds only the private key material.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1648771570%2FClasslikes%2F2073764679" anchor-label="VerifyOnlyKey" id="1648771570%2FClasslikes%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-verify-only-key/index.html"><span>Verify</span><wbr><span>Only</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1648771570%2FClasslikes%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-verify-only-key/index.html">VerifyOnlyKey</a><span class="token operator">&lt;</span><a href="-verify-only-key/index.html">PublicKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token punctuation">, </span><a href="-verify-only-key/index.html">PrivateKey</a><span class="token operator"> : </span><a href="https://whyoleg.github.io/cryptography-kotlin/api/cryptography-core/dev.whyoleg.cryptography.materials.key/-key/index.html">Key</a><span class="token operator">&gt;</span> : <a href="index.html">SigningKey</a><span class="token operator">&lt;</span><a href="-verify-only-key/index.html">PublicKey</a><span class="token punctuation">, </span><a href="-verify-only-key/index.html">PrivateKey</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">A verify-only key that holds only the public key material.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="1321504172%2FProperties%2F2073764679" anchor-label="canSign" id="1321504172%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="can-sign.html"><span>can</span><wbr><span><span>Sign</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1321504172%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="can-sign.html">canSign</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-879223952%2FProperties%2F2073764679" anchor-label="canVerify" id="-879223952%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="can-verify.html"><span>can</span><wbr><span><span>Verify</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-879223952%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="can-verify.html">canVerify</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1961812296%2FProperties%2F2073764679" anchor-label="identifier" id="-1961812296%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="identifier.html"><span><span>identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1961812296%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="identifier.html">identifier</a><span class="token operator">: </span><a href="-identifier/index.html">SigningKey.Identifier</a><span class="token operator">&lt;</span><a href="index.html">PublicKey</a><span class="token punctuation">, </span><a href="index.html">PrivateKey</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="283315429%2FProperties%2F2073764679" anchor-label="privateKey" id="283315429%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="private-key.html"><span>private</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="283315429%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="private-key.html">privateKey</a><span class="token operator">: </span><a href="index.html">PrivateKey</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1241666883%2FProperties%2F2073764679" anchor-label="publicKey" id="1241666883%2FProperties%2F2073764679" data-filterable-set=":kjwt/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt/commonMain" data-filterable-set=":kjwt/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="public-key.html"><span>public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1241666883%2FProperties%2F2073764679"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">val </span><a href="public-key.html">publicKey</a><span class="token operator">: </span><a href="index.html">PublicKey</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Touchlab</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

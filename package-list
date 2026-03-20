@@ -10,5 +10,6 @@ co.touchlab.kjwt.ext
 co.touchlab.kjwt.model
 co.touchlab.kjwt.model.algorithm
 co.touchlab.kjwt.model.jwk
+co.touchlab.kjwt.model.registry
 co.touchlab.kjwt.parser
 co.touchlab.kjwt.serializers
