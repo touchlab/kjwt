@@ -1,5 +1,6 @@
 # KJWT
 
+![Static Badge](https://img.shields.io/badge/Experimental-purple?logo=data%3Aimage%2Fpng%3Bbase64%2CiVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAIGNIUk0AAHomAACAhAAA%2BgAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAAGYktHRAD%2FAP8A%2F6C9p5MAAAAHdElNRQfqAxQQNwqPJMIGAAAIYElEQVRo3u1XaZBU1RX%2Bzr1v6X4zPSszDMuwKQRkkUVCxQVNuUQjBNFohEKLKGqMJJLESswPrZS%2FUkZQCitUBbegKShMXDLGQAaklFRZgsMmKIzA0MMI0zDMNNPzenn97j358WZ6ppkeTfwVq%2Fqrvq%2Fe67r3nO8s373vAUUUUUQRRRRRRBFFfGNBXzVhwv2LkagYibrWfXASHYgPG4dsqBRgBgCEbODG%2BQYMA1j9w9f%2FvwK4%2Fokl6Fr2W%2BCzw0iVV8EXDogVwAMmMQPMkJxFOHEWXDUM%2BqV1OPDndwfZ%2B%2Fj9m6AZqK1QMCUAiCF9d7sCk%2Bc5WPt0FKt%2Bs%2FfrBTBzRwM0A6I9NiHllM7Q2iAWxHnLmAkgllAIJ7uadKT0lPDS2H%2FXfYPsbf%2F7dWBGVXW5vtoQMADBhfwyg5JpeXjcGOtouLQUFfVDV3bIAC598nco%2F9ZImOlEpGPSnFfTobIFTKyZ%2Bn0SAwF9wIYrS5Odr5buanowXVvtnd3bjLb16%2FNsvr%2F1BmSVqJ0%2BIf23SChzJQA1hHvpeqHGI63ldzt2Nv7piR7cs3zX%2F16B8ceOwGppWe5W1fzJl4bJxOC%2BshMHAYAgkYWDblh%2Bqsc6G1%2BK2sqGurISbJt47UWZfQzoaMLJNiyprUq%2BbIqsPZRvpQwVu%2BD8bOx0rK%2BfcRJth04WjrTQn9PXrsaIFSvgRKOj3NoRazMhexRAwa%2B3gYiDi2CGjSRMygCCLEFyRMnBlgY3diFVNmsuOnbuzNkNV0qkkxY%2BP2WdGFXL00KmmtKfx%2FxBxEJKMe7wpxXvLr%2B9Jn7zLeOxacvxQVwHqWj6XVfDbD%2BNA3fcCXf48BWZcGgWALDoIx3cMwEMAYksDMqAASiS8MPWNdkxtUvEwrlwN3%2BACfcvztl%2BfNUuXDbWwjWzRfLchZJnM77ZAXBvbhggnRtMhLCZnTqiquehafNuROcFYMFdU766hea88RqSpeWQydTM7pH1DelQePTAngcC8gAgWMNmFxalQNAACEoI2Mn0kXBr7Fa2rBN0phNNP1mVs7985SxcO6cGK9eMEc2bm1cPK02tEqShiZG%2FvREIhHTWbm875ywK27y7M25gznXbhq7AxMcehDoXw%2FD33jZTlXWPelY%2F%2BT7ifeSJGSZnYJCXI88AhGZoy5ysh1U%2BPG7RvcQJF%2FW%2FXpmz8crz%2BzC6RqLp5VM6Fg%2BtT%2Ftmc6GtSDCBQbANr66mwl%2B18%2BOIfS4OrP3jTUNXYDkzPtqzB9TRfmuipm6TZ1kRHkLmkhVCSMBEBgCDIcHEkDoov5XJng2d6bpNhM0PubUTe1b8NLd26t3XYpqZxOaNIUQPGj%2BvrehZI4UvaUANqLdnmYGsMt1YvGxZXYX3ljOuFUQt%2FTzySI2qQeTk0Uj32Elr0qHIFLAAQYBYgJhALAMRs4CJNCxK5nIQ9DAFFSJAS1FCJByzcX9DxhYqtrUx5%2BfcoSh%2B8cgEuOctnD5vHB9WruYbUtVrJvQPzt2T0BbDGPXvg6VvRY9VpF%2Fb1C9mY5CmWTBrW0M7YBZ5JerVMJgYWnhgot72kQAUiDU0CfS1MzErkdWFpAZPabgZBS%2FLoiOREUkvna8BJjBpMBjEEilPqqxnMbE3tAbqrrwKHbO%2B22Ml4s%2BZnt8d0JcDhgBYgNiAryvg6UguNIYIAmICgWF62XazM7Eue8NMzygJ5TmdcN8ifHLCws0LmzFimHuPNJJzfaWhFPcPraGUhlJAxpduPGGuvXxyT3zBreH8Vh74oCMOStw4Kj96J5q5dNZ4z3Zma8rfaQlBZvqCkjIJgb4sM5gAQ2vYidS6Jbcs3Xhg2hU4ffAY3L0f52ysf3w0rpqhcPxo9eTK8tSzppGtBunBQqPgmEx7odd3H6xb3e2yemNrHDt3fFFYxAAw7cVX4NeNgsy4l3fXTWzwrEg9OGgb6t1p%2BpqJoGEb7bAp0dczAAA75R1yTp1bwJYVVbFu7H2gX8DLH70Ss6eE8eYHI%2BQzjxx9riycXEnC7z0OqL9NewPI%2BqH2812RRbaN3d09IVz%2F%2Fe1DtxAArLujEcaHW3F48aIDttu5wVDZvkM4rw5BGAKeqoTPVqAFBoRiX%2FaknnfnXRb1frAsjzwAPL5EYv50F0%2F9uGW%2BY6eXkvR7K3qRB2KwlkimnJeuvvH3e5o%2BtfH0hujgIqEALlu7BkbdWEjPHRkfP%2FWdVKh6VqBLGrREMEMa5xEWHZDMMN1Uo3209U7thC6YX7Rj96%2BezM39w9PzMHZMCbrdUMm3p8Y2Oba7EAMOMOL%2BfDKAdNb55MTpioUhW0c7uwTuXvrefxdAHyYdisJoPXJvd%2FW4DZ60raDElLeYARB5CMt2hP3uhN3e9SNdXflPGXawb%2BZ1F1m00BmdjuYW457Ksp4NUng2QSBo0f4qEAClLT%2BeqHh44iXqhcrRpwC0FeRY8GUOACY%2B8SRKvS44nW3Hs%2BW1M5S0LiVmXzArwToYWilipYQiJbTPTk%2FXX8p37Fqnkp7Ovr0FZ%2FcdzbPZ2DAfbWecusoKd7UhVD1rw9daKs1ScTB8Zqk0G0h7zvbo6fBTZ2IiM%2FcKG9v%2Bdbogzy%2F%2FoNm2HWlhwoidGp90qqf6ZLLQha0YnOZSN7YP5ZEzMnEBTcseGDTt7S3XAIyqcCj5HSKWgJnrGCIEn3YUiDnjmc21w%2FlzK%2BRgxpzGITka%2BBL4b70AfvQZUE%2B8RUTKWwRZEEO8WwikQJQAVdfC27Kh4JyyMhMAOiOO%2BIcghuJ%2B9wQGiSCjmgmptMTESxgvvdzxZRS%2F%2BqO%2BEPbz0rzn21ek8p5PvPhmwXUDX60Hzt3PSzGT4pj9yxBMA7jtewY%2BO6ax8aG%2Ffh16RRRRRBFFFFFEEUV8U%2FAfGXvGZ1J%2FCK4AAAAldEVYdGRhdGU6Y3JlYXRlADIwMjYtMDMtMjBUMTY6NTQ6NTkrMDA6MDCRKVM4AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI2LTAzLTIwVDE2OjU0OjU5KzAwOjAw4HTrhAAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNi0wMy0yMFQxNjo1NToxMCswMDowMElx6kwAAAAASUVORK5CYII%3D&label=Maturity)
 [![Maven Central](https://img.shields.io/maven-central/v/co.touchlab/kjwt?label=Maven%20Central)](https://search.maven.org/artifact/co.touchlab/kjwt)
 ![Maven Central (Snapshots)](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fco%2Ftouchlab%2Fkjwt%2Fmaven-metadata.xml&label=Snapshot)
 ![Dynamic TOML Badge](https://img.shields.io/badge/dynamic/toml?url=https%3A%2F%2Fraw.githubusercontent.com%2Ftouchlab%2Fkjwt%2Frefs%2Fheads%2Fmain%2Fgradle%2Flibs.versions.toml&query=%24.versions.kotlin&logo=kotlin&logoColor=%23dedede&label=Kotlin%20Version&color=%237f52ff)
@@ -119,7 +120,11 @@ repository and use the `-SNAPSHOT` suffix:
 // settings.gradle.kts
 dependencyResolutionManagement {
     repositories {
-        maven("https://central.sonatype.com/repository/maven-snapshots")
+        maven("https://central.sonatype.com/repository/maven-snapshots") {
+            mavenContent {
+                includeModuleByRegex("co\\.touchlab", "kjwt.*")
+            }
+        }
     }
 }
 ```
@@ -127,7 +132,9 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("co.touchlab:kjwt:<kjwt-version>-SNAPSHOT")
+    implementation("co.touchlab:kjwt:<kjwt-version>-SNAPSHOT") {
+        isChanging = true
+    }
 }
 ```
 
