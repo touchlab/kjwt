@@ -33,7 +33,7 @@ fun DokkaSourceSetSpec.registerExternalDocumentation() {
 
 fun DokkaExtension.registerVersioningPlugin(project: Project) {
     pluginsConfiguration.versioning {
-        version.set(Projects.version)
+        version.set(Projects.VERSION)
         olderVersionsDir.set(project.rootProject.projectDir.resolve("build/previous-versions"))
         renderVersionsNavigationOnAllPages.set(true)
     }

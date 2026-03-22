@@ -8,11 +8,18 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      snapshot:
+        description: 'Publish as snapshot'
+        type: boolean
+        default: false
 
 jobs:
   deployment:
     name: Publish to Maven Central
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -35,9 +42,16 @@ jobs:
 
       - name: Publish to Maven Central
         env:
-          ORG_GRADLE_PROJECT_SNAPSHOT: ${{ github.event_name == 'push' }}
+          ORG_GRADLE_PROJECT_SNAPSHOT: ${{ github.event_name == 'push' || inputs.snapshot }}
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PW }}
         run: ./gradlew publishToMavenCentral
+
+      - name: Create Git Tag
+        if: github.event_name == 'workflow_dispatch' && !inputs.snapshot
+        run: |
+          VERSION=$(grep 'const val VERSION' build-logic/src/main/kotlin/kjwt/Projects.kt | sed 's/.*"\(.*\)".*/\1/')
+          git tag "v$VERSION"
+          git push origin "v$VERSION"

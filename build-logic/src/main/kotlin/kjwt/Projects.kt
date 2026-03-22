@@ -7,8 +7,8 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.getByType
 
 object Projects {
-    const val group = "co.touchlab"
-    const val version = "0.1.0"
+    const val GROUP = "co.touchlab"
+    const val VERSION = "0.1.0"
 
     private enum class Type { Library, Misc }
 

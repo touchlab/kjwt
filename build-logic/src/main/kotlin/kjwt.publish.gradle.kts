@@ -5,8 +5,8 @@ plugins {
     id("com.vanniktech.maven.publish")
 }
 
-group = Projects.group
-version = Projects.version.let {
+group = Projects.GROUP
+version = Projects.VERSION.let {
     if (project.hasProperty("SNAPSHOT")) {
         "$it-SNAPSHOT"
     } else {
