@@ -2,6 +2,7 @@
 
 package co.touchlab.kjwt
 
+import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
@@ -9,13 +10,20 @@ import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonObject
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 
-// ---- Custom payload type used in all tests in this file ----
+// ---- Custom types used in all tests in this file ----
+
+@Serializable
+data class CustomHeader(
+    @SerialName(JwtHeader.ALG) val algorithm: String? = null,
+    @SerialName(JwtHeader.TYP) val type: String? = null,
+    @SerialName("kid") val keyId: String? = null,
+    @SerialName("x-custom") val custom: String? = null,
+)
 
 @Serializable
 data class UserClaims(
@@ -23,10 +31,9 @@ data class UserClaims(
     @SerialName("role") val role: String? = null,
     @SerialName("level") val level: Int? = null,
     @SerialName("exp") val expSeconds: Long? = null,
-    private val jsonData: JsonObject = JsonObject(emptyMap()),
 )
 
-class CustomPayloadTest :
+class CustomTypeParsing :
     FunSpec({
 
         context("JWS") {
@@ -76,6 +83,114 @@ class CustomPayloadTest :
                 assertEquals("minimal-user", payload.subject)
                 assertNull(payload.role)
                 assertNull(payload.level)
+            }
+        }
+
+        context("getHeader") {
+
+            test("JWS - deserializes standard header fields into custom type") {
+                val key = hs256Key()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("user-1")
+                        .signWith(SigningAlgorithm.HS256, key)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(SigningAlgorithm.HS256, key)
+                        .build()
+                        .parseSigned(token)
+
+                val header = jws.getHeader<CustomHeader>()
+                assertEquals("HS256", header.algorithm)
+                assertEquals("JWT", header.type)
+            }
+
+            test("JWS - custom extra header field is deserialized") {
+                val key = hs256Key()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("user-2")
+                        .header { extra("x-custom", "hello") }
+                        .signWith(SigningAlgorithm.HS256, key)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(SigningAlgorithm.HS256, key)
+                        .build()
+                        .parseSigned(token)
+
+                val header = jws.getHeader<CustomHeader>()
+                assertEquals("hello", header.custom)
+            }
+
+            test("JWS - absent optional header field is null") {
+                val key = hs256Key()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("user-3")
+                        .signWith(SigningAlgorithm.HS256, key)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(SigningAlgorithm.HS256, key)
+                        .build()
+                        .parseSigned(token)
+
+                val header = jws.getHeader<CustomHeader>()
+                assertNull(header.keyId)
+                assertNull(header.custom)
+            }
+
+            test("JWE - deserializes standard header fields into custom type") {
+                val cek = aesSimpleKey(128)
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("enc-user-1")
+                        .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A128GCM)
+                        .compact()
+
+                val jwe =
+                    Jwt
+                        .parser()
+                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .build()
+                        .parseEncrypted(token)
+
+                val header = jwe.getHeader<CustomHeader>()
+                assertEquals("dir", header.algorithm)
+                assertEquals("JWT", header.type)
+            }
+
+            test("JWE - custom extra header field is deserialized") {
+                val cek = aesSimpleKey(128)
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("enc-user-2")
+                        .header { extra("x-custom", "world") }
+                        .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A128GCM)
+                        .compact()
+
+                val jwe =
+                    Jwt
+                        .parser()
+                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .build()
+                        .parseEncrypted(token)
+
+                val header = jwe.getHeader<CustomHeader>()
+                assertEquals("world", header.custom)
             }
         }
 

@@ -22,7 +22,7 @@ import kotlinx.serialization.json.put
 @Serializable(with = JwtHeaderSerializer::class)
 public class JwtHeader internal constructor(
     internal val base64Encoded: String,
-    internal val jsonData: JsonObject,
+    @PublishedApi internal val jsonData: JsonObject,
 ) {
     internal constructor(jsonData: JsonObject) : this(
         base64Encoded = JwtJson.encodeToBase64Url(jsonData),

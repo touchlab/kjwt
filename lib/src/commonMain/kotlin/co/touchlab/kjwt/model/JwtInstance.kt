@@ -20,6 +20,16 @@ public sealed class JwtInstance {
         payload.jsonData
     )
 
+    /**
+     * Deserializes the token header as type [T].
+     *
+     * @return the header deserialized into an instance of [T]
+     */
+    public inline fun <reified T> getHeader(): T = JwtJson.decodeFromJsonElement(
+        kotlinx.serialization.serializer<T>(),
+        header.jsonData
+    )
+
     /** Represents a JWE (encrypted) token with five compact-serialization parts. */
     public class Jwe internal constructor(
         override val header: JwtHeader,
