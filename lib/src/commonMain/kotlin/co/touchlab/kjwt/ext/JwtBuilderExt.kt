@@ -11,9 +11,6 @@ import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
-import dev.whyoleg.cryptography.algorithms.SHA256
-import dev.whyoleg.cryptography.algorithms.SHA384
-import dev.whyoleg.cryptography.algorithms.SHA512
 
 /**
  * Signs the JWT using an HMAC algorithm with a key decoded from a String.
@@ -33,13 +30,8 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         CryptographyProvider.Default
             .get(HMAC)
-            .keyDecoder(
-                when (algorithm) {
-                    SigningAlgorithm.HS256 -> SHA256
-                    SigningAlgorithm.HS384 -> SHA384
-                    SigningAlgorithm.HS512 -> SHA512
-                },
-            ).decodeFromByteArray(keyFormat, key.encodeToByteArray())
+            .keyDecoder(algorithm.digest)
+            .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
 }
@@ -62,13 +54,8 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         CryptographyProvider.Default
             .get(RSA.PKCS1)
-            .privateKeyDecoder(
-                when (algorithm) {
-                    SigningAlgorithm.RS256 -> SHA256
-                    SigningAlgorithm.RS384 -> SHA384
-                    SigningAlgorithm.RS512 -> SHA512
-                },
-            ).decodeFromByteArray(keyFormat, key.encodeToByteArray())
+            .privateKeyDecoder(algorithm.digest)
+            .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
 }
@@ -91,13 +78,8 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         CryptographyProvider.Default
             .get(RSA.PSS)
-            .privateKeyDecoder(
-                when (algorithm) {
-                    SigningAlgorithm.PS256 -> SHA256
-                    SigningAlgorithm.PS384 -> SHA384
-                    SigningAlgorithm.PS512 -> SHA512
-                },
-            ).decodeFromByteArray(keyFormat, key.encodeToByteArray())
+            .privateKeyDecoder(algorithm.digest)
+            .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
 }
