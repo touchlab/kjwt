@@ -230,6 +230,69 @@ val parser = Jwt.parser()
 
 ---
 
+## Using cryptography-kotlin Keys Directly (Parser)
+
+The `co.touchlab.kjwt.ext` package also provides `verifyWith` and `decryptWith` overloads on
+`JwtParserBuilder` that accept a raw `String` key plus the corresponding cryptography-kotlin format
+type. These are the parser-side twins of the builder extensions described above.
+
+### HMAC (HS256 / HS384 / HS512)
+
+```kotlin
+import dev.whyoleg.cryptography.algorithms.HMAC
+
+val parser = Jwt.parser()
+    .verifyWith(SigningAlgorithm.HS256, hmacKeyString, HMAC.Key.Format.RAW)
+    .build()
+```
+
+### RSA PKCS#1 v1.5 (RS256 / RS384 / RS512)
+
+```kotlin
+import dev.whyoleg.cryptography.algorithms.RSA
+
+val parser = Jwt.parser()
+    .verifyWith(SigningAlgorithm.RS256, pemString, RSA.PublicKey.Format.PEM)
+    .build()
+```
+
+### RSA PSS (PS256 / PS384 / PS512)
+
+```kotlin
+val parser = Jwt.parser()
+    .verifyWith(SigningAlgorithm.PS256, pemString, RSA.PublicKey.Format.PEM)
+    .build()
+```
+
+### ECDSA (ES256 / ES384 / ES512)
+
+```kotlin
+import dev.whyoleg.cryptography.algorithms.EC
+
+val parser = Jwt.parser()
+    .verifyWith(SigningAlgorithm.ES256, rawKeyString, EC.PublicKey.Format.RAW)
+    .build()
+```
+
+All overloads accept an optional `keyId` parameter so the key participates in the standard `kid`
+matching strategy described under [Multiple Keys](#multiple-keys-key-rotation).
+
+### Direct key (`dir`) decryption from `ByteArray` or `String`
+
+```kotlin
+// from raw bytes
+val parser = Jwt.parser()
+    .decryptWith(cekBytes, EncryptionAlgorithm.Dir)
+    .build()
+
+// from a UTF-8 string (converted to bytes automatically)
+val parser = Jwt.parser()
+    .decryptWith(cekString, EncryptionAlgorithm.Dir)
+    .build()
+```
+
+---
+
 ## Standard Claims
 
 All seven RFC 7519 registered claims are supported via the builder:
@@ -273,11 +336,44 @@ val jws: JwtInstance.Jws = Jwt.builder()
 val token: String = jws.compact()
 ```
 
+### Merging a serializable object into the payload
+
+Use `payload(value)` to merge all fields from a `@Serializable` object into the token payload at once,
+instead of setting each claim individually:
+
+```kotlin
+@Serializable
+data class UserClaims(
+    @SerialName("role") val role: String? = null,
+    @SerialName("level") val level: Int? = null,
+)
+
+val jws: JwtInstance.Jws = Jwt.builder()
+    .subject("user-123")
+    .payload(UserClaims(role = "admin", level = 5))   // merges all fields
+    .signWith(signingKey)
+```
+
+Each field in the object is written as a claim, overwriting any existing value with the same name.
+Standard claims set before or after the call (e.g. `.subject()`) are not affected unless the
+serializable type defines a field that maps to the same claim name.
+
 ## Header Parameters
+
+Header fields can be set either with flat setter methods or with the `header { }` DSL block:
 
 ```kotlin
 val rsaSigningKey = SigningAlgorithm.RS256.parsePrivateKey(pemBytes, keyId = "key-2024-01")
 
+// Flat setters (new)
+val jws: JwtInstance.Jws = Jwt.builder()
+    .subject("user-123")
+    .type("JWT")                               // typ
+    .contentType("application/json")           // cty
+    .header("x-custom", "value")              // extra parameter (reified)
+    .signWith(rsaSigningKey)
+
+// DSL block (original)
 val jws: JwtInstance.Jws = Jwt.builder()
     .subject("user-123")
     .header {
@@ -288,6 +384,25 @@ val jws: JwtInstance.Jws = Jwt.builder()
 
 val token: String = jws.compact()
 ```
+
+### Merging a serializable object into the header
+
+Use `header(value)` to merge all fields from a `@Serializable` object into the JOSE header at once:
+
+```kotlin
+@Serializable
+data class MyHeader(
+    @SerialName("x-tenant") val tenant: String? = null,
+    @SerialName("x-version") val version: Int? = null,
+)
+
+val jws: JwtInstance.Jws = Jwt.builder()
+    .subject("user-123")
+    .header(MyHeader(tenant = "acme", version = 2))   // merges all fields
+    .signWith(signingKey)
+```
+
+Each field in the object is written as a header parameter, overwriting any existing value with the same name.
 
 ## Key ID (`kid`)
 
@@ -602,6 +717,27 @@ println(payload.subject)
 ```
 
 `getPayload<T>()` is available on both `JwtInstance.Jws` and `JwtInstance.Jwe`.
+
+## Custom Header Types
+
+The same pattern works for the JOSE header. Define a `@Serializable` data class whose fields map
+to the header parameter names you care about, then call `getHeader<T>()`:
+
+```kotlin
+@Serializable
+data class MyHeader(
+    @SerialName("alg") val algorithm: String? = null,
+    @SerialName("kid") val keyId: String? = null,
+    @SerialName("x-tenant") val tenant: String? = null,
+)
+
+val jws: JwtInstance.Jws = parser.parseSigned(token)
+val header: MyHeader = jws.getHeader<MyHeader>()
+println(header.keyId)
+println(header.tenant)
+```
+
+`getHeader<T>()` is available on both `JwtInstance.Jws` and `JwtInstance.Jwe`.
 
 ## JWE with Direct Key (`dir`)
 
