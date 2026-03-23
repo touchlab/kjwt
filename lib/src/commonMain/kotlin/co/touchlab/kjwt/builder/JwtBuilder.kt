@@ -182,6 +182,34 @@ public class JwtBuilder {
     public fun claims(block: JwtPayload.Builder.() -> Unit): JwtBuilder = apply { payloadBuilder.block() }
 
     /**
+     * Merges all fields from [value] into the payload, encoded using [serializer].
+     *
+     * The object is serialized to a JSON object and each key-value pair is added to the payload,
+     * overwriting any existing claim with the same name.
+     *
+     * @param serializer the serialization strategy for [T]
+     * @param value the object whose fields should be merged into the payload
+     * @return this builder for chaining
+     */
+    public fun <T> payload(
+        serializer: SerializationStrategy<T>,
+        value: T,
+    ): JwtBuilder = apply { payloadBuilder.takeFrom(serializer, value) }
+
+    /**
+     * Merges all fields from [value] into the payload, inferring the serializer from the reified
+     * type [T].
+     *
+     * The object is serialized to a JSON object and each key-value pair is added to the payload,
+     * overwriting any existing claim with the same name.
+     *
+     * @param value the object whose fields should be merged into the payload
+     * @return this builder for chaining
+     */
+    public inline fun <reified T> payload(value: T): JwtBuilder =
+        payload(kotlinx.serialization.serializer<T>(), value)
+
+    /**
      * Sets the token type (`typ`) header parameter.
      *
      * @param typ the token type; defaults to `"JWT"`
@@ -242,6 +270,34 @@ public class JwtBuilder {
      * @return this builder for chaining
      */
     public fun header(block: JwtHeader.Builder.() -> Unit): JwtBuilder = apply { headerBuilder.block() }
+
+    /**
+     * Merges all fields from [value] into the JOSE header, encoded using [serializer].
+     *
+     * The object is serialized to a JSON object and each key-value pair is added to the header,
+     * overwriting any existing parameter with the same name.
+     *
+     * @param serializer the serialization strategy for [T]
+     * @param value the object whose fields should be merged into the header
+     * @return this builder for chaining
+     */
+    public fun <T> header(
+        serializer: SerializationStrategy<T>,
+        value: T,
+    ): JwtBuilder = apply { headerBuilder.takeFrom(serializer, value) }
+
+    /**
+     * Merges all fields from [value] into the JOSE header, inferring the serializer from the
+     * reified type [T].
+     *
+     * The object is serialized to a JSON object and each key-value pair is added to the header,
+     * overwriting any existing parameter with the same name.
+     *
+     * @param value the object whose fields should be merged into the header
+     * @return this builder for chaining
+     */
+    public inline fun <reified T> header(value: T): JwtBuilder =
+        header(kotlinx.serialization.serializer<T>(), value)
 
     /**
      * Builds and returns a JWS compact serialization: `header.payload.signature`.

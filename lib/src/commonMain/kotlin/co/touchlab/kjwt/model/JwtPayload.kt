@@ -192,6 +192,36 @@ public class JwtPayload internal constructor(
         }
 
         /**
+         * Merges all fields from [value] into this builder, encoded using [serializer].
+         *
+         * The object is serialized to a [JsonObject] and each key-value pair is added to the
+         * payload, overwriting any existing claim with the same name.
+         *
+         * @param serializer the serialization strategy for [T]
+         * @param value the object whose fields should be merged into the payload
+         */
+        public fun <T> takeFrom(
+            serializer: SerializationStrategy<T>,
+            value: T,
+        ) {
+            val jsonObject = JwtJson.encodeToJsonElement(serializer, value) as JsonObject
+            jsonObject.forEach { (key, element) -> content[key] = element }
+        }
+
+        /**
+         * Merges all fields from [value] into this builder, inferring the serializer from the
+         * reified type [T].
+         *
+         * The object is serialized to a [JsonObject] and each key-value pair is added to the
+         * payload, overwriting any existing claim with the same name.
+         *
+         * @param value the object whose fields should be merged into the payload
+         */
+        public inline fun <reified T> takeFrom(value: T) {
+            takeFrom(kotlinx.serialization.serializer<T>(), value)
+        }
+
+        /**
          * Sets the expiration time (`exp`) claim relative to the current time.
          *
          * @param duration the duration from now until the token expires

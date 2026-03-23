@@ -162,6 +162,36 @@ public class JwtHeader internal constructor(
             extra(name, kotlinx.serialization.serializer<T>(), value)
         }
 
+        /**
+         * Merges all fields from [value] into this builder, encoded using [serializer].
+         *
+         * The object is serialized to a [JsonObject] and each key-value pair is added to the
+         * header, overwriting any existing parameter with the same name.
+         *
+         * @param serializer the serialization strategy for [T]
+         * @param value the object whose fields should be merged into the header
+         */
+        public fun <T> takeFrom(
+            serializer: SerializationStrategy<T>,
+            value: T,
+        ) {
+            val jsonObject = JwtJson.encodeToJsonElement(serializer, value) as JsonObject
+            jsonObject.forEach { (key, element) -> content[key] = element }
+        }
+
+        /**
+         * Merges all fields from [value] into this builder, inferring the serializer from the
+         * reified type [T].
+         *
+         * The object is serialized to a [JsonObject] and each key-value pair is added to the
+         * header, overwriting any existing parameter with the same name.
+         *
+         * @param value the object whose fields should be merged into the header
+         */
+        public inline fun <reified T> takeFrom(value: T) {
+            takeFrom(kotlinx.serialization.serializer<T>(), value)
+        }
+
         internal fun build(
             algorithm: SigningAlgorithm<*, *>,
             keyId: String?,
