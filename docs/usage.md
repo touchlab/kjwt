@@ -767,6 +767,67 @@ val jwe = parser.parseEncrypted(token)
 
 ---
 
+## Customising the `Json` Instance
+
+By default, KJWT uses an internal `Json` configured with `ignoreUnknownKeys = true` and
+`explicitNulls = false`. This handles the most common use cases. If your application needs
+different serialization behaviour — for example, `encodeDefaults = true` or custom serializers
+registered via a `SerializersModule` — you can supply your own `Json` instance.
+
+### Builder and parser
+
+Pass a custom `Json` to `Jwt.builder()` or `Jwt.parser()`. The instance propagates automatically
+to every JSON operation performed by that builder or parser (claim serialization, payload and
+header encoding/decoding, etc.):
+
+```kotlin
+val customJson = Json {
+    ignoreUnknownKeys = true
+    explicitNulls = false
+    serializersModule = mySerializersModule
+}
+
+// builder — affects claim/payload/header serialization
+val jws = Jwt.builder(customJson)
+    .subject("user-123")
+    .payload(UserClaims(role = "admin"))
+    .signWith(signingKey)
+
+// parser — affects payload/header deserialization
+val parser = Jwt.parser(customJson)
+    .verifyWith(signingKey)
+    .build()
+```
+
+### Per-call overrides
+
+Methods that directly perform JSON serialization also accept an optional `jsonInstance` parameter,
+so you can override the instance for a single call without rebuilding the whole builder or parser:
+
+```kotlin
+// Deserialize the payload with a custom Json
+val claims: UserClaims = jws.getPayload<UserClaims>(jsonInstance = customJson)
+
+// Deserialize the header with a custom Json
+val header: MyHeader = jws.getHeader<MyHeader>(jsonInstance = customJson)
+
+// Read a custom claim with a custom Json
+val role: String = jws.payload.getClaim(String.serializer(), "role", jsonInstance = customJson)
+
+// Set a header parameter using a custom Json (JwtHeader.Builder)
+headerBuilder.extra("x-meta", MyMeta.serializer(), meta, jsonInstance = customJson)
+headerBuilder.takeFrom(MyHeader.serializer(), myHeader, jsonInstance = customJson)
+
+// Set a payload claim using a custom Json (JwtPayload.Builder)
+payloadBuilder.claim("meta", MyMeta.serializer(), meta, jsonInstance = customJson)
+payloadBuilder.takeFrom(UserClaims.serializer(), claims, jsonInstance = customJson)
+```
+
+All `jsonInstance` parameters default to the library's built-in `JwtJson`, so existing code
+requires no changes.
+
+---
+
 ## API Stability Annotations
 
 KJWT uses two opt-in annotations to communicate the stability of its API surface.

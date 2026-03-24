@@ -8,11 +8,11 @@ description = "Kotlin Multiplaftorm JWT"
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.serialization.json)
-
             api(libs.cryptography.core)
-            implementation(libs.cryptography.bigint)
+            api(libs.cryptography.bigint)
+            api(libs.kotlinx.serialization.json)
+
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.cryptography.serialization.asn1)
             implementation(libs.cryptography.serialization.asn1.modules)
         }

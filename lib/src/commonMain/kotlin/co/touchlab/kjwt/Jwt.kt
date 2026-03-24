@@ -1,7 +1,9 @@
 package co.touchlab.kjwt
 
 import co.touchlab.kjwt.builder.JwtBuilder
+import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.parser.JwtParserBuilder
+import kotlinx.serialization.json.Json
 
 /**
  * Entry point for the KJWT library.
@@ -45,7 +47,27 @@ import co.touchlab.kjwt.parser.JwtParserBuilder
  * `cryptography-provider-optimal` to your app dependencies — it auto-registers on startup.
  */
 public object Jwt {
-    public fun builder(): JwtBuilder = JwtBuilder()
+    /**
+     * Creates a new [JwtBuilder] for constructing JWS or JWE tokens.
+     *
+     * @param jsonInstance the [Json] instance to use for all serialization within this builder;
+     *   defaults to the library's internal configuration (`ignoreUnknownKeys = true`,
+     *   `explicitNulls = false`)
+     * @return a new [JwtBuilder]
+     */
+    public fun builder(
+        jsonInstance: Json = JwtJson,
+    ): JwtBuilder = JwtBuilder(jsonInstance)
 
-    public fun parser(): JwtParserBuilder = JwtParserBuilder()
+    /**
+     * Creates a new [JwtParserBuilder] for parsing and validating JWS or JWE tokens.
+     *
+     * @param jsonInstance the [Json] instance to use for all deserialization within this parser;
+     *   defaults to the library's internal configuration (`ignoreUnknownKeys = true`,
+     *   `explicitNulls = false`)
+     * @return a new [JwtParserBuilder]
+     */
+    public fun parser(
+        jsonInstance: Json = JwtJson,
+    ): JwtParserBuilder = JwtParserBuilder(jsonInstance)
 }

@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.model
 
 import co.touchlab.kjwt.internal.JwtJson
+import kotlinx.serialization.json.Json
 
 public sealed class JwtInstance {
     public abstract val header: JwtHeader
@@ -13,9 +14,11 @@ public sealed class JwtInstance {
     /**
      * Deserializes the token payload as type [T].
      *
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the payload deserialized into an instance of [T]
      */
-    public inline fun <reified T> getPayload(): T = JwtJson.decodeFromJsonElement(
+    public inline fun <reified T> getPayload(jsonInstance: Json = JwtJson): T = jsonInstance.decodeFromJsonElement(
         kotlinx.serialization.serializer<T>(),
         payload.jsonData
     )
@@ -23,9 +26,11 @@ public sealed class JwtInstance {
     /**
      * Deserializes the token header as type [T].
      *
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the header deserialized into an instance of [T]
      */
-    public inline fun <reified T> getHeader(): T = JwtJson.decodeFromJsonElement(
+    public inline fun <reified T> getHeader(jsonInstance: Json = JwtJson): T = jsonInstance.decodeFromJsonElement(
         kotlinx.serialization.serializer<T>(),
         header.jsonData
     )

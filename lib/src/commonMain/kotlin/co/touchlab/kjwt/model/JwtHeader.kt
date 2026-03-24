@@ -12,6 +12,7 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonObjectBuilder
@@ -25,14 +26,13 @@ public class JwtHeader internal constructor(
     @PublishedApi internal val jsonData: JsonObject,
 ) {
     internal constructor(jsonData: JsonObject) : this(
-        base64Encoded = JwtJson.encodeToBase64Url(jsonData),
+        base64Encoded = jsonData.encodeToBase64Url(),
         jsonData = jsonData,
     )
 
-    internal constructor(base64Encoded: String) : this(
+    internal constructor(base64Encoded: String, jsonInstance: Json) : this(
         base64Encoded = base64Encoded,
-        jsonData =
-        JwtJson.decodeBase64Url(
+        jsonData = jsonInstance.decodeBase64Url(
             deserializer = JsonObject.serializer(),
             base64UrlString = base64Encoded,
             name = "header",
@@ -60,27 +60,33 @@ public class JwtHeader internal constructor(
      *
      * @param serializer the deserialization strategy for type [T]
      * @param name the header parameter name
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the deserialized header value
      * @throws NullPointerException if the header parameter is absent
      */
     public fun <T> getHeader(
         serializer: DeserializationStrategy<T>,
         name: String,
-    ): T = getHeaderOrNull(serializer, name) ?: throw NullPointerException("Header '$name' not found")
+        jsonInstance: Json = JwtJson,
+    ): T = getHeaderOrNull(serializer, name, jsonInstance) ?: throw NullPointerException("Header '$name' not found")
 
     /**
      * Returns the value of the named header parameter deserialized using the given [serializer], or `null` if absent.
      *
      * @param serializer the deserialization strategy for type [T]
      * @param name the header parameter name
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the deserialized header value, or `null` if the parameter is not present
      */
     public fun <T> getHeaderOrNull(
         serializer: DeserializationStrategy<T>,
         name: String,
+        jsonInstance: Json = JwtJson,
     ): T? {
         val element = jsonData[name] ?: return null
-        return JwtJson.decodeFromJsonElement(serializer, element)
+        return jsonInstance.decodeFromJsonElement(serializer, element)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -140,13 +146,16 @@ public class JwtHeader internal constructor(
          * @param name the header parameter name
          * @param serializer the serialization strategy for [T]
          * @param value the header value, or `null` to remove the parameter
+         * @param jsonInstance the [Json] instance to use for serialization; defaults to the library's
+         *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
          */
         public fun <T> extra(
             name: String,
             serializer: SerializationStrategy<T>,
             value: T?,
+            jsonInstance: Json = JwtJson,
         ) {
-            extra(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
+            extra(name, value?.let { jsonInstance.encodeToJsonElement(serializer, it) })
         }
 
         /**
@@ -170,12 +179,15 @@ public class JwtHeader internal constructor(
          *
          * @param serializer the serialization strategy for [T]
          * @param value the object whose fields should be merged into the header
+         * @param jsonInstance the [Json] instance to use for serialization; defaults to the library's
+         *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
          */
         public fun <T> takeFrom(
             serializer: SerializationStrategy<T>,
             value: T,
+            jsonInstance: Json = JwtJson,
         ) {
-            val jsonObject = JwtJson.encodeToJsonElement(serializer, value) as JsonObject
+            val jsonObject = jsonInstance.encodeToJsonElement(serializer, value) as JsonObject
             jsonObject.forEach { (key, element) -> content[key] = element }
         }
 

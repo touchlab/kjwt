@@ -42,7 +42,7 @@ public class JwtParser internal constructor(
         val parts = token.split('.')
         if (parts.size != 3) throw MalformedJwtException("JWS token must have exactly 3 parts, got ${parts.size}")
 
-        val header = JwtHeader(parts[0])
+        val header = JwtHeader(parts[0], config.jsonInstance)
 
         val algorithm: SigningAlgorithm<*, *> =
             try {
@@ -57,7 +57,7 @@ public class JwtParser internal constructor(
             )
         }
 
-        val claims = JwtPayload(parts[1])
+        val claims = JwtPayload(parts[1], config.jsonInstance)
         val signature = parts[2]
 
         if (algorithm != SigningAlgorithm.None && !config.skipVerification) {
@@ -89,7 +89,7 @@ public class JwtParser internal constructor(
         val parts = token.split('.')
         if (parts.size != 5) throw MalformedJwtException("JWE token must have exactly 5 parts, got ${parts.size}")
 
-        val header = JwtHeader(parts[0])
+        val header = JwtHeader(parts[0], config.jsonInstance)
 
         val keyAlgorithm =
             try {
@@ -130,7 +130,7 @@ public class JwtParser internal constructor(
                 throw SignatureException("JWE decryption or authentication tag verification failed", e)
             }
 
-        val claims = JwtPayload(plaintext.encodeBase64Url())
+        val claims = JwtPayload(plaintext.encodeBase64Url(), config.jsonInstance)
 
         validateTimeClaims(claims, header)
         validateJwtClaimsAndHeader(claims, header)

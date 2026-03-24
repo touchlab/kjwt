@@ -3,6 +3,8 @@ package co.touchlab.kjwt.internal
 import co.touchlab.kjwt.exception.MalformedJwtException
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.encodeToJsonElement
 
 @PublishedApi
 internal val JwtJson: Json =
@@ -34,6 +36,9 @@ internal fun <T> Json.decodeBase64Url(
 }
 
 internal inline fun <reified T> Json.encodeToBase64Url(value: T): String =
-    encodeToString(value)
+    encodeToJsonElement(value).encodeToBase64Url()
+
+internal fun JsonElement.encodeToBase64Url(): String =
+    toString()
         .encodeToByteArray()
         .encodeBase64Url()

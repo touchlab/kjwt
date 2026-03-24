@@ -1,7 +1,6 @@
 package co.touchlab.kjwt.builder
 
 import co.touchlab.kjwt.cryptography.SimpleKey
-import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.internal.encodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
 import co.touchlab.kjwt.model.JwtHeader
@@ -16,6 +15,7 @@ import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.model.registry.SigningKey.Identifier
 import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlin.time.Duration
 import kotlin.time.Instant
@@ -42,7 +42,9 @@ import kotlin.uuid.ExperimentalUuidApi
  *     .encryptWith(encKey, EncryptionContentAlgorithm.A256GCM)
  * ```
  */
-public class JwtBuilder {
+public class JwtBuilder(
+    internal val jsonInstance: Json,
+) {
     @PublishedApi
     internal val payloadBuilder: JwtPayload.Builder = JwtPayload.Builder()
 
@@ -159,7 +161,7 @@ public class JwtBuilder {
         name: String,
         serializer: SerializationStrategy<T>,
         value: T?,
-    ): JwtBuilder = apply { payloadBuilder.claim(name, serializer, value) }
+    ): JwtBuilder = apply { payloadBuilder.claim(name, serializer, value, jsonInstance) }
 
     /**
      * Sets a typed claim, inferring the serializer from the reified type [T].
@@ -194,7 +196,7 @@ public class JwtBuilder {
     public fun <T> payload(
         serializer: SerializationStrategy<T>,
         value: T,
-    ): JwtBuilder = apply { payloadBuilder.takeFrom(serializer, value) }
+    ): JwtBuilder = apply { payloadBuilder.takeFrom(serializer, value, jsonInstance) }
 
     /**
      * Merges all fields from [value] into the payload, inferring the serializer from the reified
@@ -249,7 +251,7 @@ public class JwtBuilder {
         name: String,
         serializer: SerializationStrategy<T>,
         value: T?,
-    ): JwtBuilder = apply { headerBuilder.extra(name, serializer, value) }
+    ): JwtBuilder = apply { headerBuilder.extra(name, serializer, value, jsonInstance) }
 
     /**
      * Sets a typed extra header parameter, inferring the serializer from the reified type [T].
@@ -284,7 +286,7 @@ public class JwtBuilder {
     public fun <T> header(
         serializer: SerializationStrategy<T>,
         value: T,
-    ): JwtBuilder = apply { headerBuilder.takeFrom(serializer, value) }
+    ): JwtBuilder = apply { headerBuilder.takeFrom(serializer, value, jsonInstance) }
 
     /**
      * Merges all fields from [value] into the JOSE header, inferring the serializer from the
@@ -492,9 +494,9 @@ public class JwtBuilder {
         val header = headerBuilder.build(key.identifier.algorithm, contentAlgorithm, keyId)
         val payload = payloadBuilder.build()
 
-        val headerB64 = JwtJson.encodeToBase64Url(header)
+        val headerB64 = jsonInstance.encodeToBase64Url(header)
         val aad = headerB64.encodeToByteArray()
-        val plaintext = JwtJson.encodeToString(payload).encodeToByteArray()
+        val plaintext = jsonInstance.encodeToString(payload).encodeToByteArray()
 
         val result = key.encrypt(contentAlgorithm, plaintext, aad)
 

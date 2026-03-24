@@ -8,6 +8,7 @@ import co.touchlab.kjwt.serializers.JwtPayloadSerializer
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlin.time.Clock
@@ -26,9 +27,9 @@ public class JwtPayload internal constructor(
         jsonData = jsonData,
     )
 
-    internal constructor(base64Encoded: String) : this(
+    internal constructor(base64Encoded: String, jsonInstance: Json = JwtJson) : this(
         base64Encoded = base64Encoded,
-        jsonData = JwtJson.decodeBase64Url(
+        jsonData = jsonInstance.decodeBase64Url(
             deserializer = JsonObject.serializer(),
             base64UrlString = base64Encoded,
             name = "payload",
@@ -48,27 +49,33 @@ public class JwtPayload internal constructor(
      *
      * @param serializer the deserialization strategy for type [T]
      * @param name the claim name
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the deserialized claim value
      * @throws NullPointerException if the claim is absent
      */
     public fun <T> getClaim(
         serializer: DeserializationStrategy<T>,
         name: String,
-    ): T = getClaimOrNull(serializer, name) ?: throw NullPointerException(name)
+        jsonInstance: Json = JwtJson,
+    ): T = getClaimOrNull(serializer, name, jsonInstance) ?: throw NullPointerException(name)
 
     /**
      * Returns the value of the named claim deserialized using the given [serializer], or `null` if absent.
      *
      * @param serializer the deserialization strategy for type [T]
      * @param name the claim name
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the deserialized claim value, or `null` if the claim is not present
      */
     public fun <T> getClaimOrNull(
         serializer: DeserializationStrategy<T>,
         name: String,
+        jsonInstance: Json = JwtJson,
     ): T? {
         val element = jsonData[name] ?: return null
-        return JwtJson.decodeFromJsonElement(serializer, element)
+        return jsonInstance.decodeFromJsonElement(serializer, element)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -169,13 +176,16 @@ public class JwtPayload internal constructor(
          * @param name the claim name
          * @param serializer the serialization strategy for [T]
          * @param value the claim value, or `null` to remove the claim
+         * @param jsonInstance the [Json] instance to use for serialization; defaults to the library's
+         *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
          */
         public fun <T> claim(
             name: String,
             serializer: SerializationStrategy<T>,
             value: T?,
+            jsonInstance: Json = JwtJson,
         ) {
-            claim(name, value?.let { JwtJson.encodeToJsonElement(serializer, it) })
+            claim(name, value?.let { jsonInstance.encodeToJsonElement(serializer, it) })
         }
 
         /**
@@ -199,12 +209,15 @@ public class JwtPayload internal constructor(
          *
          * @param serializer the serialization strategy for [T]
          * @param value the object whose fields should be merged into the payload
+         * @param jsonInstance the [Json] instance to use for serialization; defaults to the library's
+         *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
          */
         public fun <T> takeFrom(
             serializer: SerializationStrategy<T>,
             value: T,
+            jsonInstance: Json = JwtJson,
         ) {
-            val jsonObject = JwtJson.encodeToJsonElement(serializer, value) as JsonObject
+            val jsonObject = jsonInstance.encodeToJsonElement(serializer, value) as JsonObject
             jsonObject.forEach { (key, element) -> content[key] = element }
         }
 

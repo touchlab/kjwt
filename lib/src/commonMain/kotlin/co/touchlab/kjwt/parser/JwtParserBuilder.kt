@@ -14,6 +14,7 @@ import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.model.registry.JwtKeyRegistry
 import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.materials.key.Key
+import kotlinx.serialization.json.Json
 
 /**
  * Configures and builds a [JwtParser].
@@ -29,7 +30,9 @@ import dev.whyoleg.cryptography.materials.key.Key
  * val jws = parser.parse(token)
  * ```
  */
-public class JwtParserBuilder {
+public class JwtParserBuilder(
+    internal val jsonInstance: Json,
+) {
     internal val keyRegistry = JwtKeyRegistry()
 
     @PublishedApi
