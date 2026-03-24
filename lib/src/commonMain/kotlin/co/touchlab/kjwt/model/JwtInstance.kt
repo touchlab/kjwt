@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.model
 
 import co.touchlab.kjwt.internal.JwtJson
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
 public sealed class JwtInstance {
@@ -14,26 +15,48 @@ public sealed class JwtInstance {
     /**
      * Deserializes the token payload as type [T].
      *
+     * @param T the target type to deserialize the payload into
      * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
      *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the payload deserialized into an instance of [T]
      */
-    public inline fun <reified T> getPayload(jsonInstance: Json = JwtJson): T = jsonInstance.decodeFromJsonElement(
-        kotlinx.serialization.serializer<T>(),
-        payload.jsonData
-    )
+    public inline fun <reified T> getPayload(jsonInstance: Json = JwtJson): T =
+        getPayload(kotlinx.serialization.serializer<T>(), jsonInstance)
+
+    /**
+     * Deserializes the token payload using the given [serializer].
+     *
+     * @param T the target type to deserialize the payload into
+     * @param serializer the [KSerializer] used to deserialize the payload
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
+     * @return the payload deserialized into an instance of [T]
+     */
+    public fun <T> getPayload(serializer: KSerializer<T>, jsonInstance: Json = JwtJson): T =
+        jsonInstance.decodeFromJsonElement(serializer, payload.jsonData)
 
     /**
      * Deserializes the token header as type [T].
      *
+     * @param T the target type to deserialize the header into
      * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
      *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
      * @return the header deserialized into an instance of [T]
      */
-    public inline fun <reified T> getHeader(jsonInstance: Json = JwtJson): T = jsonInstance.decodeFromJsonElement(
-        kotlinx.serialization.serializer<T>(),
-        header.jsonData
-    )
+    public inline fun <reified T> getHeader(jsonInstance: Json = JwtJson): T =
+        getHeader(kotlinx.serialization.serializer<T>(), jsonInstance)
+
+    /**
+     * Deserializes the token header using the given [serializer].
+     *
+     * @param T the target type to deserialize the header into
+     * @param serializer the [KSerializer] used to deserialize the header
+     * @param jsonInstance the [Json] instance to use for deserialization; defaults to the library's
+     *   internal [JwtJson] configuration (`ignoreUnknownKeys = true`, `explicitNulls = false`)
+     * @return the header deserialized into an instance of [T]
+     */
+    public fun <T> getHeader(serializer: KSerializer<T>, jsonInstance: Json = JwtJson): T =
+        jsonInstance.decodeFromJsonElement(serializer, header.jsonData)
 
     /** Represents a JWE (encrypted) token with five compact-serialization parts. */
     public class Jwe internal constructor(
