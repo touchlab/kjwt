@@ -1,10 +1,10 @@
 package co.touchlab.kjwt.model.algorithm
 
-internal data class JweEncryptResult(
-    val encryptedKey: ByteArray,
-    val iv: ByteArray,
-    val ciphertext: ByteArray,
-    val tag: ByteArray,
+public class JweEncryptResult(
+    public val encryptedKey: ByteArray,
+    public val iv: ByteArray,
+    public val ciphertext: ByteArray,
+    public val tag: ByteArray,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -27,4 +27,12 @@ internal data class JweEncryptResult(
         result = 31 * result + tag.contentHashCode()
         return result
     }
+
+    override fun toString(): String =
+        "JweEncryptResult(" +
+            "encryptedKey=${encryptedKey.contentToString()}, " +
+            "iv=${iv.contentToString()}, " +
+            "ciphertext=${ciphertext.contentToString()}, " +
+            "tag=${tag.contentToString()}" +
+            ")"
 }

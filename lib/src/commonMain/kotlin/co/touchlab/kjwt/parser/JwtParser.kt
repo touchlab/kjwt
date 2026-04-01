@@ -61,15 +61,15 @@ public class JwtParser internal constructor(
         val signature = parts[2]
 
         if (algorithm != SigningAlgorithm.None && !config.skipVerification) {
-            val verifier =
+            val integrityProcessor =
                 checkNotNull(
-                    config.keyRegistry.findBestSigningKey(algorithm, header.keyIdOrNull),
+                    config.keyRegistry.findBestJwsProcessor(algorithm, header.keyIdOrNull),
                 ) { "No verification key configured. Call verifyWith() or noVerify() on the parser builder." }
 
             val signingInput = "${parts[0]}.${parts[1]}".encodeToByteArray()
             val signature = signature.decodeBase64Url()
 
-            val valid = runCatching { verifier.verify(signingInput, signature) }
+            val valid = runCatching { integrityProcessor.verify(signingInput, signature) }
             if (!valid.getOrDefault(false)) throw SignatureException("JWT signature verification failed")
         }
 
@@ -105,7 +105,7 @@ public class JwtParser internal constructor(
             }
 
         val decryptor =
-            requireNotNull(config.keyRegistry.findBestEncryptionKey(keyAlgorithm, header.keyIdOrNull)) {
+            requireNotNull(config.keyRegistry.findBestJweProcessor(keyAlgorithm, header.keyIdOrNull)) {
                 "No decryption key configured. Call decryptWith() on the parser builder."
             }
 
@@ -119,12 +119,12 @@ public class JwtParser internal constructor(
         val plaintext =
             try {
                 decryptor.decrypt(
-                    contentAlgorithm = contentAlgorithm,
+                    aad = aad,
                     encryptedKey = encryptedKey.decodeBase64Url(),
                     iv = iv.decodeBase64Url(),
-                    ciphertext = ciphertext.decodeBase64Url(),
+                    data = ciphertext.decodeBase64Url(),
                     tag = tag.decodeBase64Url(),
-                    aad = aad,
+                    contentAlgorithm = contentAlgorithm,
                 )
             } catch (e: Throwable) {
                 throw SignatureException("JWE decryption or authentication tag verification failed", e)

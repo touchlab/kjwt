@@ -1,5 +1,7 @@
 package co.touchlab.kjwt.builder
 
+import co.touchlab.kjwt.cryptography.JweProcessor
+import co.touchlab.kjwt.cryptography.JwsProcessor
 import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.internal.encodeBase64Url
 import co.touchlab.kjwt.internal.encodeToBase64Url
@@ -9,6 +11,8 @@ import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.crypto.CryptographyKotlinEncryptionProcessor
+import co.touchlab.kjwt.model.crypto.CryptographyKotlinIntegrityProcessor
 import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.model.registry.JwtKeyRegistry
 import co.touchlab.kjwt.model.registry.SigningKey
@@ -315,7 +319,10 @@ public class JwtBuilder(
         algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
         key: PrivateKey,
         keyId: String? = null,
-    ): JwtInstance.Jws = signWithSigningKey(SigningKey.SigningOnlyKey(Identifier(algorithm, keyId), key))
+    ): JwtInstance.Jws = signWith(
+        SigningKey.SigningOnlyKey(Identifier(algorithm, keyId), key),
+        keyId,
+    )
 
     /**
      * Looks up the private key from [registry] and builds a JWS compact serialization.
@@ -345,14 +352,15 @@ public class JwtBuilder(
             return build()
         }
 
-        val key =
-            requireNotNull(registry.findBestSigningKey(algorithm, keyId)) {
-                "No signing key configured for ${algorithm.id}."
-            }
-
-        require(key.canSign) { "The signing key for $keyId does not support signing" }
-
-        return signWithSigningKey(key, keyId)
+        return try {
+            val processor =
+                requireNotNull(registry.findBestJwsProcessor(algorithm, keyId)) {
+                    "No signing key configured for ${algorithm.id}."
+                }
+            signWithJwsProcessor(processor, keyId)
+        } catch (e: Throwable) {
+            throw IllegalArgumentException("The signing key for $keyId does not support signing", e)
+        }
     }
 
     /**
@@ -366,7 +374,7 @@ public class JwtBuilder(
     public suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
         key: SigningKey.SigningOnlyKey<PublicKey, PrivateKey>,
         keyId: String? = key.identifier.keyId,
-    ): JwtInstance.Jws = signWithSigningKey(key, keyId)
+    ): JwtInstance.Jws = signWithJwsProcessor(CryptographyKotlinIntegrityProcessor(key), keyId)
 
     /**
      * Builds and returns a JWS compact serialization using a pre-built [SigningKey.SigningKeyPair].
@@ -379,17 +387,21 @@ public class JwtBuilder(
     public suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
         key: SigningKey.SigningKeyPair<PublicKey, PrivateKey>,
         keyId: String? = key.identifier.keyId,
-    ): JwtInstance.Jws = signWithSigningKey(key, keyId)
+    ): JwtInstance.Jws = signWithJwsProcessor(CryptographyKotlinIntegrityProcessor(key), keyId)
 
-    private suspend fun <PublicKey : Key, PrivateKey : Key> signWithSigningKey(
-        key: SigningKey<PublicKey, PrivateKey>,
-        keyId: String? = key.identifier.keyId,
+    private suspend fun signWithJwsProcessor(
+        integrityProcessor: JwsProcessor,
+        keyId: String? = null,
     ): JwtInstance.Jws {
-        val header = headerBuilder.build(key.identifier.algorithm, keyId, jsonInstance)
+        val header = headerBuilder.build(integrityProcessor.algorithm, keyId, jsonInstance)
         val payload = payloadBuilder.build(jsonInstance)
 
         val signingInput = "$header.$payload".encodeToByteArray()
-        val signature = if (key.identifier.algorithm == SigningAlgorithm.None) ByteArray(0) else key.sign(signingInput)
+        val signature = if (integrityProcessor.algorithm == SigningAlgorithm.None) {
+            ByteArray(0)
+        } else {
+            integrityProcessor.sign(signingInput)
+        }
 
         return JwtInstance.Jws(header, payload, signature.encodeBase64Url())
     }
@@ -418,9 +430,12 @@ public class JwtBuilder(
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = null,
     ): JwtInstance.Jwe =
-        encryptWithEncryptionKey(
-            key = EncryptionKey.EncryptionOnlyKey(EncryptionKey.Identifier(keyAlgorithm, keyId), key),
+        encryptWithJweProcessor(
+            processor = CryptographyKotlinEncryptionProcessor(
+                EncryptionKey.EncryptionOnlyKey(EncryptionKey.Identifier(keyAlgorithm, keyId), key)
+            ),
             contentAlgorithm = contentAlgorithm,
+            keyId = keyId,
         )
 
     /**
@@ -445,15 +460,15 @@ public class JwtBuilder(
         keyAlgorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = null,
-    ): JwtInstance.Jwe {
-        val key =
-            requireNotNull(registry.findBestEncryptionKey(keyAlgorithm, keyId)) {
+    ): JwtInstance.Jwe = try {
+        val processor =
+            requireNotNull(registry.findBestJweProcessor(keyAlgorithm, keyId)) {
                 "No signing key configured for ${keyAlgorithm.id}."
             }
 
-        require(key.canEncrypt) { "The signing key for $keyId does not support encryption." }
-
-        return encryptWithEncryptionKey(key, contentAlgorithm, keyId)
+        encryptWithJweProcessor(processor, contentAlgorithm, keyId)
+    } catch (e: Throwable) {
+        throw IllegalArgumentException("The signing key for $keyId does not support encryption.", e)
     }
 
     /**
@@ -469,7 +484,7 @@ public class JwtBuilder(
         key: EncryptionKey.EncryptionOnlyKey<PublicKey, PrivateKey>,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = key.identifier.keyId,
-    ): JwtInstance.Jwe = encryptWithEncryptionKey(key, contentAlgorithm, keyId)
+    ): JwtInstance.Jwe = encryptWithJweProcessor(CryptographyKotlinEncryptionProcessor(key), contentAlgorithm, keyId)
 
     /**
      * Builds and returns a JWE compact serialization using a pre-built [EncryptionKey.EncryptionKeyPair].
@@ -484,21 +499,21 @@ public class JwtBuilder(
         key: EncryptionKey.EncryptionKeyPair<PublicKey, PrivateKey>,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = key.identifier.keyId,
-    ): JwtInstance.Jwe = encryptWithEncryptionKey(key, contentAlgorithm, keyId)
+    ): JwtInstance.Jwe = encryptWithJweProcessor(CryptographyKotlinEncryptionProcessor(key), contentAlgorithm, keyId)
 
-    private suspend fun <PublicKey : Key, PrivateKey : Key> encryptWithEncryptionKey(
-        key: EncryptionKey<PublicKey, PrivateKey>,
+    private suspend fun encryptWithJweProcessor(
+        processor: JweProcessor,
         contentAlgorithm: EncryptionContentAlgorithm,
-        keyId: String? = key.identifier.keyId,
+        keyId: String?,
     ): JwtInstance.Jwe {
-        val header = headerBuilder.build(key.identifier.algorithm, contentAlgorithm, keyId, jsonInstance)
+        val header = headerBuilder.build(processor.algorithm, contentAlgorithm, keyId, jsonInstance)
         val payload = payloadBuilder.build(jsonInstance)
 
         val headerB64 = jsonInstance.encodeToBase64Url(header)
         val aad = headerB64.encodeToByteArray()
         val plaintext = jsonInstance.encodeToString(payload).encodeToByteArray()
 
-        val result = key.encrypt(contentAlgorithm, plaintext, aad)
+        val result = processor.encrypt(plaintext, aad, contentAlgorithm)
 
         return JwtInstance.Jwe(
             header = header,
