@@ -21,54 +21,84 @@ public class CryptographyKotlinIntegrityProcessor<PublicKey : Key, PrivateKey : 
     override val algorithm: SigningAlgorithm
         get() = key.identifier.algorithm
 
-    override suspend fun sign(data: ByteArray): ByteArray =
-        when (val algorithm = key.identifier.algorithm) {
-            is SigningAlgorithm.MACBased -> {
-                @Suppress("UNCHECKED_CAST")
-                (key.privateKey as HMAC.Key).signatureGenerator().generateSignature(data)
+    override suspend fun sign(data: ByteArray): ByteArray {
+        val privateKey = key.privateKey
+        val algorithm = key.identifier.algorithm
+
+        return when (privateKey) {
+            is HMAC.Key if (algorithm is SigningAlgorithm.MACBased) -> {
+                privateKey.signatureGenerator().generateSignature(data)
             }
-            is SigningAlgorithm.PKCS1Based -> {
-                @Suppress("UNCHECKED_CAST")
-                (key.privateKey as RSA.PKCS1.PrivateKey).signatureGenerator().generateSignature(data)
+
+            is RSA.PKCS1.PrivateKey if (algorithm is SigningAlgorithm.PKCS1Based) -> {
+                privateKey.signatureGenerator().generateSignature(data)
             }
-            is SigningAlgorithm.PSSBased -> {
-                @Suppress("UNCHECKED_CAST")
-                (key.privateKey as RSA.PSS.PrivateKey).signatureGenerator().generateSignature(data)
+
+            is RSA.PSS.PrivateKey if (algorithm is SigningAlgorithm.PSSBased) -> {
+                privateKey.signatureGenerator().generateSignature(data)
             }
-            is SigningAlgorithm.ECDSABased -> {
-                @Suppress("UNCHECKED_CAST")
-                (key.privateKey as ECDSA.PrivateKey)
+
+            is ECDSA.PrivateKey if (algorithm is SigningAlgorithm.ECDSABased) -> {
+                privateKey
                     .signatureGenerator(algorithm.digest, ECDSA.SignatureFormat.RAW)
                     .generateSignature(data)
             }
-            SigningAlgorithm.None -> ByteArray(0)
+
+            else -> {
+                when (algorithm) {
+                    SigningAlgorithm.None -> {
+                        ByteArray(0)
+                    }
+
+                    else -> {
+                        error("The keys provided for signing are not valid for the ${algorithm.id}.")
+                    }
+                }
+            }
         }
+    }
 
     override suspend fun verify(data: ByteArray, signature: ByteArray): Boolean =
         try {
-            when (val algorithm = key.identifier.algorithm) {
-                is SigningAlgorithm.MACBased -> {
-                    @Suppress("UNCHECKED_CAST")
-                    (key.publicKey as HMAC.Key).signatureVerifier().verifySignature(data, signature)
+            val publicKey = key.publicKey
+            val algorithm = key.identifier.algorithm
+
+            when (publicKey) {
+                is HMAC.Key if (algorithm is SigningAlgorithm.MACBased) -> {
+                    publicKey.signatureVerifier().verifySignature(data, signature)
+                    true
                 }
-                is SigningAlgorithm.PKCS1Based -> {
-                    @Suppress("UNCHECKED_CAST")
-                    (key.publicKey as RSA.PKCS1.PublicKey).signatureVerifier().verifySignature(data, signature)
+
+                is RSA.PKCS1.PublicKey if (algorithm is SigningAlgorithm.PKCS1Based) -> {
+                    publicKey.signatureVerifier().verifySignature(data, signature)
+                    true
                 }
-                is SigningAlgorithm.PSSBased -> {
-                    @Suppress("UNCHECKED_CAST")
-                    (key.publicKey as RSA.PSS.PublicKey).signatureVerifier().verifySignature(data, signature)
+
+                is RSA.PSS.PublicKey if (algorithm is SigningAlgorithm.PSSBased) -> {
+                    publicKey.signatureVerifier().verifySignature(data, signature)
+                    true
                 }
-                is SigningAlgorithm.ECDSABased -> {
-                    @Suppress("UNCHECKED_CAST")
-                    (key.publicKey as ECDSA.PublicKey)
+
+                is ECDSA.PublicKey if (algorithm is SigningAlgorithm.ECDSABased) -> {
+                    publicKey
                         .signatureVerifier(algorithm.digest, ECDSA.SignatureFormat.RAW)
                         .verifySignature(data, signature)
+                    true
                 }
-                SigningAlgorithm.None -> true
+
+                else -> {
+                    when (algorithm) {
+                        SigningAlgorithm.None -> {
+                            signature.isEmpty()
+                        }
+
+                        else -> {
+                            null
+                        }
+                    }
+                }
             }
-            true
         } catch (_: Throwable) {
             false
-        }
+        } ?: error("The keys provided for verification are not valid for the ${algorithm.id}.")
 }

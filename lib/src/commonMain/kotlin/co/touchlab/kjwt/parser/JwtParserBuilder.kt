@@ -10,6 +10,7 @@ import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.registry.CryptographyKotlinJwtKeyRegistry
 import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.model.registry.JwtKeyRegistry
 import co.touchlab.kjwt.model.registry.SigningKey
@@ -33,7 +34,7 @@ import kotlinx.serialization.json.Json
 public class JwtParserBuilder(
     internal val jsonInstance: Json,
 ) {
-    internal val keyRegistry = JwtKeyRegistry()
+    internal val keyRegistry = CryptographyKotlinJwtKeyRegistry()
 
     @PublishedApi
     internal val validators: MutableList<(JwtPayload, JwtHeader) -> Unit> = mutableListOf()
@@ -73,9 +74,9 @@ public class JwtParserBuilder(
      *     .build()
      * ```
      *
-     * @param registry the [JwtKeyRegistry] to fall back to when no local key matches
+     * @param registry the [CryptographyKotlinJwtKeyRegistry] to fall back to when no local key matches
      * @return this builder for chaining
-     * @see JwtKeyRegistry
+     * @see CryptographyKotlinJwtKeyRegistry
      */
     public fun useKeysFrom(registry: JwtKeyRegistry): JwtParserBuilder =
         apply {
@@ -98,7 +99,7 @@ public class JwtParserBuilder(
     ): JwtParserBuilder =
         apply {
             keyRegistry.registerSigningKey(
-                SigningKey.VerifyOnlyKey<PublicKey, Key>(
+                SigningKey.VerifyOnlyKey(
                     identifier = SigningKey.Identifier(algorithm, keyId),
                     publicKey = key,
                 ),

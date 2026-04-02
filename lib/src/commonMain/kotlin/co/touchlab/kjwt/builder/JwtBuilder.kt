@@ -9,6 +9,7 @@ import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
+import co.touchlab.kjwt.model.registry.CryptographyKotlinJwtKeyRegistry
 import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.model.registry.JwtKeyRegistry
 import co.touchlab.kjwt.model.registry.SigningKey
@@ -328,7 +329,7 @@ public class JwtBuilder(
      * Looks up the private key from [registry] and builds a JWS compact serialization.
      *
      * The registry is searched using [algorithm] and [keyId] as the look-up criteria (see
-     * [JwtKeyRegistry] for the full look-up order). If no matching key is found an
+     * [CryptographyKotlinJwtKeyRegistry] for the full look-up order). If no matching key is found an
      * [IllegalStateException] is thrown.
      *
      * Passing [co.touchlab.kjwt.model.algorithm.SigningAlgorithm.None] delegates directly to
@@ -341,7 +342,7 @@ public class JwtBuilder(
      * @return the resulting [JwtInstance.Jws] compact serialization
      * @throws IllegalStateException if no signing key for [algorithm] (and [keyId]) is found in
      *   [registry]
-     * @see JwtKeyRegistry
+     * @see CryptographyKotlinJwtKeyRegistry
      */
     public suspend fun signWith(
         algorithm: SigningAlgorithm,
@@ -442,7 +443,7 @@ public class JwtBuilder(
      * Looks up the public key from [registry] and builds a JWE compact serialization.
      *
      * The registry is searched using [keyAlgorithm] and [keyId] as the look-up criteria (see
-     * [JwtKeyRegistry] for the full look-up order). If no matching key is found an
+     * [CryptographyKotlinJwtKeyRegistry] for the full look-up order). If no matching key is found an
      * [IllegalStateException] is thrown.
      *
      * @param registry the key registry to look up the public encryption key from
@@ -453,7 +454,7 @@ public class JwtBuilder(
      * @return the resulting [JwtInstance.Jwe] compact serialization
      * @throws IllegalStateException if no encryption key for [keyAlgorithm] (and [keyId]) is
      *   found in [registry]
-     * @see JwtKeyRegistry
+     * @see CryptographyKotlinJwtKeyRegistry
      */
     public suspend fun encryptWith(
         registry: JwtKeyRegistry,

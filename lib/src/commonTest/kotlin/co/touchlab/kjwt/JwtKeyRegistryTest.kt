@@ -5,7 +5,7 @@ import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.model.registry.EncryptionKey
-import co.touchlab.kjwt.model.registry.JwtKeyRegistry
+import co.touchlab.kjwt.model.registry.CryptographyKotlinJwtKeyRegistry
 import co.touchlab.kjwt.model.registry.SigningKey
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
@@ -18,7 +18,7 @@ class JwtKeyRegistryTest :
 
             test("sign HS256 using registry signing key") {
                 val key = hs256Key()
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
                 registry.registerSigningKey(
                     SigningKey.SigningOnlyKey(
                         identifier = SigningKey.Identifier(SigningAlgorithm.HS256, null),
@@ -45,7 +45,7 @@ class JwtKeyRegistryTest :
 
             test("sign HS256 using registry with kid") {
                 val key = hs256Key()
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
                 registry.registerSigningKey(
                     SigningKey.SigningOnlyKey(
                         identifier = SigningKey.Identifier(SigningAlgorithm.HS256, "sign-key"),
@@ -71,7 +71,7 @@ class JwtKeyRegistryTest :
             }
 
             test("sign throws when no matching key in registry") {
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
 
                 assertFailsWith<IllegalArgumentException> {
                     Jwt
@@ -86,7 +86,7 @@ class JwtKeyRegistryTest :
 
             test("parser delegates verification to shared registry") {
                 val key = hs256Key()
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 sharedRegistry.registerSigningKey(
                     SigningKey.VerifyOnlyKey(
                         identifier = SigningKey.Identifier(SigningAlgorithm.HS256, null),
@@ -113,7 +113,7 @@ class JwtKeyRegistryTest :
 
             test("parser delegates verification to shared registry with kid") {
                 val key = hs256Key()
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 sharedRegistry.registerSigningKey(
                     SigningKey.VerifyOnlyKey(
                         identifier = SigningKey.Identifier(SigningAlgorithm.HS256, "k1"),
@@ -145,7 +145,7 @@ class JwtKeyRegistryTest :
                         dev.whyoleg.cryptography.algorithms.SHA256,
                         "wrong-secret-at-least-256-bits-long-padding".encodeToByteArray(),
                     )
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 sharedRegistry.registerSigningKey(
                     SigningKey.VerifyOnlyKey(
                         identifier = SigningKey.Identifier(SigningAlgorithm.HS256, null),
@@ -177,7 +177,7 @@ class JwtKeyRegistryTest :
 
             test("encrypt Dir A256GCM using registry encryption key") {
                 val cek = aesSimpleKey(256)
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
                 registry.registerEncryptionKey(
                     EncryptionKey.EncryptionOnlyKey(
                         identifier = EncryptionKey.Identifier(EncryptionAlgorithm.Dir, null),
@@ -204,7 +204,7 @@ class JwtKeyRegistryTest :
 
             test("encrypt Dir A256GCM using registry with kid") {
                 val cek = aesSimpleKey(256)
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
                 registry.registerEncryptionKey(
                     EncryptionKey.EncryptionOnlyKey(
                         identifier = EncryptionKey.Identifier(EncryptionAlgorithm.Dir, "enc-k1"),
@@ -230,7 +230,7 @@ class JwtKeyRegistryTest :
             }
 
             test("encrypt throws when no matching key in registry") {
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
 
                 assertFailsWith<IllegalArgumentException> {
                     Jwt
@@ -245,7 +245,7 @@ class JwtKeyRegistryTest :
 
             test("parser delegates decryption to shared registry") {
                 val cek = aesSimpleKey(256)
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 sharedRegistry.registerEncryptionKey(
                     EncryptionKey.DecryptionOnlyKey(
                         identifier = EncryptionKey.Identifier(EncryptionAlgorithm.Dir, null),
@@ -272,7 +272,7 @@ class JwtKeyRegistryTest :
 
             test("parser delegates decryption to shared registry with kid") {
                 val cek = aesSimpleKey(256)
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 sharedRegistry.registerEncryptionKey(
                     EncryptionKey.DecryptionOnlyKey(
                         identifier = EncryptionKey.Identifier(EncryptionAlgorithm.Dir, "enc-k1"),
@@ -301,15 +301,15 @@ class JwtKeyRegistryTest :
         context("delegation cycle detection") {
 
             test("self-delegation throws") {
-                val registry = JwtKeyRegistry()
+                val registry = CryptographyKotlinJwtKeyRegistry()
                 assertFailsWith<IllegalArgumentException> {
                     registry.delegateTo(registry)
                 }
             }
 
             test("direct cycle throws") {
-                val a = JwtKeyRegistry()
-                val b = JwtKeyRegistry()
+                val a = CryptographyKotlinJwtKeyRegistry()
+                val b = CryptographyKotlinJwtKeyRegistry()
                 a.delegateTo(b)
                 assertFailsWith<IllegalArgumentException> {
                     b.delegateTo(a)
@@ -317,9 +317,9 @@ class JwtKeyRegistryTest :
             }
 
             test("transitive cycle throws") {
-                val a = JwtKeyRegistry()
-                val b = JwtKeyRegistry()
-                val c = JwtKeyRegistry()
+                val a = CryptographyKotlinJwtKeyRegistry()
+                val b = CryptographyKotlinJwtKeyRegistry()
+                val c = CryptographyKotlinJwtKeyRegistry()
                 a.delegateTo(b)
                 b.delegateTo(c)
                 assertFailsWith<IllegalArgumentException> {
@@ -328,9 +328,9 @@ class JwtKeyRegistryTest :
             }
 
             test("linear chain without cycle is allowed") {
-                val a = JwtKeyRegistry()
-                val b = JwtKeyRegistry()
-                val c = JwtKeyRegistry()
+                val a = CryptographyKotlinJwtKeyRegistry()
+                val b = CryptographyKotlinJwtKeyRegistry()
+                val c = CryptographyKotlinJwtKeyRegistry()
                 a.delegateTo(b)
                 b.delegateTo(c)
                 // no exception expected
@@ -341,7 +341,7 @@ class JwtKeyRegistryTest :
 
             test("sign and verify using a registry with merged SigningKeyPair") {
                 val key = hs256Key()
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 // Registering complementary keys merges them into a SigningKeyPair
                 sharedRegistry.registerSigningKey(
                     SigningKey.SigningOnlyKey(
@@ -375,7 +375,7 @@ class JwtKeyRegistryTest :
 
             test("encrypt and decrypt using a registry with merged EncryptionKeyPair") {
                 val cek = aesSimpleKey(256)
-                val sharedRegistry = JwtKeyRegistry()
+                val sharedRegistry = CryptographyKotlinJwtKeyRegistry()
                 // Register DecryptionOnlyKey first, then EncryptionOnlyKey — merges into EncryptionKeyPair
                 sharedRegistry.registerEncryptionKey(
                     EncryptionKey.DecryptionOnlyKey(

@@ -29,21 +29,27 @@ public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey :
         data: ByteArray,
         aad: ByteArray,
         contentAlgorithm: EncryptionContentAlgorithm,
-    ): JweEncryptResult =
-        when (key.identifier.algorithm) {
-            is EncryptionAlgorithm.OAEPBased -> {
-                @Suppress("UNCHECKED_CAST")
-                val publicKey = key.publicKey as RSA.OAEP.PublicKey
+    ): JweEncryptResult {
+        val publicKey = key.publicKey
+        val algorithm = key.identifier.algorithm
+
+        return when (publicKey) {
+            is RSA.OAEP.PublicKey if (algorithm is EncryptionAlgorithm.OAEPBased) -> {
                 val cek = contentAlgorithm.generateCek()
                 val encryptedKey = publicKey.encryptor().encrypt(cek)
                 contentAlgorithm.encrypt(cek, data, aad, encryptedKey)
             }
-            EncryptionAlgorithm.Dir -> {
-                @Suppress("UNCHECKED_CAST")
-                val cek = (key.publicKey as SimpleKey).value
+
+            is SimpleKey if (algorithm is EncryptionAlgorithm.Dir) -> {
+                val cek = publicKey.value
                 contentAlgorithm.encrypt(cek, data, aad, ByteArray(0))
             }
+
+            else -> {
+                error("The keys provided for encryption are not valid for the ${algorithm.id}.")
+            }
         }
+    }
 
     override suspend fun decrypt(
         aad: ByteArray,
@@ -52,18 +58,24 @@ public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey :
         data: ByteArray,
         tag: ByteArray,
         contentAlgorithm: EncryptionContentAlgorithm,
-    ): ByteArray =
-        when (key.identifier.algorithm) {
-            is EncryptionAlgorithm.OAEPBased -> {
-                @Suppress("UNCHECKED_CAST")
-                val privateKey = key.privateKey as RSA.OAEP.PrivateKey
+    ): ByteArray {
+        val privateKey = key.privateKey
+        val algorithm = key.identifier.algorithm
+
+        return when (privateKey) {
+            is RSA.OAEP.PrivateKey if (algorithm is EncryptionAlgorithm.OAEPBased) -> {
                 val cek = privateKey.decryptor().decrypt(encryptedKey)
                 contentAlgorithm.decrypt(cek, iv, data, tag, aad)
             }
-            EncryptionAlgorithm.Dir -> {
-                @Suppress("UNCHECKED_CAST")
-                val cek = (key.privateKey as SimpleKey).value
+
+            is SimpleKey if (algorithm is EncryptionAlgorithm.Dir) -> {
+                val cek = privateKey.value
                 contentAlgorithm.decrypt(cek, iv, data, tag, aad)
             }
+
+            else -> {
+                error("The keys provided for decryption are not valid for the ${algorithm.id}.")
+            }
         }
+    }
 }

@@ -117,7 +117,7 @@ public interface JwtKeyRegistry {
     ): JweProcessor?
 }
 
-public interface MutableJwtKeyRegistry : JwtKeyRegistry {
+public interface CryptographyKotlinJwtKeyRegistry : JwtKeyRegistry {
     /**
      * Registers a [SigningKey] in this registry.
      *
@@ -148,19 +148,19 @@ public interface MutableJwtKeyRegistry : JwtKeyRegistry {
 }
 
 /**
- * Creates a new in-memory [JwtKeyRegistry].
+ * Creates a new in-memory [CryptographyKotlinJwtKeyRegistry].
  *
  * The returned registry stores all keys in memory for the lifetime of the object. It supports
  * both signing and encryption keys, key-ID–based look-up, algorithm-only fallback, and
  * delegation to another registry via [JwtKeyRegistry.delegateTo].
  *
- * @return a new, empty [JwtKeyRegistry] backed by in-memory storage
+ * @return a new, empty [CryptographyKotlinJwtKeyRegistry] backed by in-memory storage
  */
 @ExperimentalKJWTApi
 @Suppress("detekt:FunctionNaming", "ktlint:standard:function-naming")
-public fun JwtKeyRegistry(): MutableJwtKeyRegistry = MemoryJwtKeyRegistry()
+public fun CryptographyKotlinJwtKeyRegistry(): CryptographyKotlinJwtKeyRegistry = MemoryJwtKeyRegistry()
 
-internal class MemoryJwtKeyRegistry : MutableJwtKeyRegistry {
+internal class MemoryJwtKeyRegistry : CryptographyKotlinJwtKeyRegistry {
     override var delegateKeyRegistry: JwtKeyRegistry? = null
     private val signingKeys = mutableMapOf<SigningKey.Identifier, JwsProcessor>()
     private val encryptionKeys = mutableMapOf<EncryptionKey.Identifier, JweProcessor>()
