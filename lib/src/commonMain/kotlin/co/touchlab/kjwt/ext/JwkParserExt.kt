@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.annotations.ExperimentalKJWTApi
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.model.jwk.Jwk
@@ -26,7 +27,11 @@ public suspend fun JwtParserBuilder.verifyWith(
     jwk: Jwk.Oct,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtParserBuilder = verifyWith(algorithm, jwk.toHmacKey(algorithm.digest, cryptoProvider), keyId)
+): JwtParserBuilder = verifyWith(
+    algorithm,
+    jwk.toHmacKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)
 
 // ---------------------------------------------------------------------------
 // verifyWith — RSA PKCS1 (RS*)
@@ -47,7 +52,11 @@ public suspend fun JwtParserBuilder.verifyWith(
     jwk: Jwk.Rsa,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtParserBuilder = verifyWith(algorithm, jwk.toRsaPkcs1PublicKey(algorithm.digest, cryptoProvider), keyId)
+): JwtParserBuilder = verifyWith(
+    algorithm,
+    jwk.toRsaPkcs1PublicKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)
 
 // ---------------------------------------------------------------------------
 // verifyWith — RSA PSS (PS*)
@@ -68,7 +77,11 @@ public suspend fun JwtParserBuilder.verifyWith(
     jwk: Jwk.Rsa,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtParserBuilder = verifyWith(algorithm, jwk.toRsaPssPublicKey(algorithm.digest, cryptoProvider), keyId)
+): JwtParserBuilder = verifyWith(
+    algorithm,
+    jwk.toRsaPssPublicKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)
 
 // ---------------------------------------------------------------------------
 // verifyWith — ECDSA (ES*)
@@ -110,4 +123,8 @@ public suspend fun JwtParserBuilder.decryptWith(
     jwk: Jwk.Rsa,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtParserBuilder = decryptWith(algorithm, jwk.toRsaOaepPrivateKey(algorithm.digest, cryptoProvider), keyId)
+): JwtParserBuilder = decryptWith(
+    algorithm,
+    jwk.toRsaOaepPrivateKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)

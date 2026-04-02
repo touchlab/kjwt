@@ -2,6 +2,7 @@ package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.builder.JwtBuilder
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.JwtInstance
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
@@ -33,7 +34,7 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         cryptoProvider
             .get(HMAC)
-            .keyDecoder(algorithm.digest)
+            .keyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
@@ -60,7 +61,7 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         cryptoProvider
             .get(RSA.PKCS1)
-            .privateKeyDecoder(algorithm.digest)
+            .privateKeyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
@@ -87,7 +88,7 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         cryptoProvider
             .get(RSA.PSS)
-            .privateKeyDecoder(algorithm.digest)
+            .privateKeyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)
@@ -114,7 +115,7 @@ public suspend fun JwtBuilder.signWith(
     val parsedKey =
         cryptoProvider
             .get(ECDSA)
-            .privateKeyDecoder(algorithm.curve)
+            .privateKeyDecoder(algorithm.curve.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return signWith(algorithm, parsedKey, keyId)

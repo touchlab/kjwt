@@ -2,12 +2,6 @@ package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
-import dev.whyoleg.cryptography.CryptographyAlgorithmId
-import dev.whyoleg.cryptography.algorithms.Digest
-import dev.whyoleg.cryptography.algorithms.EC
-import dev.whyoleg.cryptography.algorithms.SHA256
-import dev.whyoleg.cryptography.algorithms.SHA384
-import dev.whyoleg.cryptography.algorithms.SHA512
 import kotlinx.serialization.Serializable
 
 @Serializable(SigningAlgorithmSerializer::class)
@@ -61,12 +55,12 @@ public sealed class SigningAlgorithm(
         id: String,
     ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
-        override val digest: CryptographyAlgorithmId<Digest>
+        override val digest: JwtDigest
             get() =
                 when (this) {
-                    HS256 -> SHA256
-                    HS384 -> SHA384
-                    HS512 -> SHA512
+                    HS256 -> JwtDigest.SHA256
+                    HS384 -> JwtDigest.SHA384
+                    HS512 -> JwtDigest.SHA512
                 }
     }
 
@@ -79,12 +73,12 @@ public sealed class SigningAlgorithm(
         id: String,
     ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
-        override val digest: CryptographyAlgorithmId<Digest>
+        override val digest: JwtDigest
             get() =
                 when (this) {
-                    RS256 -> SHA256
-                    RS384 -> SHA384
-                    RS512 -> SHA512
+                    RS256 -> JwtDigest.SHA256
+                    RS384 -> JwtDigest.SHA384
+                    RS512 -> JwtDigest.SHA512
                 }
     }
 
@@ -97,12 +91,12 @@ public sealed class SigningAlgorithm(
         id: String,
     ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
-        override val digest: CryptographyAlgorithmId<Digest>
+        override val digest: JwtDigest
             get() =
                 when (this) {
-                    PS256 -> SHA256
-                    PS384 -> SHA384
-                    PS512 -> SHA512
+                    PS256 -> JwtDigest.SHA256
+                    PS384 -> JwtDigest.SHA384
+                    PS512 -> JwtDigest.SHA512
                 }
     }
 
@@ -115,20 +109,20 @@ public sealed class SigningAlgorithm(
         id: String,
     ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
-        override val digest: CryptographyAlgorithmId<Digest>
+        override val digest: JwtDigest
             get() =
                 when (this) {
-                    ES256 -> SHA256
-                    ES384 -> SHA384
-                    ES512 -> SHA512
+                    ES256 -> JwtDigest.SHA256
+                    ES384 -> JwtDigest.SHA384
+                    ES512 -> JwtDigest.SHA512
                 }
 
-        public val curve: EC.Curve
+        public val curve: JwtCurve
             get() =
                 when (this) {
-                    ES256 -> EC.Curve.P256
-                    ES384 -> EC.Curve.P384
-                    ES512 -> EC.Curve.P521
+                    ES256 -> JwtCurve.P256
+                    ES384 -> JwtCurve.P384
+                    ES512 -> JwtCurve.P521
                 }
     }
 

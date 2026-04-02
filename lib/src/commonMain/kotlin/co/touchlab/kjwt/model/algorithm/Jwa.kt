@@ -1,8 +1,6 @@
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.serializers.JwaSerializer
-import dev.whyoleg.cryptography.CryptographyAlgorithmId
-import dev.whyoleg.cryptography.algorithms.Digest
 import kotlinx.serialization.Serializable
 
 @Serializable(JwaSerializer::class)
@@ -12,8 +10,8 @@ public sealed interface Jwa {
 
     /** Marker interface for JWA algorithms that require a digest (hashing) function. */
     public interface UsesHashingAlgorithm {
-        /** The [CryptographyAlgorithmId] of the digest used by this algorithm. */
-        public val digest: CryptographyAlgorithmId<Digest>
+        /** The [JwtDigest] used by this algorithm. */
+        public val digest: JwtDigest
     }
 
     public companion object {

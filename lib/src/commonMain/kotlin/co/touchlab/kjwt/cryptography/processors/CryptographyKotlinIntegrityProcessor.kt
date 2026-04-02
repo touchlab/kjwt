@@ -1,5 +1,6 @@
 package co.touchlab.kjwt.cryptography.processors
 
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.processor.JwsProcessor
@@ -40,7 +41,7 @@ public class CryptographyKotlinIntegrityProcessor<PublicKey : Key, PrivateKey : 
 
             is ECDSA.PrivateKey if (algorithm is SigningAlgorithm.ECDSABased) -> {
                 privateKey
-                    .signatureGenerator(algorithm.digest, ECDSA.SignatureFormat.RAW)
+                    .signatureGenerator(algorithm.digest.toCryptographyKotlin(), ECDSA.SignatureFormat.RAW)
                     .generateSignature(data)
             }
 
@@ -81,7 +82,7 @@ public class CryptographyKotlinIntegrityProcessor<PublicKey : Key, PrivateKey : 
 
                 is ECDSA.PublicKey if (algorithm is SigningAlgorithm.ECDSABased) -> {
                     publicKey
-                        .signatureVerifier(algorithm.digest, ECDSA.SignatureFormat.RAW)
+                        .signatureVerifier(algorithm.digest.toCryptographyKotlin(), ECDSA.SignatureFormat.RAW)
                         .verifySignature(data, signature)
                     true
                 }

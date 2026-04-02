@@ -1,13 +1,6 @@
-@file:OptIn(DelicateCryptographyApi::class)
-
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.serializers.EncryptionAlgorithmSerializer
-import dev.whyoleg.cryptography.CryptographyAlgorithmId
-import dev.whyoleg.cryptography.DelicateCryptographyApi
-import dev.whyoleg.cryptography.algorithms.Digest
-import dev.whyoleg.cryptography.algorithms.SHA1
-import dev.whyoleg.cryptography.algorithms.SHA256
 import kotlinx.serialization.Serializable
 
 @Serializable(EncryptionAlgorithmSerializer::class)
@@ -38,11 +31,11 @@ public sealed class EncryptionAlgorithm(
         id: String,
     ) : EncryptionAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
-        override val digest: CryptographyAlgorithmId<Digest>
+        override val digest: JwtDigest
             get() =
                 when (this) {
-                    RsaOaep -> SHA1
-                    RsaOaep256 -> SHA256
+                    RsaOaep -> JwtDigest.SHA1
+                    RsaOaep256 -> JwtDigest.SHA256
                 }
     }
 

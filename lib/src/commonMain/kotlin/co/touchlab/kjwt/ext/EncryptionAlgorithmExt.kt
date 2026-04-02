@@ -3,6 +3,7 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.Dir
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.OAEPBased
 import co.touchlab.kjwt.model.registry.EncryptionKey
@@ -75,7 +76,7 @@ public suspend fun OAEPBased.newKey(
     val rsaKeyPair =
         cryptographyProvider
             .get(RSA.OAEP)
-            .keyPairGenerator(keySize, digest, publicExponent)
+            .keyPairGenerator(keySize, digest.toCryptographyKotlin(), publicExponent)
             .generateKey()
 
     return EncryptionKey.EncryptionKeyPair(
@@ -106,7 +107,7 @@ public suspend fun OAEPBased.parsePublicKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.OAEP)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return EncryptionKey.EncryptionOnlyKey(
@@ -136,7 +137,7 @@ public suspend fun OAEPBased.parsePrivateKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.OAEP)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return EncryptionKey.DecryptionOnlyKey(
@@ -170,13 +171,13 @@ public suspend fun OAEPBased.parseKeyPair(
     val parsedPublicKey =
         cryptographyProvider
             .get(RSA.OAEP)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(publicKeyFormat, publicKey)
 
     val parsedPrivateKey =
         cryptographyProvider
             .get(RSA.OAEP)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(privateKeyFormat, privateKey)
 
     return EncryptionKey.EncryptionKeyPair(

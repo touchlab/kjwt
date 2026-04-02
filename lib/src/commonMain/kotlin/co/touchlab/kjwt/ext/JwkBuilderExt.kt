@@ -2,6 +2,7 @@ package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.annotations.ExperimentalKJWTApi
 import co.touchlab.kjwt.builder.JwtBuilder
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.JwtInstance
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
@@ -28,7 +29,7 @@ public suspend fun JwtBuilder.signWith(
     jwk: Jwk.Oct,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtInstance.Jws = signWith(algorithm, jwk.toHmacKey(algorithm.digest, cryptoProvider), keyId)
+): JwtInstance.Jws = signWith(algorithm, jwk.toHmacKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider), keyId)
 
 // ---------------------------------------------------------------------------
 // signWith — RSA PKCS1 (RS*)
@@ -49,7 +50,11 @@ public suspend fun JwtBuilder.signWith(
     jwk: Jwk.Rsa,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtInstance.Jws = signWith(algorithm, jwk.toRsaPkcs1PrivateKey(algorithm.digest, cryptoProvider), keyId)
+): JwtInstance.Jws = signWith(
+    algorithm,
+    jwk.toRsaPkcs1PrivateKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)
 
 // ---------------------------------------------------------------------------
 // signWith — RSA PSS (PS*)
@@ -70,7 +75,11 @@ public suspend fun JwtBuilder.signWith(
     jwk: Jwk.Rsa,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
-): JwtInstance.Jws = signWith(algorithm, jwk.toRsaPssPrivateKey(algorithm.digest, cryptoProvider), keyId)
+): JwtInstance.Jws = signWith(
+    algorithm,
+    jwk.toRsaPssPrivateKey(algorithm.digest.toCryptographyKotlin(), cryptoProvider),
+    keyId
+)
 
 // ---------------------------------------------------------------------------
 // signWith — ECDSA (ES*)
@@ -115,4 +124,9 @@ public suspend fun JwtBuilder.encryptWith(
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
 ): JwtInstance.Jwe =
-    encryptWith(jwk.toRsaOaepPublicKey(keyAlgorithm.digest, cryptoProvider), keyAlgorithm, contentAlgorithm, keyId)
+    encryptWith(
+        jwk.toRsaOaepPublicKey(keyAlgorithm.digest.toCryptographyKotlin(), cryptoProvider),
+        keyAlgorithm,
+        contentAlgorithm,
+        keyId
+    )

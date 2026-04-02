@@ -1,9 +1,12 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.annotations.ExperimentalKJWTApi
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.internal.JwtJson
 import co.touchlab.kjwt.internal.decodeBase64Url
 import co.touchlab.kjwt.internal.encodeBase64Url
+import co.touchlab.kjwt.model.algorithm.JwtCurve
+import co.touchlab.kjwt.model.algorithm.JwtDigest
 import co.touchlab.kjwt.model.jwk.Jwk
 import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.CryptographyProvider
@@ -13,8 +16,6 @@ import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
-import dev.whyoleg.cryptography.algorithms.SHA384
-import dev.whyoleg.cryptography.algorithms.SHA512
 import dev.whyoleg.cryptography.bigint.decodeToBigInt
 import dev.whyoleg.cryptography.serialization.asn1.BitArray
 import dev.whyoleg.cryptography.serialization.asn1.Der
@@ -203,11 +204,11 @@ private fun ecCurveOid(crv: String): ObjectIdentifier =
         else -> error("Unsupported EC curve: '$crv'")
     }
 
-private fun ecCurve(crv: String): EC.Curve =
+private fun ecCurve(crv: String): JwtCurve =
     when (crv) {
-        "P-256" -> EC.Curve.P256
-        "P-384" -> EC.Curve.P384
-        "P-521" -> EC.Curve.P521
+        "P-256" -> JwtCurve.P256
+        "P-384" -> JwtCurve.P384
+        "P-521" -> JwtCurve.P521
         else -> error("Unsupported EC curve: '$crv'")
     }
 
@@ -269,7 +270,7 @@ public suspend fun Jwk.Ec.toEcdsaPublicKey(
 ): ECDSA.PublicKey =
     cryptoProvider
         .get(ECDSA)
-        .publicKeyDecoder(ecCurve(crv))
+        .publicKeyDecoder(ecCurve(crv).toCryptographyKotlin())
         .decodeFromByteArray(EC.PublicKey.Format.DER, toSpkiDer())
 
 /** Converts to [ECDSA.PrivateKey] for ES256/ES384/ES512 signing. */
@@ -279,7 +280,7 @@ public suspend fun Jwk.Ec.toEcdsaPrivateKey(
 ): ECDSA.PrivateKey =
     cryptoProvider
         .get(ECDSA)
-        .privateKeyDecoder(ecCurve(crv))
+        .privateKeyDecoder(ecCurve(crv).toCryptographyKotlin())
         .decodeFromByteArray(EC.PrivateKey.Format.DER, toPkcs8Der())
 
 // ---------------------------------------------------------------------------
@@ -287,13 +288,13 @@ public suspend fun Jwk.Ec.toEcdsaPrivateKey(
 // ---------------------------------------------------------------------------
 
 /**
- * Returns the SHA digest implied by the JWK's [Jwk.alg] field, or null if absent/unrecognised.
+ * Returns the [JwtDigest] implied by the JWK's [Jwk.alg] field, or null if absent/unrecognised.
  */
 @ExperimentalKJWTApi
-public fun Jwk.impliedDigest(): CryptographyAlgorithmId<Digest>? =
+public fun Jwk.impliedDigest(): JwtDigest? =
     when (alg) {
-        "HS256", "RS256", "PS256", "ES256", "RSA-OAEP-256" -> SHA256
-        "HS384", "RS384", "PS384", "ES384" -> SHA384
-        "HS512", "RS512", "PS512", "ES512" -> SHA512
+        "HS256", "RS256", "PS256", "ES256", "RSA-OAEP-256" -> JwtDigest.SHA256
+        "HS384", "RS384", "PS384", "ES384" -> JwtDigest.SHA384
+        "HS512", "RS512", "PS512", "ES512" -> JwtDigest.SHA512
         else -> null
     }

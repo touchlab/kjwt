@@ -1,5 +1,6 @@
 package co.touchlab.kjwt.ext
 
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.ECDSABased
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.MACBased
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.PKCS1Based
@@ -32,7 +33,7 @@ public suspend fun MACBased.newKey(
     val macKey =
         cryptographyProvider
             .get(HMAC)
-            .keyGenerator(digest)
+            .keyGenerator(digest.toCryptographyKotlin())
             .generateKey()
 
     return SigningKey.SigningKeyPair(identifier(keyId), macKey, macKey)
@@ -59,7 +60,7 @@ public suspend fun MACBased.parse(
     val macKey =
         cryptographyProvider
             .get(HMAC)
-            .keyDecoder(digest)
+            .keyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.SigningKeyPair(identifier(keyId), macKey, macKey)
@@ -86,7 +87,7 @@ public suspend fun PKCS1Based.newKey(
     val rsaKeyPair =
         cryptographyProvider
             .get(RSA.PKCS1)
-            .keyPairGenerator(keySize, digest, publicExponent)
+            .keyPairGenerator(keySize, digest.toCryptographyKotlin(), publicExponent)
             .generateKey()
 
     return SigningKey.SigningKeyPair(
@@ -117,7 +118,7 @@ public suspend fun PKCS1Based.parsePublicKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.PKCS1)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.VerifyOnlyKey(
@@ -147,7 +148,7 @@ public suspend fun PKCS1Based.parsePrivateKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.PKCS1)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.SigningOnlyKey(
@@ -181,13 +182,13 @@ public suspend fun PKCS1Based.parseKeyPair(
     val parsedPublicKey =
         cryptographyProvider
             .get(RSA.PKCS1)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(publicKeyFormat, publicKey)
 
     val parsedPrivateKey =
         cryptographyProvider
             .get(RSA.PKCS1)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(privateKeyFormat, privateKey)
 
     return SigningKey.SigningKeyPair(
@@ -218,7 +219,7 @@ public suspend fun PSSBased.newKey(
     val rsaKeyPair =
         cryptographyProvider
             .get(RSA.PSS)
-            .keyPairGenerator(keySize, digest, publicExponent)
+            .keyPairGenerator(keySize, digest.toCryptographyKotlin(), publicExponent)
             .generateKey()
 
     return SigningKey.SigningKeyPair(
@@ -249,7 +250,7 @@ public suspend fun PSSBased.parsePublicKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.PSS)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.VerifyOnlyKey(
@@ -279,7 +280,7 @@ public suspend fun PSSBased.parsePrivateKey(
     val parsedKey =
         cryptographyProvider
             .get(RSA.PSS)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.SigningOnlyKey(
@@ -313,13 +314,13 @@ public suspend fun PSSBased.parseKeyPair(
     val parsedPublicKey =
         cryptographyProvider
             .get(RSA.PSS)
-            .publicKeyDecoder(digest)
+            .publicKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(publicKeyFormat, publicKey)
 
     val parsedPrivateKey =
         cryptographyProvider
             .get(RSA.PSS)
-            .privateKeyDecoder(digest)
+            .privateKeyDecoder(digest.toCryptographyKotlin())
             .decodeFromByteArray(privateKeyFormat, privateKey)
 
     return SigningKey.SigningKeyPair(
@@ -346,7 +347,7 @@ public suspend fun ECDSABased.newKey(
     val rsaKeyPair =
         cryptographyProvider
             .get(ECDSA)
-            .keyPairGenerator(curve)
+            .keyPairGenerator(curve.toCryptographyKotlin())
             .generateKey()
 
     return SigningKey.SigningKeyPair(
@@ -377,7 +378,7 @@ public suspend fun ECDSABased.parsePublicKey(
     val parsedKey =
         cryptographyProvider
             .get(ECDSA)
-            .publicKeyDecoder(curve)
+            .publicKeyDecoder(curve.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.VerifyOnlyKey(
@@ -407,7 +408,7 @@ public suspend fun ECDSABased.parsePrivateKey(
     val parsedKey =
         cryptographyProvider
             .get(ECDSA)
-            .privateKeyDecoder(curve)
+            .privateKeyDecoder(curve.toCryptographyKotlin())
             .decodeFromByteArray(format, key)
 
     return SigningKey.SigningOnlyKey(
@@ -441,13 +442,13 @@ public suspend fun ECDSABased.parseKeyPair(
     val parsedPublicKey =
         cryptographyProvider
             .get(ECDSA)
-            .publicKeyDecoder(curve)
+            .publicKeyDecoder(curve.toCryptographyKotlin())
             .decodeFromByteArray(publicKeyFormat, publicKey)
 
     val parsedPrivateKey =
         cryptographyProvider
             .get(ECDSA)
-            .privateKeyDecoder(curve)
+            .privateKeyDecoder(curve.toCryptographyKotlin())
             .decodeFromByteArray(privateKeyFormat, privateKey)
 
     return SigningKey.SigningKeyPair(

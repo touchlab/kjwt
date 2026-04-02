@@ -5,9 +5,6 @@ package co.touchlab.kjwt.cryptography.processors
 import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm.A128CbcHs256
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm.A192CbcHs384
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm.A256CbcHs512
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.processor.JweProcessor
@@ -94,10 +91,17 @@ private fun generateCek(contentAlgorithm: EncryptionContentAlgorithm): ByteArray
     Random.nextBytes(
         when (contentAlgorithm) {
             EncryptionContentAlgorithm.A128GCM -> 16
+
             EncryptionContentAlgorithm.A192GCM -> 24
+
             EncryptionContentAlgorithm.A256GCM -> 32
-            EncryptionContentAlgorithm.A128CbcHs256 -> 32 // 16 mac + 16 enc
-            EncryptionContentAlgorithm.A192CbcHs384 -> 48 // 24 mac + 24 enc
+
+            EncryptionContentAlgorithm.A128CbcHs256 -> 32
+
+            // 16 mac + 16 enc
+            EncryptionContentAlgorithm.A192CbcHs384 -> 48
+
+            // 24 mac + 24 enc
             EncryptionContentAlgorithm.A256CbcHs512 -> 64 // 32 mac + 32 enc
         },
     )
@@ -201,9 +205,9 @@ private suspend fun computeCbcHmacTag(
 
     val (hmacDigest, tagLen) =
         when (contentAlgorithm) {
-            A128CbcHs256 -> Pair(SHA256, 16)
-            A192CbcHs384 -> Pair(SHA384, 24)
-            A256CbcHs512 -> Pair(SHA512, 32)
+            EncryptionContentAlgorithm.A128CbcHs256 -> Pair(SHA256, 16)
+            EncryptionContentAlgorithm.A192CbcHs384 -> Pair(SHA384, 24)
+            EncryptionContentAlgorithm.A256CbcHs512 -> Pair(SHA512, 32)
         }
 
     val hmacKey =

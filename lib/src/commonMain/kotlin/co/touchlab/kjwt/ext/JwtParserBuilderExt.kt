@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.parser.JwtParserBuilder
@@ -32,7 +33,7 @@ public suspend fun JwtParserBuilder.verifyWith(
     val parsedKey =
         cryptoProvider
             .get(HMAC)
-            .keyDecoder(algorithm.digest)
+            .keyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return verifyWith(algorithm, parsedKey, keyId)
@@ -60,7 +61,7 @@ public suspend fun JwtParserBuilder.verifyWith(
     val parsedKey =
         cryptoProvider
             .get(RSA.PKCS1)
-            .publicKeyDecoder(algorithm.digest)
+            .publicKeyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return verifyWith(algorithm, parsedKey, keyId)
@@ -88,7 +89,7 @@ public suspend fun JwtParserBuilder.verifyWith(
     val parsedKey =
         cryptoProvider
             .get(RSA.PSS)
-            .publicKeyDecoder(algorithm.digest)
+            .publicKeyDecoder(algorithm.digest.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return verifyWith(algorithm, parsedKey, keyId)
@@ -116,7 +117,7 @@ public suspend fun JwtParserBuilder.verifyWith(
     val parsedKey =
         cryptoProvider
             .get(ECDSA)
-            .publicKeyDecoder(algorithm.curve)
+            .publicKeyDecoder(algorithm.curve.toCryptographyKotlin())
             .decodeFromByteArray(keyFormat, key.encodeToByteArray())
 
     return verifyWith(algorithm, parsedKey, keyId)
