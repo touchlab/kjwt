@@ -167,18 +167,6 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
             "SigningKeyPair(identifier=$identifier, publicKey=$publicKey, privateKey=$privateKey)"
     }
 
-    internal suspend fun verify(
-        signingInput: ByteArray,
-        signature: ByteArray,
-    ): Boolean =
-        try {
-            identifier.algorithm.verify(publicKey, signingInput, signature)
-        } catch (_: Throwable) {
-            false
-        }
-
-    internal suspend fun sign(signingInput: ByteArray): ByteArray = identifier.algorithm.sign(privateKey, signingInput)
-
     internal fun mergeWith(other: SigningKey<PublicKey, PrivateKey>?): SigningKey<PublicKey, PrivateKey> {
         if (other == null) return this
 

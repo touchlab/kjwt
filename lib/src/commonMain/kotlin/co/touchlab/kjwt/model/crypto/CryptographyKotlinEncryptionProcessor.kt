@@ -1,10 +1,15 @@
+@file:OptIn(DelicateCryptographyApi::class)
+
 package co.touchlab.kjwt.model.crypto
 
 import co.touchlab.kjwt.cryptography.JweProcessor
+import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 import co.touchlab.kjwt.model.registry.EncryptionKey
+import dev.whyoleg.cryptography.DelicateCryptographyApi
+import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.materials.key.Key
 
 public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey : Key>(
@@ -24,7 +29,21 @@ public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey :
         data: ByteArray,
         aad: ByteArray,
         contentAlgorithm: EncryptionContentAlgorithm,
-    ): JweEncryptResult = key.encrypt(contentAlgorithm, data, aad)
+    ): JweEncryptResult =
+        when (key.identifier.algorithm) {
+            is EncryptionAlgorithm.OAEPBased -> {
+                @Suppress("UNCHECKED_CAST")
+                val publicKey = key.publicKey as RSA.OAEP.PublicKey
+                val cek = contentAlgorithm.generateCek()
+                val encryptedKey = publicKey.encryptor().encrypt(cek)
+                contentAlgorithm.encrypt(cek, data, aad, encryptedKey)
+            }
+            EncryptionAlgorithm.Dir -> {
+                @Suppress("UNCHECKED_CAST")
+                val cek = (key.publicKey as SimpleKey).value
+                contentAlgorithm.encrypt(cek, data, aad, ByteArray(0))
+            }
+        }
 
     override suspend fun decrypt(
         aad: ByteArray,
@@ -33,12 +52,18 @@ public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey :
         data: ByteArray,
         tag: ByteArray,
         contentAlgorithm: EncryptionContentAlgorithm,
-    ): ByteArray = key.decrypt(
-        contentAlgorithm = contentAlgorithm,
-        encryptedKey = encryptedKey,
-        iv = iv,
-        ciphertext = data,
-        tag = tag,
-        aad = aad,
-    )
+    ): ByteArray =
+        when (key.identifier.algorithm) {
+            is EncryptionAlgorithm.OAEPBased -> {
+                @Suppress("UNCHECKED_CAST")
+                val privateKey = key.privateKey as RSA.OAEP.PrivateKey
+                val cek = privateKey.decryptor().decrypt(encryptedKey)
+                contentAlgorithm.decrypt(cek, iv, data, tag, aad)
+            }
+            EncryptionAlgorithm.Dir -> {
+                @Suppress("UNCHECKED_CAST")
+                val cek = (key.privateKey as SimpleKey).value
+                contentAlgorithm.decrypt(cek, iv, data, tag, aad)
+            }
+        }
 }

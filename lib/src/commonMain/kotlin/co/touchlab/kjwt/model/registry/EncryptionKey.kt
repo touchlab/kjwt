@@ -1,8 +1,6 @@
 package co.touchlab.kjwt.model.registry
 
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
-import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 import dev.whyoleg.cryptography.materials.key.Key
 
 /**
@@ -164,30 +162,6 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
         override fun toString(): String =
             "EncryptionKeyPair(identifier=$identifier, publicKey=$publicKey, privateKey=$privateKey)"
     }
-
-    internal suspend fun decrypt(
-        contentAlgorithm: EncryptionContentAlgorithm,
-        encryptedKey: ByteArray,
-        iv: ByteArray,
-        ciphertext: ByteArray,
-        tag: ByteArray,
-        aad: ByteArray,
-    ): ByteArray =
-        identifier.algorithm.decrypt(
-            key = privateKey,
-            contentAlgorithm = contentAlgorithm,
-            encryptedKey = encryptedKey,
-            iv = iv,
-            ciphertext = ciphertext,
-            tag = tag,
-            aad = aad,
-        )
-
-    internal suspend fun encrypt(
-        contentAlgorithm: EncryptionContentAlgorithm,
-        plaintext: ByteArray,
-        aad: ByteArray,
-    ): JweEncryptResult = identifier.algorithm.encrypt(publicKey, contentAlgorithm, plaintext, aad)
 
     internal fun mergeWith(other: EncryptionKey<PublicKey, PrivateKey>?): EncryptionKey<PublicKey, PrivateKey> {
         if (other == null) return this

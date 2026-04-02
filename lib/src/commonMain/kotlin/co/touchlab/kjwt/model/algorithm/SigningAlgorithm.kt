@@ -15,21 +15,11 @@ import dev.whyoleg.cryptography.algorithms.SHA512
 import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.Serializable
 
+
 @Serializable(SigningAlgorithmSerializer::class)
 public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     override val id: String,
 ) : Jwa<PublicKey, PrivateKey> {
-    internal abstract suspend fun sign(
-        key: PrivateKey,
-        signingInput: ByteArray,
-    ): ByteArray
-
-    internal abstract suspend fun verify(
-        key: PublicKey,
-        signingInput: ByteArray,
-        signature: ByteArray,
-    ): Boolean
-
     internal fun identifier(keyId: String?) = SigningKey.Identifier(this, keyId)
 
     /** HMAC with SHA-256 (`HS256`) signing algorithm using a symmetric [HMAC.Key]. */
@@ -84,20 +74,6 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
                     HS384 -> SHA384
                     HS512 -> SHA512
                 }
-
-        override suspend fun sign(
-            key: HMAC.Key,
-            signingInput: ByteArray,
-        ): ByteArray = key.signatureGenerator().generateSignature(signingInput)
-
-        override suspend fun verify(
-            key: HMAC.Key,
-            signingInput: ByteArray,
-            signature: ByteArray,
-        ): Boolean {
-            key.signatureVerifier().verifySignature(signingInput, signature)
-            return true
-        }
     }
 
     /**
@@ -116,20 +92,6 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
                     RS384 -> SHA384
                     RS512 -> SHA512
                 }
-
-        override suspend fun sign(
-            key: RSA.PKCS1.PrivateKey,
-            signingInput: ByteArray,
-        ): ByteArray = key.signatureGenerator().generateSignature(signingInput)
-
-        override suspend fun verify(
-            key: RSA.PKCS1.PublicKey,
-            signingInput: ByteArray,
-            signature: ByteArray,
-        ): Boolean {
-            key.signatureVerifier().verifySignature(signingInput, signature)
-            return true
-        }
     }
 
     /**
@@ -148,20 +110,6 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
                     PS384 -> SHA384
                     PS512 -> SHA512
                 }
-
-        override suspend fun sign(
-            key: RSA.PSS.PrivateKey,
-            signingInput: ByteArray,
-        ): ByteArray = key.signatureGenerator().generateSignature(signingInput)
-
-        override suspend fun verify(
-            key: RSA.PSS.PublicKey,
-            signingInput: ByteArray,
-            signature: ByteArray,
-        ): Boolean {
-            key.signatureVerifier().verifySignature(signingInput, signature)
-            return true
-        }
     }
 
     /**
@@ -188,35 +136,10 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
                     ES384 -> EC.Curve.P384
                     ES512 -> EC.Curve.P521
                 }
-
-        override suspend fun sign(
-            key: ECDSA.PrivateKey,
-            signingInput: ByteArray,
-        ): ByteArray = key.signatureGenerator(digest, ECDSA.SignatureFormat.RAW).generateSignature(signingInput)
-
-        override suspend fun verify(
-            key: ECDSA.PublicKey,
-            signingInput: ByteArray,
-            signature: ByteArray,
-        ): Boolean {
-            key.signatureVerifier(digest, ECDSA.SignatureFormat.RAW).verifySignature(signingInput, signature)
-            return true
-        }
     }
 
     /** Unsecured JWT — opt-in only. Rejected by parser unless `allowUnsecured(true)`. */
-    public data object None : SigningAlgorithm<SimpleKey, SimpleKey>("none") {
-        override suspend fun sign(
-            key: SimpleKey,
-            signingInput: ByteArray,
-        ): ByteArray = ByteArray(0)
-
-        override suspend fun verify(
-            key: SimpleKey,
-            signingInput: ByteArray,
-            signature: ByteArray,
-        ): Boolean = true
-    }
+    public data object None : SigningAlgorithm<SimpleKey, SimpleKey>("none")
 
     override fun toString(): String = id
 
