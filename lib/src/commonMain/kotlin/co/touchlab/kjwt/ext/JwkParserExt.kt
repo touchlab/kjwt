@@ -22,7 +22,7 @@ import dev.whyoleg.cryptography.CryptographyProvider
  */
 @ExperimentalKJWTApi
 public suspend fun JwtParserBuilder.verifyWith(
-    algorithm: SigningAlgorithm.HashBased,
+    algorithm: SigningAlgorithm.MACBased,
     jwk: Jwk.Oct,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,

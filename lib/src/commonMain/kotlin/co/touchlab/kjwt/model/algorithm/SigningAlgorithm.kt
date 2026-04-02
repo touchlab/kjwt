@@ -33,13 +33,13 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     internal fun identifier(keyId: String?) = SigningKey.Identifier(this, keyId)
 
     /** HMAC with SHA-256 (`HS256`) signing algorithm using a symmetric [HMAC.Key]. */
-    public data object HS256 : HashBased("HS256")
+    public data object HS256 : MACBased("HS256")
 
     /** HMAC with SHA-384 (`HS384`) signing algorithm using a symmetric [HMAC.Key]. */
-    public data object HS384 : HashBased("HS384")
+    public data object HS384 : MACBased("HS384")
 
     /** HMAC with SHA-512 (`HS512`) signing algorithm using a symmetric [HMAC.Key]. */
-    public data object HS512 : HashBased("HS512")
+    public data object HS512 : MACBased("HS512")
 
     /** RSA PKCS#1 v1.5 with SHA-256 (`RS256`) signing algorithm using RSA key pairs. */
     public data object RS256 : PKCS1Based("RS256")
@@ -73,7 +73,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
      *
      * All members use a symmetric [HMAC.Key] for signing and verification.
      */
-    public sealed class HashBased(
+    public sealed class MACBased(
         id: String,
     ) : SigningAlgorithm<HMAC.Key, HMAC.Key>(id),
         Jwa.UsesHashingAlgorithm {

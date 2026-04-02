@@ -23,7 +23,7 @@ import dev.whyoleg.cryptography.algorithms.RSA
  * @return this builder for chaining.
  */
 public suspend fun JwtParserBuilder.verifyWith(
-    algorithm: SigningAlgorithm.HashBased,
+    algorithm: SigningAlgorithm.MACBased,
     key: String,
     keyFormat: HMAC.Key.Format,
     keyId: String? = null,

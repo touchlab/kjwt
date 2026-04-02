@@ -1,7 +1,7 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.ECDSABased
-import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.HashBased
+import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.MACBased
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.PKCS1Based
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.PSSBased
 import co.touchlab.kjwt.model.registry.SigningKey
@@ -25,7 +25,7 @@ import dev.whyoleg.cryptography.bigint.toBigInt
  * @param cryptographyProvider the provider used to perform key generation.
  * @return a [SigningKey] wrapping the generated [HMAC.Key].
  */
-public suspend fun HashBased.newKey(
+public suspend fun MACBased.newKey(
     keyId: String? = null,
     cryptographyProvider: CryptographyProvider = CryptographyProvider.Default,
 ): SigningKey.SigningKeyPair<HMAC.Key, HMAC.Key> {
@@ -50,7 +50,7 @@ public suspend fun HashBased.newKey(
  * @param cryptographyProvider the provider used to perform key decoding.
  * @return a [SigningKey] wrapping the decoded [HMAC.Key].
  */
-public suspend fun HashBased.parse(
+public suspend fun MACBased.parse(
     key: ByteArray,
     keyId: String? = null,
     format: HMAC.Key.Format = HMAC.Key.Format.RAW,

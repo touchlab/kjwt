@@ -24,7 +24,7 @@ import dev.whyoleg.cryptography.CryptographyProvider
  */
 @ExperimentalKJWTApi
 public suspend fun JwtBuilder.signWith(
-    algorithm: SigningAlgorithm.HashBased,
+    algorithm: SigningAlgorithm.MACBased,
     jwk: Jwk.Oct,
     keyId: String? = jwk.kid,
     cryptoProvider: CryptographyProvider = CryptographyProvider.Default,

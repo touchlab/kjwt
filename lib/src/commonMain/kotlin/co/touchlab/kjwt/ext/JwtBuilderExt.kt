@@ -24,7 +24,7 @@ import dev.whyoleg.cryptography.algorithms.RSA
  * @return the signed [JwtInstance.Jws] token.
  */
 public suspend fun JwtBuilder.signWith(
-    algorithm: SigningAlgorithm.HashBased,
+    algorithm: SigningAlgorithm.MACBased,
     key: String,
     keyFormat: HMAC.Key.Format,
     keyId: String? = null,
