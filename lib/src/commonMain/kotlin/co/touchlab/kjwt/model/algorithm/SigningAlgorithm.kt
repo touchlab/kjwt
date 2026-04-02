@@ -1,25 +1,19 @@
 package co.touchlab.kjwt.model.algorithm
 
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
 import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.algorithms.Digest
 import dev.whyoleg.cryptography.algorithms.EC
-import dev.whyoleg.cryptography.algorithms.ECDSA
-import dev.whyoleg.cryptography.algorithms.HMAC
-import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.Serializable
 
-
 @Serializable(SigningAlgorithmSerializer::class)
-public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
+public sealed class SigningAlgorithm(
     override val id: String,
-) : Jwa<PublicKey, PrivateKey> {
+) : Jwa {
     internal fun identifier(keyId: String?) = SigningKey.Identifier(this, keyId)
 
     /** HMAC with SHA-256 (`HS256`) signing algorithm using a symmetric [HMAC.Key]. */
@@ -65,7 +59,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
      */
     public sealed class MACBased(
         id: String,
-    ) : SigningAlgorithm<HMAC.Key, HMAC.Key>(id),
+    ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
             get() =
@@ -83,7 +77,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
      */
     public sealed class PKCS1Based(
         id: String,
-    ) : SigningAlgorithm<RSA.PKCS1.PublicKey, RSA.PKCS1.PrivateKey>(id),
+    ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
             get() =
@@ -101,7 +95,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
      */
     public sealed class PSSBased(
         id: String,
-    ) : SigningAlgorithm<RSA.PSS.PublicKey, RSA.PSS.PrivateKey>(id),
+    ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
             get() =
@@ -119,7 +113,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
      */
     public sealed class ECDSABased(
         id: String,
-    ) : SigningAlgorithm<ECDSA.PublicKey, ECDSA.PrivateKey>(id),
+    ) : SigningAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
             get() =
@@ -139,7 +133,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
     }
 
     /** Unsecured JWT — opt-in only. Rejected by parser unless `allowUnsecured(true)`. */
-    public data object None : SigningAlgorithm<SimpleKey, SimpleKey>("none")
+    public data object None : SigningAlgorithm("none")
 
     override fun toString(): String = id
 
@@ -147,7 +141,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
         /**
          * List of all supported [SigningAlgorithm] instances, including [None].
          */
-        internal val entries: List<SigningAlgorithm<*, *>> by lazy {
+        internal val entries: List<SigningAlgorithm> by lazy {
             listOf(
                 HS256,
                 HS384,
@@ -172,7 +166,7 @@ public sealed class SigningAlgorithm<PublicKey : Key, PrivateKey : Key>(
          * @return the matching [SigningAlgorithm] instance
          * @throws IllegalArgumentException if no algorithm with the given [id] is registered
          */
-        public fun fromId(id: String): SigningAlgorithm<*, *> =
+        public fun fromId(id: String): SigningAlgorithm =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWS algorithm: '$id'"
             }

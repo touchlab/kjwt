@@ -315,12 +315,12 @@ public class JwtBuilder(
      * @param keyId optional key ID to embed in the JWT header's `kid` field. Defaults to `null`.
      * @return the resulting [JwtInstance.Jws] compact serialization
      */
-    public suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
-        algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
+    public suspend fun <PrivateKey : Key> signWith(
+        algorithm: SigningAlgorithm,
         key: PrivateKey,
         keyId: String? = null,
     ): JwtInstance.Jws = signWith(
-        SigningKey.SigningOnlyKey(Identifier(algorithm, keyId), key),
+        SigningKey.SigningOnlyKey<Key, PrivateKey>(Identifier(algorithm, keyId), key),
         keyId,
     )
 
@@ -343,8 +343,8 @@ public class JwtBuilder(
      *   [registry]
      * @see JwtKeyRegistry
      */
-    public suspend fun <PublicKey : Key, PrivateKey : Key> signWith(
-        algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
+    public suspend fun signWith(
+        algorithm: SigningAlgorithm,
         registry: JwtKeyRegistry,
         keyId: String? = null,
     ): JwtInstance.Jws {
@@ -424,15 +424,15 @@ public class JwtBuilder(
      * @param keyId optional key ID to embed in the JWE header's `kid` field. Defaults to `null`.
      * @return the resulting [JwtInstance.Jwe] compact serialization
      */
-    public suspend fun <PublicKey : Key, PrivateKey : Key> encryptWith(
+    public suspend fun <PublicKey : Key> encryptWith(
         key: PublicKey,
-        keyAlgorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+        keyAlgorithm: EncryptionAlgorithm,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = null,
     ): JwtInstance.Jwe =
         encryptWithJweProcessor(
             processor = CryptographyKotlinEncryptionProcessor(
-                EncryptionKey.EncryptionOnlyKey(EncryptionKey.Identifier(keyAlgorithm, keyId), key)
+                EncryptionKey.EncryptionOnlyKey<PublicKey, Key>(EncryptionKey.Identifier(keyAlgorithm, keyId), key)
             ),
             contentAlgorithm = contentAlgorithm,
             keyId = keyId,
@@ -455,9 +455,9 @@ public class JwtBuilder(
      *   found in [registry]
      * @see JwtKeyRegistry
      */
-    public suspend fun <PublicKey : Key, PrivateKey : Key> encryptWith(
+    public suspend fun encryptWith(
         registry: JwtKeyRegistry,
-        keyAlgorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+        keyAlgorithm: EncryptionAlgorithm,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = null,
     ): JwtInstance.Jwe = try {

@@ -44,7 +44,7 @@ public class JwtParser internal constructor(
 
         val header = JwtHeader(parts[0], config.jsonInstance)
 
-        val algorithm: SigningAlgorithm<*, *> =
+        val algorithm: SigningAlgorithm =
             try {
                 SigningAlgorithm.fromId(header.algorithm)
             } catch (e: IllegalArgumentException) {

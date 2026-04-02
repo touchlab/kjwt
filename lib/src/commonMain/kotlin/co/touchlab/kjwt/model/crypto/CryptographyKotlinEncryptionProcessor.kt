@@ -22,7 +22,7 @@ public class CryptographyKotlinEncryptionProcessor<PublicKey : Key, PrivateKey :
         key.mergeWith((previous as? CryptographyKotlinEncryptionProcessor<PublicKey, PrivateKey>)?.key)
     )
 
-    override val algorithm: EncryptionAlgorithm<*, *>
+    override val algorithm: EncryptionAlgorithm
         get() = key.identifier.algorithm
 
     override suspend fun encrypt(

@@ -205,7 +205,7 @@ public class JwtHeader internal constructor(
         }
 
         internal fun build(
-            algorithm: SigningAlgorithm<*, *>,
+            algorithm: SigningAlgorithm,
             keyId: String?,
             jsonInstance: Json,
         ) = JwtHeader(
@@ -217,7 +217,7 @@ public class JwtHeader internal constructor(
         )
 
         internal fun build(
-            keyAlgorithm: EncryptionAlgorithm<*, *>,
+            keyAlgorithm: EncryptionAlgorithm,
             contentAlgorithm: EncryptionContentAlgorithm,
             keyId: String?,
             jsonInstance: Json,

@@ -93,8 +93,8 @@ public interface JwtKeyRegistry {
      * @param keyId optional key ID to narrow the look-up
      * @return the matching [SigningKey], or `null` if none is found
      */
-    public fun <PublicKey : Key, PrivateKey : Key> findBestJwsProcessor(
-        algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
+    public fun findBestJwsProcessor(
+        algorithm: SigningAlgorithm,
         keyId: String?,
     ): JwsProcessor?
 
@@ -111,8 +111,8 @@ public interface JwtKeyRegistry {
      * @param keyId optional key ID to narrow the look-up
      * @return the matching [EncryptionKey], or `null` if none is found
      */
-    public fun <PublicKey : Key, PrivateKey : Key> findBestJweProcessor(
-        algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+    public fun findBestJweProcessor(
+        algorithm: EncryptionAlgorithm,
         keyId: String?,
     ): JweProcessor?
 }
@@ -162,8 +162,8 @@ public fun JwtKeyRegistry(): MutableJwtKeyRegistry = MemoryJwtKeyRegistry()
 
 internal class MemoryJwtKeyRegistry : MutableJwtKeyRegistry {
     override var delegateKeyRegistry: JwtKeyRegistry? = null
-    private val signingKeys = mutableMapOf<SigningKey.Identifier<*, *>, JwsProcessor>()
-    private val encryptionKeys = mutableMapOf<EncryptionKey.Identifier<*, *>, JweProcessor>()
+    private val signingKeys = mutableMapOf<SigningKey.Identifier, JwsProcessor>()
+    private val encryptionKeys = mutableMapOf<EncryptionKey.Identifier, JweProcessor>()
 
     override fun <PublicKey : Key, PrivateKey : Key> registerSigningKey(key: SigningKey<PublicKey, PrivateKey>) {
         signingKeys[key.identifier] =
@@ -202,8 +202,8 @@ internal class MemoryJwtKeyRegistry : MutableJwtKeyRegistry {
         delegateKeyRegistry = other
     }
 
-    override fun <PublicKey : Key, PrivateKey : Key> findBestJwsProcessor(
-        algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
+    override fun findBestJwsProcessor(
+        algorithm: SigningAlgorithm,
         keyId: String?,
     ): JwsProcessor? {
         signingKeys[SigningKey.Identifier(algorithm, keyId)]?.let {
@@ -219,8 +219,8 @@ internal class MemoryJwtKeyRegistry : MutableJwtKeyRegistry {
         return delegateKeyRegistry?.findBestJwsProcessor(algorithm, keyId)
     }
 
-    override fun <PublicKey : Key, PrivateKey : Key> findBestJweProcessor(
-        algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+    override fun findBestJweProcessor(
+        algorithm: EncryptionAlgorithm,
         keyId: String?,
     ): JweProcessor? {
         encryptionKeys[EncryptionKey.Identifier(algorithm, keyId)]?.let {

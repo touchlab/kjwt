@@ -10,44 +10,44 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-public object JwaSerializer : KSerializer<Jwa<*, *>> {
+public object JwaSerializer : KSerializer<Jwa> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("Jwa", PrimitiveKind.STRING)
 
     override fun serialize(
         encoder: Encoder,
-        value: Jwa<*, *>,
+        value: Jwa,
     ) {
         encoder.encodeString(value.id)
     }
 
-    override fun deserialize(decoder: Decoder): Jwa<*, *> = Jwa.fromId(decoder.decodeString())
+    override fun deserialize(decoder: Decoder): Jwa = Jwa.fromId(decoder.decodeString())
 }
 
-public object EncryptionAlgorithmSerializer : KSerializer<EncryptionAlgorithm<*, *>> {
+public object EncryptionAlgorithmSerializer : KSerializer<EncryptionAlgorithm> {
     override val descriptor: SerialDescriptor = JwaSerializer.descriptor
 
     override fun serialize(
         encoder: Encoder,
-        value: EncryptionAlgorithm<*, *>,
+        value: EncryptionAlgorithm,
     ) {
         encoder.encodeString(value.id)
     }
 
-    override fun deserialize(decoder: Decoder): EncryptionAlgorithm<*, *> = EncryptionAlgorithm.fromId(
+    override fun deserialize(decoder: Decoder): EncryptionAlgorithm = EncryptionAlgorithm.fromId(
         decoder.decodeString()
     )
 }
 
-public object SigningAlgorithmSerializer : KSerializer<SigningAlgorithm<*, *>> {
+public object SigningAlgorithmSerializer : KSerializer<SigningAlgorithm> {
     override val descriptor: SerialDescriptor = JwaSerializer.descriptor
 
     override fun serialize(
         encoder: Encoder,
-        value: SigningAlgorithm<*, *>,
+        value: SigningAlgorithm,
     ) {
         encoder.encodeString(value.id)
     }
 
-    override fun deserialize(decoder: Decoder): SigningAlgorithm<*, *> = SigningAlgorithm.fromId(decoder.decodeString())
+    override fun deserialize(decoder: Decoder): SigningAlgorithm = SigningAlgorithm.fromId(decoder.decodeString())
 }

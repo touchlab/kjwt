@@ -6,6 +6,7 @@ import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.registry.EncryptionKey
+import dev.whyoleg.cryptography.algorithms.RSA
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -376,7 +377,7 @@ class JweEncodeTest :
 
             test("encryptWith EncryptionOnlyKey succeeds") {
                 val encKey = rsaOaepEncKey()
-                val encryptionOnlyKey = EncryptionKey.EncryptionOnlyKey(encKey.identifier, encKey.publicKey)
+                val encryptionOnlyKey = EncryptionKey.EncryptionOnlyKey<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey>(encKey.identifier, encKey.publicKey)
 
                 Jwt
                     .builder()

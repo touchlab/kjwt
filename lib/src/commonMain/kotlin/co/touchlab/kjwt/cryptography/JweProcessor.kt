@@ -5,7 +5,7 @@ import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 
 public interface JweProcessor : Encryptor, Decryptor {
-    public val algorithm: EncryptionAlgorithm<*, *>
+    public val algorithm: EncryptionAlgorithm
 }
 
 public fun interface Encryptor {

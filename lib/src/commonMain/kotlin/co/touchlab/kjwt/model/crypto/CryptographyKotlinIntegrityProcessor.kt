@@ -18,7 +18,7 @@ public class CryptographyKotlinIntegrityProcessor<PublicKey : Key, PrivateKey : 
         key.mergeWith((previous as? CryptographyKotlinIntegrityProcessor<PublicKey, PrivateKey>)?.key)
     )
 
-    override val algorithm: SigningAlgorithm<*, *>
+    override val algorithm: SigningAlgorithm
         get() = key.identifier.algorithm
 
     override suspend fun sign(data: ByteArray): ByteArray =

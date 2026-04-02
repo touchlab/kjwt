@@ -2,21 +2,18 @@
 
 package co.touchlab.kjwt.model.algorithm
 
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.serializers.EncryptionAlgorithmSerializer
 import dev.whyoleg.cryptography.CryptographyAlgorithmId
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.Digest
-import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA1
 import dev.whyoleg.cryptography.algorithms.SHA256
-import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.Serializable
 
 @Serializable(EncryptionAlgorithmSerializer::class)
-public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
+public sealed class EncryptionAlgorithm(
     override val id: String,
-) : Jwa<PublicKey, PrivateKey> {
+) : Jwa {
     /**
      * RSA-OAEP with SHA-1.
      * Key must be created with `RSA.OAEP.keyPairGenerator(SHA1)` or equivalent.
@@ -30,7 +27,7 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
     public data object RsaOaep256 : OAEPBased("RSA-OAEP-256")
 
     /** Direct use of a shared symmetric CEK — no key wrapping. */
-    public data object Dir : EncryptionAlgorithm<SimpleKey, SimpleKey>("dir")
+    public data object Dir : EncryptionAlgorithm("dir")
 
     /**
      * Base class for RSA OAEP key encryption variants ([RsaOaep] and [RsaOaep256]).
@@ -39,7 +36,7 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
      */
     public sealed class OAEPBased(
         id: String,
-    ) : EncryptionAlgorithm<RSA.OAEP.PublicKey, RSA.OAEP.PrivateKey>(id),
+    ) : EncryptionAlgorithm(id),
         Jwa.UsesHashingAlgorithm {
         override val digest: CryptographyAlgorithmId<Digest>
             get() =
@@ -64,7 +61,7 @@ public sealed class EncryptionAlgorithm<PublicKey : Key, PrivateKey : Key>(
          * @return the matching [EncryptionAlgorithm] instance
          * @throws IllegalArgumentException if no algorithm with the given [id] is registered
          */
-        public fun fromId(id: String): EncryptionAlgorithm<*, *> =
+        public fun fromId(id: String): EncryptionAlgorithm =
             requireNotNull(entries.firstOrNull { it.id == id }) {
                 "Unknown JWE key algorithm: '$id'"
             }

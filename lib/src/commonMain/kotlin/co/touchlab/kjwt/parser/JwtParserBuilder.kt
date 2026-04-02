@@ -91,14 +91,14 @@ public class JwtParserBuilder(
      *   only use this key if the token's `kid` header matches. Defaults to `null` (matches any token).
      * @return this builder for chaining
      */
-    public fun <PublicKey : Key, PrivateKey : Key> verifyWith(
-        algorithm: SigningAlgorithm<PublicKey, PrivateKey>,
+    public fun <PublicKey : Key> verifyWith(
+        algorithm: SigningAlgorithm,
         key: PublicKey,
         keyId: String? = null,
     ): JwtParserBuilder =
         apply {
             keyRegistry.registerSigningKey(
-                SigningKey.VerifyOnlyKey(
+                SigningKey.VerifyOnlyKey<PublicKey, Key>(
                     identifier = SigningKey.Identifier(algorithm, keyId),
                     publicKey = key,
                 ),
@@ -141,14 +141,14 @@ public class JwtParserBuilder(
      *   only use this key if the token's `kid` header matches. Defaults to `null` (matches any token).
      * @return this builder for chaining
      */
-    public fun <PublicKey : Key, PrivateKey : Key> decryptWith(
-        algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+    public fun <PrivateKey : Key> decryptWith(
+        algorithm: EncryptionAlgorithm,
         privateKey: PrivateKey,
         keyId: String? = null,
     ): JwtParserBuilder =
         apply {
             keyRegistry.registerEncryptionKey(
-                EncryptionKey.DecryptionOnlyKey(
+                EncryptionKey.DecryptionOnlyKey<Key, PrivateKey>(
                     identifier = EncryptionKey.Identifier(algorithm, keyId),
                     privateKey = privateKey,
                 ),

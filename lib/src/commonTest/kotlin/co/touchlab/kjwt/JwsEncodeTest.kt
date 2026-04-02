@@ -12,6 +12,7 @@ import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.algorithms.EC
+import dev.whyoleg.cryptography.algorithms.HMAC
 import io.kotest.core.spec.style.FunSpec
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.assertEquals
@@ -476,7 +477,7 @@ class JwsEncodeTest :
 
             test("signWith SigningOnlyKey succeeds") {
                 val keyPair = hs256SigningKey()
-                val signingOnlyKey = SigningKey.SigningOnlyKey(keyPair.identifier, keyPair.privateKey)
+                val signingOnlyKey = SigningKey.SigningOnlyKey<HMAC.Key, HMAC.Key>(keyPair.identifier, keyPair.privateKey)
 
                 Jwt
                     .builder()

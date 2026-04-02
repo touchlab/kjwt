@@ -22,7 +22,7 @@ import dev.whyoleg.cryptography.materials.key.Key
  * @see co.touchlab.kjwt.parser.JwtParserBuilder.decryptWith
  */
 public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
-    public abstract val identifier: Identifier<PublicKey, PrivateKey>
+    public abstract val identifier: Identifier
     public abstract val publicKey: PublicKey
     public abstract val privateKey: PrivateKey
 
@@ -40,8 +40,8 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
      * @property keyId the optional `kid` header value used to select this key; `null` matches any
      *   token for the given algorithm that has no more specific key registered
      */
-    public data class Identifier<PublicKey : Key, PrivateKey : Key>(
-        val algorithm: EncryptionAlgorithm<PublicKey, PrivateKey>,
+    public data class Identifier(
+        val algorithm: EncryptionAlgorithm,
         val keyId: String?,
     ) {
         public companion object;
@@ -55,7 +55,7 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
      * on this type throws.
      */
     public class EncryptionOnlyKey<PublicKey : Key, PrivateKey : Key> internal constructor(
-        override val identifier: Identifier<PublicKey, PrivateKey>,
+        override val identifier: Identifier,
         override val publicKey: PublicKey,
     ) : EncryptionKey<PublicKey, PrivateKey>() {
         @Deprecated("EncryptionOnlyKey does not have a private key", level = DeprecationLevel.ERROR)
@@ -93,7 +93,7 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
      * consumes encrypted tokens). Accessing [publicKey] on this type throws.
      */
     public class DecryptionOnlyKey<PublicKey : Key, PrivateKey : Key> internal constructor(
-        override val identifier: Identifier<PublicKey, PrivateKey>,
+        override val identifier: Identifier,
         override val privateKey: PrivateKey,
     ) : EncryptionKey<PublicKey, PrivateKey>() {
         @Deprecated("DecryptionOnlyKey does not have a public key", level = DeprecationLevel.ERROR)
@@ -132,7 +132,7 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
      * encryption and decryption.
      */
     public class EncryptionKeyPair<PublicKey : Key, PrivateKey : Key> internal constructor(
-        override val identifier: Identifier<PublicKey, PrivateKey>,
+        override val identifier: Identifier,
         override val publicKey: PublicKey,
         override val privateKey: PrivateKey,
     ) : EncryptionKey<PublicKey, PrivateKey>() {
