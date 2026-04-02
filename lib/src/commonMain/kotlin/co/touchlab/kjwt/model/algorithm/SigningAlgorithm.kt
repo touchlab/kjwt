@@ -1,6 +1,6 @@
 package co.touchlab.kjwt.model.algorithm
 
-import co.touchlab.kjwt.model.registry.SigningKey
+import co.touchlab.kjwt.cryptography.registry.SigningKey
 import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
 import kotlinx.serialization.Serializable
 

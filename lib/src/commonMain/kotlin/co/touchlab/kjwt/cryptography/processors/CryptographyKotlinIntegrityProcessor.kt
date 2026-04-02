@@ -1,8 +1,8 @@
 package co.touchlab.kjwt.cryptography.processors
 
+import co.touchlab.kjwt.cryptography.registry.SigningKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
-import co.touchlab.kjwt.model.registry.SigningKey
 import co.touchlab.kjwt.processor.JwsProcessor
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC

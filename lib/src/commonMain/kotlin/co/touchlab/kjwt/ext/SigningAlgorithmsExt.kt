@@ -1,11 +1,11 @@
 package co.touchlab.kjwt.ext
 
+import co.touchlab.kjwt.cryptography.registry.SigningKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.ECDSABased
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.MACBased
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.PKCS1Based
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.PSSBased
-import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.BinarySize
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider

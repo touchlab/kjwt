@@ -1,5 +1,8 @@
 package co.touchlab.kjwt.parser
 
+import co.touchlab.kjwt.cryptography.registry.CryptographyKotlinJwtKeyRegistry
+import co.touchlab.kjwt.cryptography.registry.EncryptionKey
+import co.touchlab.kjwt.cryptography.registry.SigningKey
 import co.touchlab.kjwt.exception.IncorrectClaimException
 import co.touchlab.kjwt.exception.MissingClaimException
 import co.touchlab.kjwt.ext.audienceOrNull
@@ -10,10 +13,7 @@ import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
-import co.touchlab.kjwt.model.registry.CryptographyKotlinJwtKeyRegistry
-import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.model.registry.JwtKeyRegistry
-import co.touchlab.kjwt.model.registry.SigningKey
 import dev.whyoleg.cryptography.materials.key.Key
 import kotlinx.serialization.json.Json
 

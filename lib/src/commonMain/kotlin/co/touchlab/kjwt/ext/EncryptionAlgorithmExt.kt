@@ -3,10 +3,10 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.cryptography.registry.EncryptionKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.Dir
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.OAEPBased
-import co.touchlab.kjwt.model.registry.EncryptionKey
 import dev.whyoleg.cryptography.BinarySize
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 import dev.whyoleg.cryptography.CryptographyProvider

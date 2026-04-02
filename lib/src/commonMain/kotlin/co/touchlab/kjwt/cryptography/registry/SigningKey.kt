@@ -1,4 +1,4 @@
-package co.touchlab.kjwt.model.registry
+package co.touchlab.kjwt.cryptography.registry
 
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import dev.whyoleg.cryptography.materials.key.Key
@@ -27,7 +27,8 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
     public abstract val privateKey: PrivateKey
 
     /**
-     * Identifies a [SigningKey] within a [CryptographyKotlinJwtKeyRegistry] by algorithm and optional key ID.
+     * Identifies a [SigningKey] within a [CryptographyKotlinJwtKeyRegistry] by
+     * algorithm and optional key ID.
      *
      * The combination of [algorithm] and [keyId] must be unique within a registry. When [keyId]
      * is `null` the key acts as a catch-all for its algorithm (matched after any exact-`kid` key
@@ -122,7 +123,8 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
      * A complete key pair that holds both private and public key material.
      *
      * Produced automatically by [mergeWith] when a [SigningOnlyKey] and a [VerifyOnlyKey] with
-     * the same [Identifier] are both registered in a [CryptographyKotlinJwtKeyRegistry]. Supports both signing and
+     * the same [Identifier] are both registered in a
+     * [CryptographyKotlinJwtKeyRegistry]. Supports both signing and
      * verification.
      */
     public class SigningKeyPair<PublicKey : Key, PrivateKey : Key> internal constructor(

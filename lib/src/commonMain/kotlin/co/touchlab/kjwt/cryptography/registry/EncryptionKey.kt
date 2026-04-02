@@ -1,4 +1,4 @@
-package co.touchlab.kjwt.model.registry
+package co.touchlab.kjwt.cryptography.registry
 
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import dev.whyoleg.cryptography.materials.key.Key
@@ -27,7 +27,8 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
     public abstract val privateKey: PrivateKey
 
     /**
-     * Identifies an [EncryptionKey] within a [CryptographyKotlinJwtKeyRegistry] by algorithm and optional key ID.
+     * Identifies an [EncryptionKey] within a [CryptographyKotlinJwtKeyRegistry]
+     * by algorithm and optional key ID.
      *
      * The combination of [algorithm] and [keyId] must be unique within a registry. When [keyId]
      * is `null` the key acts as a catch-all for its algorithm (matched after any exact-`kid` key
@@ -119,8 +120,9 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
      * A complete key pair that holds both public and private key material.
      *
      * Produced automatically by [mergeWith] when an [EncryptionOnlyKey] and a [DecryptionOnlyKey]
-     * with the same [Identifier] are both registered in a [CryptographyKotlinJwtKeyRegistry]. Supports both
-     * encryption and decryption.
+     * with the same [Identifier] are both registered in a
+     * [CryptographyKotlinJwtKeyRegistry]. Supports both encryption and
+     * decryption.
      */
     public class EncryptionKeyPair<PublicKey : Key, PrivateKey : Key> internal constructor(
         override val identifier: Identifier,

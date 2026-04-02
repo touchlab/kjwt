@@ -3,10 +3,10 @@
 package co.touchlab.kjwt.cryptography.processors
 
 import co.touchlab.kjwt.cryptography.SimpleKey
+import co.touchlab.kjwt.cryptography.registry.EncryptionKey
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
-import co.touchlab.kjwt.model.registry.EncryptionKey
 import co.touchlab.kjwt.processor.JweProcessor
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.DelicateCryptographyApi
