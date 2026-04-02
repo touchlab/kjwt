@@ -26,9 +26,6 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
     public abstract val publicKey: PublicKey
     public abstract val privateKey: PrivateKey
 
-    public abstract val canEncrypt: Boolean
-    public abstract val canDecrypt: Boolean
-
     /**
      * Identifies an [EncryptionKey] within a [JwtKeyRegistry] by algorithm and optional key ID.
      *
@@ -61,9 +58,6 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
         @Deprecated("EncryptionOnlyKey does not have a private key", level = DeprecationLevel.ERROR)
         override val privateKey: PrivateKey
             get() = error("EncryptionOnlyKey does not have a private key")
-
-        override val canEncrypt: Boolean = true
-        override val canDecrypt: Boolean = false
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -100,9 +94,6 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
         override val publicKey: PublicKey
             get() = error("DecryptionOnlyKey does not have a public key")
 
-        override val canEncrypt: Boolean = false
-        override val canDecrypt: Boolean = true
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -136,9 +127,6 @@ public sealed class EncryptionKey<PublicKey : Key, PrivateKey : Key> {
         override val publicKey: PublicKey,
         override val privateKey: PrivateKey,
     ) : EncryptionKey<PublicKey, PrivateKey>() {
-        override val canEncrypt: Boolean = true
-        override val canDecrypt: Boolean = true
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

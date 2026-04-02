@@ -1,13 +1,13 @@
 @file:OptIn(DelicateCryptographyApi::class)
 
-package co.touchlab.kjwt.model.crypto
+package co.touchlab.kjwt.processor.crypto
 
-import co.touchlab.kjwt.cryptography.JweProcessor
 import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 import co.touchlab.kjwt.model.registry.EncryptionKey
+import co.touchlab.kjwt.processor.JweProcessor
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.materials.key.Key

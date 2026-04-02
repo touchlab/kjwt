@@ -26,9 +26,6 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
     public abstract val publicKey: PublicKey
     public abstract val privateKey: PrivateKey
 
-    public abstract val canSign: Boolean
-    public abstract val canVerify: Boolean
-
     /**
      * Identifies a [SigningKey] within a [JwtKeyRegistry] by algorithm and optional key ID.
      *
@@ -65,9 +62,6 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
         override val publicKey: PublicKey
             get() = error("SigningOnlyKey does not have a public key")
 
-        override val canSign: Boolean = true
-        override val canVerify: Boolean = false
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -103,9 +97,6 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
         override val privateKey: PrivateKey
             get() = error("VerifyOnlyKey does not have a private key")
 
-        override val canSign: Boolean = false
-        override val canVerify: Boolean = true
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -139,9 +130,6 @@ public sealed class SigningKey<PublicKey : Key, PrivateKey : Key> {
         override val publicKey: PublicKey,
         override val privateKey: PrivateKey,
     ) : SigningKey<PublicKey, PrivateKey>() {
-        override val canSign: Boolean = true
-        override val canVerify: Boolean = true
-
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

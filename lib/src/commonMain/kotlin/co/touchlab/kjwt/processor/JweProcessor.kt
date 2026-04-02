@@ -1,4 +1,4 @@
-package co.touchlab.kjwt.cryptography
+package co.touchlab.kjwt.processor
 
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm

@@ -2,12 +2,12 @@ package co.touchlab.kjwt.model.registry
 
 import co.touchlab.kjwt.annotations.ExperimentalKJWTApi
 import co.touchlab.kjwt.annotations.InternalKJWTApi
-import co.touchlab.kjwt.cryptography.JweProcessor
-import co.touchlab.kjwt.cryptography.JwsProcessor
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
-import co.touchlab.kjwt.model.crypto.CryptographyKotlinEncryptionProcessor
-import co.touchlab.kjwt.model.crypto.CryptographyKotlinIntegrityProcessor
+import co.touchlab.kjwt.processor.JweProcessor
+import co.touchlab.kjwt.processor.JwsProcessor
+import co.touchlab.kjwt.processor.crypto.CryptographyKotlinEncryptionProcessor
+import co.touchlab.kjwt.processor.crypto.CryptographyKotlinIntegrityProcessor
 import dev.whyoleg.cryptography.materials.key.Key
 
 /**
