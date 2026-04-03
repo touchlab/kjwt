@@ -39,9 +39,9 @@ import co.touchlab.kjwt.cryptography.ext.parsePrivateKey
 import co.touchlab.kjwt.cryptography.ext.parseKeyPair
 import dev.whyoleg.cryptography.BinarySize.Companion.bits
 
-// Generate a new key pair (defaults: 4096-bit modulus, exponent 65537)
+// Generate a new key pair (defaults: 2048-bit modulus, exponent 65537)
 val signingKey = SigningAlgorithm.RS256.newKey()
-val signingKey = SigningAlgorithm.RS256.newKey(keySize = 2048.bits)
+val signingKey = SigningAlgorithm.RS256.newKey(keySize = 4096.bits)
 
 // Decode individual keys (PEM is the default format)
 val verifyKey  = SigningAlgorithm.RS256.parsePublicKey(pemBytes)   // SigningKey.VerifyOnlyKey
@@ -139,9 +139,9 @@ and decryption since `dir` uses the same symmetric key for both operations.
 ### RSA-OAEP keys (RSA-OAEP / RSA-OAEP-256)
 
 ```kotlin
-// Generate a new key pair (defaults: 4096-bit modulus, exponent 65537)
+// Generate a new key pair (defaults: 2048-bit modulus, exponent 65537)
 val encKey = EncryptionAlgorithm.RsaOaep.newKey()
-val encKey = EncryptionAlgorithm.RsaOaep256.newKey(keySize = 2048.bits)
+val encKey = EncryptionAlgorithm.RsaOaep256.newKey(keySize = 4096.bits)
 
 // Decode individual keys (PEM is the default format)
 val encryptKey  = EncryptionAlgorithm.RsaOaep.parsePublicKey(pemBytes)   // EncryptionKey.EncryptionOnlyKey

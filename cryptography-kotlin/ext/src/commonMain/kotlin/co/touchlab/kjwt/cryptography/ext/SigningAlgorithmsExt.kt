@@ -80,7 +80,7 @@ public suspend fun MACBased.parse(
  * private key, usable for signing and verification.
  *
  * @param keyId optional key ID to associate with the generated key pair. Defaults to `null`.
- * @param keySize the RSA modulus size in bits. Defaults to 4096 bits.
+ * @param keySize the RSA modulus size in bits. Defaults to 2048 bits.
  * @param publicExponent the RSA public exponent. Defaults to 65537.
  * @param cryptographyProvider the provider used to perform key generation.
  * @return a [SigningKey] wrapping the generated [RSA.PKCS1] key pair.
@@ -88,7 +88,7 @@ public suspend fun MACBased.parse(
 @OptIn(DelicateKJWTApi::class)
 public suspend fun PKCS1Based.newKey(
     keyId: String? = null,
-    keySize: BinarySize = 4096.bits,
+    keySize: BinarySize = 2048.bits,
     publicExponent: BigInt = 65537.toBigInt(),
     cryptographyProvider: CryptographyProvider = CryptographyProvider.Default,
 ): SigningKey.SigningKeyPair {
@@ -216,7 +216,7 @@ public suspend fun PKCS1Based.parseKeyPair(
  * private key, usable for signing and verification.
  *
  * @param keyId optional key ID to associate with the generated key pair. Defaults to `null`.
- * @param keySize the RSA modulus size in bits. Defaults to 4096 bits.
+ * @param keySize the RSA modulus size in bits. Defaults to 2048 bits.
  * @param publicExponent the RSA public exponent. Defaults to 65537.
  * @param cryptographyProvider the provider used to perform key generation.
  * @return a [SigningKey] wrapping the generated [RSA.PSS] key pair.
@@ -224,7 +224,7 @@ public suspend fun PKCS1Based.parseKeyPair(
 @OptIn(DelicateKJWTApi::class)
 public suspend fun PSSBased.newKey(
     keyId: String? = null,
-    keySize: BinarySize = 4096.bits,
+    keySize: BinarySize = 2048.bits,
     publicExponent: BigInt = 65537.toBigInt(),
     cryptographyProvider: CryptographyProvider = CryptographyProvider.Default,
 ): SigningKey.SigningKeyPair {
