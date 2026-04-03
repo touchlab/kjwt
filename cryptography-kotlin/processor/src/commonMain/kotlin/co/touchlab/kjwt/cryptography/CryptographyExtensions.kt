@@ -22,7 +22,6 @@ public fun JwtDigest.toCryptographyKotlin(): CryptographyAlgorithmId<Digest> =
         JwtDigest.SHA512 -> SHA512
     }
 
-
 public fun JwtCurve.toCryptographyKotlin(): EC.Curve =
     when (this) {
         JwtCurve.P256 -> EC.Curve.P256

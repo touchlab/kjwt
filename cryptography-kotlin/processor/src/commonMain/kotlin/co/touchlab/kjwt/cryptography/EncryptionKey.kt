@@ -3,7 +3,6 @@
 package co.touchlab.kjwt.cryptography
 
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult

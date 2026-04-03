@@ -3,10 +3,10 @@ package co.touchlab.kjwt.cryptography.ext
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
 import co.touchlab.kjwt.annotations.ExperimentalKJWTApi
 import co.touchlab.kjwt.builder.JwtBuilder
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.EncryptionKey
 import co.touchlab.kjwt.cryptography.SigningKey
 import co.touchlab.kjwt.cryptography.SigningKey.Identifier
+import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.JwtInstance
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm

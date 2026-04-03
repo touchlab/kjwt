@@ -3,8 +3,8 @@
 package co.touchlab.kjwt.cryptography.ext
 
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.EncryptionKey
+import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.Dir

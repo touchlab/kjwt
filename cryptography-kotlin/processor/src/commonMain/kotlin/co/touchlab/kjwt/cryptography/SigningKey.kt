@@ -3,7 +3,6 @@
 package co.touchlab.kjwt.cryptography
 
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
-import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.processor.BaseJwsProcessor
 import co.touchlab.kjwt.processor.JwsProcessor
