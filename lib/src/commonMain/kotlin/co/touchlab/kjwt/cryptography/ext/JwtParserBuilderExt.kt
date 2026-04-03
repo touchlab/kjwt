@@ -255,7 +255,7 @@ public suspend fun JwtParserBuilder.verifyWith(
  */
 @DelicateKJWTApi
 public fun JwtParserBuilder.registerSigningKey(key: SigningKey): JwtParserBuilder =
-    apply { keyRegistry.registerJwsProcessor(key) }
+    apply { processorRegistry.registerJwsProcessor(key) }
 
 /**
  * Registers a direct (`dir`) [SimpleKey] symmetric key for JWE decryption.
@@ -352,7 +352,7 @@ public fun JwtParserBuilder.decryptWith(
  */
 @DelicateKJWTApi
 public fun JwtParserBuilder.registerEncryptionKey(key: EncryptionKey): JwtParserBuilder =
-    apply { keyRegistry.registerJweProcessor(key) }
+    apply { processorRegistry.registerJweProcessor(key) }
 
 /**
  * Registers a direct key (`dir`) for JWE decryption from a raw [ByteArray].

@@ -6,14 +6,12 @@ import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.processor.BaseJweProcessor
 import co.touchlab.kjwt.processor.BaseJwsProcessor
-import co.touchlab.kjwt.processor.JweProcessor
-import co.touchlab.kjwt.processor.JwsProcessor
 
 /**
  * A centralised store of signing and encryption keys shared across [co.touchlab.kjwt.builder.JwtBuilder]
  * and [co.touchlab.kjwt.parser.JwtParser] instances.
  *
- * A [JwtKeyRegistry] decouples key management from individual builder and parser configurations.
+ * A [JwtProcessorRegistry] decouples key management from individual builder and parser configurations.
  * Populate it once, then reuse it across multiple call sites:
  * - Pass it to [co.touchlab.kjwt.builder.JwtBuilder.signWith] or
  *   [co.touchlab.kjwt.builder.JwtBuilder.encryptWith] to sign or encrypt tokens using the
@@ -38,7 +36,7 @@ import co.touchlab.kjwt.processor.JwsProcessor
  * ### Example
  *
  * ```kotlin
- * val registry = JwtKeyRegistry()
+ * val registry = JwtProcessorRegistry()
  * // populate via JwtParserBuilder and share the reference, or
  * // register signing keys directly (see registerSigningKey)
  *
@@ -56,7 +54,7 @@ import co.touchlab.kjwt.processor.JwsProcessor
  * @see co.touchlab.kjwt.builder.JwtBuilder.encryptWith
  */
 @ExperimentalKJWTApi
-public interface JwtKeyRegistry {
+public interface JwtProcessorRegistry {
     /**
      * The registry to fall back to when a key is not found locally.
      *
@@ -65,7 +63,7 @@ public interface JwtKeyRegistry {
      * safely — it guards against cyclic delegation chains.
      */
     @InternalKJWTApi
-    public var delegateKeyRegistry: JwtKeyRegistry?
+    public var delegateKeyRegistry: JwtProcessorRegistry?
 
     /**
      * Sets [other] as the delegate registry for this registry.
@@ -77,7 +75,7 @@ public interface JwtKeyRegistry {
      * @param other the registry to delegate to
      * @throws IllegalArgumentException if adding [other] as a delegate would create a cycle
      */
-    public fun delegateTo(other: JwtKeyRegistry)
+    public fun delegateTo(other: JwtProcessorRegistry)
 
     /**
      * Returns the best available signing key for [algorithm] and the optional [keyId].
@@ -116,7 +114,11 @@ public interface JwtKeyRegistry {
     ): BaseJweProcessor?
 
     /**
-     * Registers a [JwsProcessor] in this registry under its algorithm and optional [keyId].
+     * Registers a [BaseJwsProcessor] in this registry under its algorithm and optional [keyId].
+     *
+     * If a processor for the same algorithm and key ID is already registered, the two are merged
+     * into a combined [co.touchlab.kjwt.processor.JwsProcessor] via
+     * [co.touchlab.kjwt.ext.mergeWith].
      *
      * @param processor the processor to register
      * @param keyId optional key ID; `null` acts as a catch-all for the given algorithm
@@ -124,7 +126,11 @@ public interface JwtKeyRegistry {
     public fun registerJwsProcessor(processor: BaseJwsProcessor, keyId: String? = processor.keyId)
 
     /**
-     * Registers a [JweProcessor] in this registry under its algorithm and optional [keyId].
+     * Registers a [BaseJweProcessor] in this registry under its algorithm and optional [keyId].
+     *
+     * If a processor for the same algorithm and key ID is already registered, the two are merged
+     * into a combined [co.touchlab.kjwt.processor.JweProcessor] via
+     * [co.touchlab.kjwt.ext.mergeWith].
      *
      * @param processor the processor to register
      * @param keyId optional key ID; `null` acts as a catch-all for the given algorithm

@@ -4,7 +4,7 @@ import co.touchlab.kjwt.annotations.DelicateKJWTApi
 import co.touchlab.kjwt.cryptography.processors.EncryptionKey
 import co.touchlab.kjwt.cryptography.processors.SigningKey
 import co.touchlab.kjwt.ext.mergeWith
-import co.touchlab.kjwt.model.registry.JwtKeyRegistry
+import co.touchlab.kjwt.model.registry.JwtProcessorRegistry
 import co.touchlab.kjwt.processor.BaseJweProcessor
 import co.touchlab.kjwt.processor.BaseJwsProcessor
 
@@ -17,7 +17,7 @@ import co.touchlab.kjwt.processor.BaseJwsProcessor
  *   algorithm and key ID
  */
 @OptIn(DelicateKJWTApi::class)
-public fun JwtKeyRegistry.registerSigningKey(key: SigningKey) {
+public fun JwtProcessorRegistry.registerSigningKey(key: SigningKey) {
     registerJwsProcessor(key)
 }
 
@@ -35,7 +35,7 @@ public fun JwtKeyRegistry.registerSigningKey(key: SigningKey) {
  *   the same algorithm and key ID
  */
 @DelicateKJWTApi
-public fun JwtKeyRegistry.findBestJwsProcessorAndMerge(
+public fun JwtProcessorRegistry.findBestJwsProcessorAndMerge(
     key: SigningKey,
 ): BaseJwsProcessor {
     val previous = findBestJwsProcessor(key.identifier.algorithm, key.identifier.keyId)
@@ -63,7 +63,7 @@ public fun JwtKeyRegistry.findBestJwsProcessorAndMerge(
  *   algorithm and key ID
  */
 @OptIn(DelicateKJWTApi::class)
-public fun JwtKeyRegistry.registerEncryptionKey(key: EncryptionKey) {
+public fun JwtProcessorRegistry.registerEncryptionKey(key: EncryptionKey) {
     registerJweProcessor(key)
 }
 
@@ -81,7 +81,7 @@ public fun JwtKeyRegistry.registerEncryptionKey(key: EncryptionKey) {
  *   the same algorithm and key ID
  */
 @DelicateKJWTApi
-public fun JwtKeyRegistry.findBestJweProcessorAndMerge(
+public fun JwtProcessorRegistry.findBestJweProcessorAndMerge(
     key: EncryptionKey,
 ): BaseJweProcessor {
     val previous = findBestJweProcessor(key.identifier.algorithm, key.identifier.keyId)

@@ -9,11 +9,9 @@ import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
-import co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry
-import co.touchlab.kjwt.model.registry.JwtKeyRegistry
+import co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
+import co.touchlab.kjwt.model.registry.JwtProcessorRegistry
 import co.touchlab.kjwt.processor.JweEncryptor
-import co.touchlab.kjwt.processor.JweProcessor
-import co.touchlab.kjwt.processor.JwsProcessor
 import co.touchlab.kjwt.processor.JwsSigner
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.Json
@@ -307,24 +305,24 @@ public class JwtBuilder(
      * Looks up the private key from [registry] and builds a JWS compact serialization.
      *
      * The registry is searched using [algorithm] and [keyId] as the look-up criteria (see
-     * [DefaultJwtKeyRegistry] for the full look-up order). If no matching key is found an
+     * [DefaultJwtProcessorRegistry] for the full look-up order). If no matching key is found an
      * [IllegalStateException] is thrown.
      *
      * Passing [co.touchlab.kjwt.model.algorithm.SigningAlgorithm.None] delegates directly to
      * [build] (unsecured token) without consulting the registry.
      *
      * @param algorithm the signing algorithm to use
-     * @param registry the key registry to look up the private key from
+     * @param registry the registry to look up the JwsSigner processor
      * @param keyId optional key ID used for registry look-up and embedded in the JWT header's
      *   `kid` field. Defaults to `null`.
      * @return the resulting [JwtInstance.Jws] compact serialization
      * @throws IllegalStateException if no signing key for [algorithm] (and [keyId]) is found in
      *   [registry]
-     * @see DefaultJwtKeyRegistry
+     * @see DefaultJwtProcessorRegistry
      */
     public suspend fun signWith(
         algorithm: SigningAlgorithm,
-        registry: JwtKeyRegistry,
+        registry: JwtProcessorRegistry,
         keyId: String? = null,
     ): JwtInstance.Jws {
         if (algorithm == SigningAlgorithm.None) {
@@ -343,13 +341,13 @@ public class JwtBuilder(
     }
 
     /**
-     * Suspends, signs the token using the given [JwsProcessor], and returns the JWS compact serialization.
+     * Suspends, signs the token using the given [JwsSigner], and returns the JWS compact serialization.
      *
-     * The processor is responsible for the signing operation; no key registry look-up is performed.
+     * The signer is responsible for the signing operation; no registry look-up is performed.
      * The `kid` header parameter is set to [keyId] when provided.
      *
-     * @param integrityProcessor the [JwsProcessor] that performs the signing operation
-     * @param keyId optional key ID to embed in the JWT header's `kid` field. Defaults to [JwsProcessor.keyId].
+     * @param integrityProcessor the [JwsSigner] that performs the signing operation
+     * @param keyId optional key ID to embed in the JWT header's `kid` field. Defaults to [JwsSigner.keyId].
      * @return the resulting [JwtInstance.Jws] compact serialization
      * @see co.touchlab.kjwt.parser.JwtParserBuilder.verifyWith
      */
@@ -387,7 +385,7 @@ public class JwtBuilder(
      * Looks up the public key from [registry] and builds a JWE compact serialization.
      *
      * The registry is searched using [keyAlgorithm] and [keyId] as the look-up criteria (see
-     * [DefaultJwtKeyRegistry] for the full look-up order). If no matching key is found an
+     * [DefaultJwtProcessorRegistry] for the full look-up order). If no matching key is found an
      * [IllegalStateException] is thrown.
      *
      * @param registry the key registry to look up the public encryption key from
@@ -398,10 +396,10 @@ public class JwtBuilder(
      * @return the resulting [JwtInstance.Jwe] compact serialization
      * @throws IllegalStateException if no encryption key for [keyAlgorithm] (and [keyId]) is
      *   found in [registry]
-     * @see DefaultJwtKeyRegistry
+     * @see DefaultJwtProcessorRegistry
      */
     public suspend fun encryptWith(
-        registry: JwtKeyRegistry,
+        registry: JwtProcessorRegistry,
         keyAlgorithm: EncryptionAlgorithm,
         contentAlgorithm: EncryptionContentAlgorithm,
         keyId: String? = null,
@@ -417,14 +415,14 @@ public class JwtBuilder(
     }
 
     /**
-     * Suspends, encrypts the token using the given [JweProcessor], and returns the JWE compact serialization.
+     * Suspends, encrypts the token using the given [JweEncryptor], and returns the JWE compact serialization.
      *
-     * The processor handles key wrapping for the given [contentAlgorithm]; no key registry look-up
+     * The encryptor handles key wrapping for the given [contentAlgorithm]; no key registry look-up
      * is performed. The `kid` header parameter is set to [keyId] when provided.
      *
-     * @param processor the [JweProcessor] that performs the key wrapping and encryption
+     * @param processor the [JweEncryptor] that performs the key wrapping and content encryption
      * @param contentAlgorithm the content encryption algorithm used to encrypt the payload
-     * @param keyId optional key ID to embed in the JWE header's `kid` field. Defaults to [JweProcessor.keyId].
+     * @param keyId optional key ID to embed in the JWE header's `kid` field. Defaults to [JweEncryptor.keyId].
      * @return the resulting [JwtInstance.Jwe] compact serialization
      * @see co.touchlab.kjwt.parser.JwtParserBuilder.decryptWith
      */

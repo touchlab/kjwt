@@ -9,8 +9,8 @@ import co.touchlab.kjwt.ext.issuerOrNull
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
-import co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry
-import co.touchlab.kjwt.model.registry.JwtKeyRegistry
+import co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
+import co.touchlab.kjwt.model.registry.JwtProcessorRegistry
 import co.touchlab.kjwt.processor.JweProcessor
 import co.touchlab.kjwt.processor.JwsProcessor
 import kotlinx.serialization.json.Json
@@ -32,9 +32,9 @@ import kotlinx.serialization.json.Json
 public class JwtParserBuilder(
     internal val jsonInstance: Json,
 ) {
-    /** The key registry used by the built [JwtParser] to look up signing and encryption keys. */
+    /** The processor registry used by the built [JwtParser] to look up signing and encryption keys. */
     @InternalKJWTApi
-    public val keyRegistry: JwtKeyRegistry = DefaultJwtKeyRegistry()
+    public val processorRegistry: JwtProcessorRegistry = DefaultJwtProcessorRegistry()
 
     @PublishedApi
     internal val validators: MutableList<(JwtPayload, JwtHeader) -> Unit> = mutableListOf()
@@ -65,7 +65,7 @@ public class JwtParserBuilder(
      * override individual keys locally.
      *
      * ```kotlin
-     * val sharedRegistry = JwtKeyRegistry()
+     * val sharedRegistry = JwtProcessorRegistry()
      * // keys are added to sharedRegistry elsewhere
      *
      * val parser = Jwt.parser()
@@ -74,13 +74,13 @@ public class JwtParserBuilder(
      *     .build()
      * ```
      *
-     * @param registry the [JwtKeyRegistry] to fall back to when no local key matches
+     * @param registry the [JwtProcessorRegistry] to fall back to when no local key matches
      * @return this builder for chaining
-     * @see DefaultJwtKeyRegistry
+     * @see DefaultJwtProcessorRegistry
      */
-    public fun useKeysFrom(registry: JwtKeyRegistry): JwtParserBuilder =
+    public fun useKeysFrom(registry: JwtProcessorRegistry): JwtParserBuilder =
         apply {
-            keyRegistry.delegateTo(registry)
+            processorRegistry.delegateTo(registry)
         }
 
     /**
@@ -95,7 +95,7 @@ public class JwtParserBuilder(
      */
     public fun verifyWith(
         processor: JwsProcessor,
-    ): JwtParserBuilder = apply { keyRegistry.registerJwsProcessor(processor) }
+    ): JwtParserBuilder = apply { processorRegistry.registerJwsProcessor(processor) }
 
     /**
      * Registers a [JweProcessor] to use for token decryption.
@@ -109,7 +109,7 @@ public class JwtParserBuilder(
      */
     public fun decryptWith(
         processor: JweProcessor,
-    ): JwtParserBuilder = apply { keyRegistry.registerJweProcessor(processor) }
+    ): JwtParserBuilder = apply { processorRegistry.registerJweProcessor(processor) }
 
     /**
      * Adds a validator that requires the `iss` claim to equal the given value.

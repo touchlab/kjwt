@@ -34,12 +34,12 @@ import kotlin.random.Random
  *
  * Complementary keys that share the same [Identifier] can be merged into an [EncryptionKeyPair]
  * via [mergeWith]. This happens automatically when both are registered with the same
- * [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry].
+ * [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry].
  *
  * Each subtype directly implements the appropriate processor interface ([JweEncryptor],
  * [JweDecryptor], or [JweProcessor]) and carries the cryptographic logic for its role.
  *
- * @see co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry
+ * @see co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
  * @see co.touchlab.kjwt.parser.JwtParserBuilder.decryptWith
  */
 public sealed class EncryptionKey : BaseJweProcessor {
@@ -56,7 +56,7 @@ public sealed class EncryptionKey : BaseJweProcessor {
     override val keyId: String? get() = identifier.keyId
 
     /**
-     * Identifies an [EncryptionKey] within a [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry]
+     * Identifies an [EncryptionKey] within a [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry]
      * by algorithm and optional key ID.
      *
      * The combination of [algorithm] and [keyId] must be unique within a registry. When [keyId]
@@ -165,7 +165,7 @@ public sealed class EncryptionKey : BaseJweProcessor {
      *
      * Produced automatically by [mergeWith] when an [EncryptionOnlyKey] and a [DecryptionOnlyKey]
      * with the same [Identifier] are both registered in a
-     * [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry]. Supports both encryption and
+     * [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry]. Supports both encryption and
      * decryption.
      */
     public class EncryptionKeyPair internal constructor(

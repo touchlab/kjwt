@@ -9,25 +9,25 @@ import co.touchlab.kjwt.processor.BaseJweProcessor
 import co.touchlab.kjwt.processor.BaseJwsProcessor
 
 /**
- * Default in-memory implementation of [JwtKeyRegistry].
+ * Default in-memory implementation of [JwtProcessorRegistry].
  *
  * Signing processors are keyed by ([SigningAlgorithm], optional key ID) and encryption processors
  * by ([EncryptionAlgorithm], optional key ID). Look-up follows the order defined by
- * [JwtKeyRegistry]: exact match, algorithm-only fallback, then delegate.
+ * [JwtProcessorRegistry]: exact match, algorithm-only fallback, then delegate.
  *
- * @see JwtKeyRegistry
+ * @see JwtProcessorRegistry
  */
 @ExperimentalKJWTApi
 @OptIn(InternalKJWTApi::class)
-public class DefaultJwtKeyRegistry : JwtKeyRegistry {
+public class DefaultJwtProcessorRegistry : JwtProcessorRegistry {
     @InternalKJWTApi
-    override var delegateKeyRegistry: JwtKeyRegistry? = null
+    override var delegateKeyRegistry: JwtProcessorRegistry? = null
 
     private val signingProcessors = mutableMapOf<Pair<SigningAlgorithm, String?>, BaseJwsProcessor>()
     private val encryptionProcessors = mutableMapOf<Pair<EncryptionAlgorithm, String?>, BaseJweProcessor>()
 
-    override fun delegateTo(other: JwtKeyRegistry) {
-        var cursor: JwtKeyRegistry? = other
+    override fun delegateTo(other: JwtProcessorRegistry) {
+        var cursor: JwtProcessorRegistry? = other
         while (cursor != null) {
             require(cursor !== this) {
                 "Cyclic delegation detected: this registry is already in the delegate chain of the target"
@@ -37,11 +37,25 @@ public class DefaultJwtKeyRegistry : JwtKeyRegistry {
         delegateKeyRegistry = other
     }
 
+    /**
+     * Registers [processor] under its algorithm and [keyId], merging with any existing entry.
+     *
+     * If a processor for the same (algorithm, keyId) pair is already present, it is merged with
+     * [processor] via [co.touchlab.kjwt.ext.mergeWith] to produce a combined
+     * [co.touchlab.kjwt.processor.JwsProcessor].
+     */
     override fun registerJwsProcessor(processor: BaseJwsProcessor, keyId: String?) {
         signingProcessors[Pair(processor.algorithm, keyId)] =
             processor.mergeWith(signingProcessors[Pair(processor.algorithm, keyId)])
     }
 
+    /**
+     * Registers [processor] under its algorithm and [keyId], merging with any existing entry.
+     *
+     * If a processor for the same (algorithm, keyId) pair is already present, it is merged with
+     * [processor] via [co.touchlab.kjwt.ext.mergeWith] to produce a combined
+     * [co.touchlab.kjwt.processor.JweProcessor].
+     */
     override fun registerJweProcessor(processor: BaseJweProcessor, keyId: String?) {
         encryptionProcessors[Pair(processor.algorithm, keyId)] =
             processor.mergeWith(encryptionProcessors[Pair(processor.algorithm, keyId)])

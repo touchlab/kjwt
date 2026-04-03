@@ -86,7 +86,7 @@ public class JwtParser internal constructor(
         if (algorithm != SigningAlgorithm.None && !config.skipVerification) {
             val integrityProcessor =
                 checkNotNull(
-                    config.keyRegistry.findBestJwsProcessor(algorithm, header.keyIdOrNull),
+                    config.processorRegistry.findBestJwsProcessor(algorithm, header.keyIdOrNull),
                 ) { "No verification key configured. Call verifyWith() or noVerify() on the parser builder." }
 
             val signingInput = "${parts[0]}.${parts[1]}".encodeToByteArray()
@@ -141,7 +141,7 @@ public class JwtParser internal constructor(
             }
 
         val decryptor =
-            requireNotNull(config.keyRegistry.findBestJweProcessor(keyAlgorithm, header.keyIdOrNull)) {
+            requireNotNull(config.processorRegistry.findBestJweProcessor(keyAlgorithm, header.keyIdOrNull)) {
                 "No decryption key configured. Call decryptWith() on the parser builder."
             }
 

@@ -4,6 +4,17 @@ import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.JweEncryptResult
 
+/**
+ * Common base for all JWE processor types, carrying the [algorithm] and optional [keyId] that
+ * identify the key material used for encryption or decryption.
+ *
+ * Subtypes specialise into [JweEncryptor] (encryption only), [JweDecryptor] (decryption only), or
+ * the combined [JweProcessor].
+ *
+ * @see JweEncryptor
+ * @see JweDecryptor
+ * @see JweProcessor
+ */
 public interface BaseJweProcessor {
     /** The JWE key-encryption algorithm this processor implements. */
     public val algorithm: EncryptionAlgorithm
@@ -28,6 +39,16 @@ public interface BaseJweProcessor {
  */
 public interface JweProcessor : BaseJweProcessor, JweEncryptor, JweDecryptor {
     public companion object {
+        /**
+         * Creates a [JweProcessor] that delegates encryption to [encryptor] and decryption to [decryptor].
+         *
+         * Both must share the same algorithm; [encryptor]'s algorithm and key ID are used for the
+         * combined processor.
+         *
+         * @param encryptor the [JweEncryptor] that performs key wrapping and content encryption
+         * @param decryptor the [JweDecryptor] that performs key unwrapping and content decryption
+         * @return a [JweProcessor] combining both operations
+         */
         public fun combining(
             encryptor: JweEncryptor,
             decryptor: JweDecryptor,

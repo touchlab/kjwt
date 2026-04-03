@@ -27,12 +27,12 @@ import dev.whyoleg.cryptography.materials.key.Key
  *
  * Complementary keys that share the same [Identifier] can be merged into a [SigningKeyPair] via
  * [mergeWith]. This happens automatically when both are registered with the same
- * [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry].
+ * [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry].
  *
  * Each subtype directly implements the appropriate processor interface ([JwsSigner], [JwsVerifier],
  * or [JwsProcessor]) and carries the cryptographic logic for its role.
  *
- * @see co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry
+ * @see co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
  * @see co.touchlab.kjwt.parser.JwtParserBuilder.verifyWith
  */
 public sealed class SigningKey : BaseJwsProcessor {
@@ -49,7 +49,7 @@ public sealed class SigningKey : BaseJwsProcessor {
     override val keyId: String? get() = identifier.keyId
 
     /**
-     * Identifies a [SigningKey] within a [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry] by
+     * Identifies a [SigningKey] within a [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry] by
      * algorithm and optional key ID.
      *
      * The combination of [algorithm] and [keyId] must be unique within a registry. When [keyId]
@@ -151,7 +151,7 @@ public sealed class SigningKey : BaseJwsProcessor {
      *
      * Produced automatically by [mergeWith] when a [SigningOnlyKey] and a [VerifyOnlyKey] with
      * the same [Identifier] are both registered in a
-     * [co.touchlab.kjwt.model.registry.DefaultJwtKeyRegistry]. Supports both signing and
+     * [co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry]. Supports both signing and
      * verification.
      */
     public class SigningKeyPair internal constructor(

@@ -2,8 +2,19 @@ package co.touchlab.kjwt.processor
 
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 
+/**
+ * Common base for all JWS processor types, carrying the [algorithm] and optional [keyId] that
+ * identify the key material used for signing or verification.
+ *
+ * Subtypes specialise into [JwsSigner] (signing only), [JwsVerifier] (verification only), or the
+ * combined [JwsProcessor].
+ *
+ * @see JwsSigner
+ * @see JwsVerifier
+ * @see JwsProcessor
+ */
 public interface BaseJwsProcessor {
-    /** The JWE key-encryption algorithm this processor implements. */
+    /** The JWS signing algorithm this processor implements. */
     public val algorithm: SigningAlgorithm
 
     /** The optional key ID (`kid`) associated with the key material used by this processor. */
@@ -26,6 +37,16 @@ public interface BaseJwsProcessor {
  */
 public interface JwsProcessor : BaseJwsProcessor, JwsSigner, JwsVerifier {
     public companion object {
+        /**
+         * Creates a [JwsProcessor] that delegates signing to [signer] and verification to [verifier].
+         *
+         * Both must share the same algorithm; [signer]'s algorithm and key ID are used for the
+         * combined processor.
+         *
+         * @param signer the [JwsSigner] that performs signing
+         * @param verifier the [JwsVerifier] that performs verification
+         * @return a [JwsProcessor] combining both operations
+         */
         public fun combining(
             signer: JwsSigner,
             verifier: JwsVerifier,
