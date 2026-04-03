@@ -103,11 +103,16 @@ auto-registers on startup and is the recommended choice:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("co.touchlab:kjwt:<kjwt-version>")
+    implementation("co.touchlab:kjwt-core:<kjwt-version>")
 
-    // Include the provider you want to use from Cryptography Kotlin
-    // For more details, see https://whyoleg.github.io/cryptography-kotlin/providers/
+    // For usage with `Cryptography-Kotlin`, include the processor and the providers for it:
+    implementation("co.touchlab:kjwt-cryptography-kotlin-processor:<kjwt-version>")
     implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:<cryptography-kotlin-version>")
+    
+    // Optional: Some extensions exist for the cryptography-kotlin library
+    implementation("co.touchlab:kjwt-cryptography-kotlin-processor-ext:<kjwt-version>")
+    
+    // Mover providers will be added soon
 }
 ```
 
@@ -140,18 +145,40 @@ dependencies {
 
 ## Why another library?
 
-[Signum](https://a-sit-plus.github.io/signum/) is a community KMP library that aims to support many cryptographic
-operations, such as JWT operations. Their library is more feature-rich and supports many algorithms. However, it has a
-requirement of SDK 30+ for Android projects. This limitation is needed as they support hardware-backed operations that
-have such a requirement.
+There are two common reference points in the KMP ecosystem:
 
-On the other hand, [Cryptography Kotlin](https://whyoleg.github.io/cryptography-kotlin/) is another community library
-with a much narrower scope. It supports a wide range of platforms and algorithms, but its goal is to provide access to
-the cryptographic APIs, and not to implement any specific protocol on top of it.
+[Signum](https://a-sit-plus.github.io/signum/) is a community KMP library that supports many cryptographic operations,
+including JWT. It is more feature-rich and supports many algorithms, but it requires Android SDK 30+ — a hard limit
+for apps that need to support older devices.
 
-Our goal is to support JWT on top of the cryptographic library. We aim to provide an easy-to-migrate API for
-Kotlin/Java-only applications that are using JJWT for this purpose, supporting the main KMP platforms available.
-As of now, the library is compliant with the JWS and JWE specifications.
+[Cryptography Kotlin](https://whyoleg.github.io/cryptography-kotlin/) takes a different approach: it is a low-level
+library whose goal is to expose cryptographic primitives across KMP targets, not to implement protocols on top of them.
+It is an excellent building block, but it does not give you a JWT API.
+
+KJWT fills that gap. It provides a high-level, easy-to-use JWT API (JWS and JWE) that works across all major KMP
+platforms, with a migration-friendly design for teams moving from JJWT on the JVM.
+
+We started by building KJWT directly on top of Cryptography Kotlin, and it remains the recommended crypto backend.
+Over time, however, we decoupled the JWT logic from any specific crypto implementation. The cryptographic layer is now
+pluggable: if your project already uses a different library for cryptography, you can write a thin processor for it and
+plug it into KJWT without changing anything else. This makes KJWT useful even in projects where the crypto stack is
+already decided.
+
+One concrete motivation for this design was hardware-backed cryptography. Signum supports hardware-backed operations,
+which is a compelling feature — but it comes at the cost of requiring Android SDK 30+. With KJWT's pluggable
+architecture, you can implement a processor backed by hardware security when your app's minimum SDK allows it, while
+users on older Android versions continue to use a standard software-backed provider. The JWT layer stays the same
+regardless of which processor is underneath.
+
+Going forward, we plan to ship first-party processors for hardware-backed cryptography and other provider types, so
+you get the benefits of those integrations without having to implement them yourself.
+
+<details>
+<summary>Aren't there enough standards already?</summary>
+
+[Yes.](https://xkcd.com/927/)
+
+</details>
 
 ## Usage
 

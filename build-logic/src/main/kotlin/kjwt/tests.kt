@@ -14,6 +14,22 @@ fun KotlinMultiplatformExtension.configureTests() {
     configureJSTests()
 }
 
+fun KotlinMultiplatformExtension.configureCryptographyProviderForTests() {
+    val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+    sourceSets.jvmTest.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+    }
+
+    sourceSets.nativeTest.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+    }
+
+    sourceSets.webTest.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-web").get())
+    }
+}
+
 private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
     val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -24,16 +40,6 @@ private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
 
     sourceSets.jvmTest.dependencies {
         implementation(libs.findLibrary("kotest-runner-junit5").get())
-        implementation(libs.findLibrary("cryptography-provider-optimal").get())
-        implementation(libs.findLibrary("cryptography-provider-optimal").get())
-    }
-
-    sourceSets.nativeTest.dependencies {
-        implementation(libs.findLibrary("cryptography-provider-optimal").get())
-    }
-
-    sourceSets.webTest.dependencies {
-        implementation(libs.findLibrary("cryptography-provider-web").get())
     }
 
     project.tasks.named<Test>("jvmTest") {

@@ -29,5 +29,11 @@ dependencyResolutionManagement {
     }
 }
 
-include(":kjwt")
-project(":kjwt").projectDir = file("lib")
+include(":kjwt-core")
+project(":kjwt-core").projectDir = file("core")
+
+include(":kjwt-cryptography-kotlin-processor")
+project(":kjwt-cryptography-kotlin-processor").projectDir = file("cryptography-kotlin/processor")
+
+include(":kjwt-cryptography-kotlin-processor-ext")
+project(":kjwt-cryptography-kotlin-processor-ext").projectDir = file("cryptography-kotlin/ext")
