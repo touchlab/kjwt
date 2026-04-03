@@ -1,0 +1,331 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>JwtParserBuilder</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
+                    kotlin-jwt
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;co.touchlab.kjwt.parser/-jwt-parser-builder/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":kjwt-core/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kjwt-core/commonMain" data-filter=":kjwt-core/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+                <a class="navigation-controls--btn navigation-controls--btn_homepage" id="homepage-link" href="https://github.com/touchlab/kjwt"></a>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kotlin-jwt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="kjwt-core::co.touchlab.kjwt.parser/JwtParserBuilder///PointingToDeclaration//433806985">
+  <div class="breadcrumbs"><a href="../../index.html">kjwt-core</a><span class="delimiter">/</span><a href="../index.html">co.touchlab.kjwt.parser</a><span class="delimiter">/</span><span class="current">JwtParserBuilder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Jwt</span><wbr><span>Parser</span><wbr><span><span>Builder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">JwtParserBuilder</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">jsonInstance<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json/index.html">Json</a></span></span><span class="token punctuation">)</span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/touchlab/kjwt/tree/0.1.0//core/src/commonMain/kotlin/co/touchlab/kjwt/parser/JwtParserBuilder.kt#L32">source</a>)</span></span></div><p class="paragraph">Configures and builds a <a href="../-jwt-parser/index.html">JwtParser</a>.</p><p class="paragraph">Example:</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val signingKey = SigningAlgorithm.HS256.newKey()<br>val parser = Jwt.parser()<br>    .verifyWith(signingKey)<br>    .requireIssuer("myapp")<br>    .clockSkew(30L)<br>    .build()<br>val jws = parser.parse(token)</code></pre><span class="copy-tooltip"><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div><span class="copy-icon"></span></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="1741338399%2FConstructors%2F433806985" anchor-label="JwtParserBuilder" id="1741338399%2FConstructors%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jwt-parser-builder.html"><span>Jwt</span><wbr><span>Parser</span><wbr><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1741338399%2FConstructors%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">jsonInstance<span class="token operator">: </span><a href="https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/-json/index.html">Json</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="2030341868%2FProperties%2F433806985" anchor-label="processorRegistry" id="2030341868%2FProperties%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="processor-registry.html"><span>processor</span><wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2030341868%2FProperties%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="processor-registry.html">processorRegistry</a><span class="token operator">: </span><a href="../../co.touchlab.kjwt.model.registry/-jwt-processor-registry/index.html">JwtProcessorRegistry</a></div><div class="brief "><p class="paragraph">The processor registry used by the built <a href="../-jwt-parser/index.html">JwtParser</a> to look up signing and encryption keys.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-1253452263%2FFunctions%2F433806985" anchor-label="allowUnsecured" id="-1253452263%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="allow-unsecured.html"><span>allow</span><wbr><span><span>Unsecured</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1253452263%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="allow-unsecured.html"><span class="token function">allowUnsecured</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">allow<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Configures whether tokens with <code class="lang-kotlin">alg=none</code> (unsecured JWTs) are accepted.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1259897165%2FFunctions%2F433806985" anchor-label="build" id="1259897165%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="build.html"><span><span>build</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1259897165%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="build.html"><span class="token function">build</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-jwt-parser/index.html">JwtParser</a></div><div class="brief "><p class="paragraph">Builds the configured <a href="../-jwt-parser/index.html">JwtParser</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1040137834%2FFunctions%2F433806985" anchor-label="clockSkew" id="-1040137834%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="clock-skew.html"><span>clock</span><wbr><span><span>Skew</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1040137834%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="clock-skew.html"><span class="token function">clockSkew</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">seconds<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Sets the acceptable clock skew when validating time-based claims (<code class="lang-kotlin">exp</code>, <code class="lang-kotlin">nbf</code>, <code class="lang-kotlin">iat</code>).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="669056880%2FFunctions%2F433806985" anchor-label="decryptWith" id="669056880%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="decrypt-with.html"><span>decrypt</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="669056880%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="decrypt-with.html"><span class="token function">decryptWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">processor<span class="token operator">: </span><a href="../../co.touchlab.kjwt.processor/-jwe-processor/index.html">JweProcessor</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Registers a <a href="../../co.touchlab.kjwt.processor/-jwe-processor/index.html">JweProcessor</a> to use for token decryption.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="912939621%2FFunctions%2F433806985" anchor-label="noVerify" id="912939621%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="no-verify.html"><span>no</span><wbr><span><span>Verify</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="912939621%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="no-verify.html"><span class="token function">noVerify</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Disables signature verification entirely, accepting any token regardless of its signature.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-738065870%2FFunctions%2F433806985" anchor-label="requireAudience" id="-738065870%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="require-audience.html"><span>require</span><wbr><span><span>Audience</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-738065870%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="require-audience.html"><span class="token function">requireAudience</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">aud<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Adds a validator that requires the <code class="lang-kotlin">aud</code> claim to contain the given value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1827592741%2FFunctions%2F433806985" anchor-label="requireClaim" id="-1827592741%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="require-claim.html"><span>require</span><wbr><span><span>Claim</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1827592741%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="require-claim.html">T</a><span class="token operator">&gt; </span><a href="require-claim.html"><span class="token function">requireClaim</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">claimName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="require-claim.html">T</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Adds a validator that requires the named claim to equal the given value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1295017917%2FFunctions%2F433806985" anchor-label="requireIssuer" id="1295017917%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="require-issuer.html"><span>require</span><wbr><span><span>Issuer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1295017917%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="require-issuer.html"><span class="token function">requireIssuer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">iss<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">ignoreCase<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Adds a validator that requires the <code class="lang-kotlin">iss</code> claim to equal the given value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1074509036%2FFunctions%2F433806985" anchor-label="requireSubject" id="1074509036%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="require-subject.html"><span>require</span><wbr><span><span>Subject</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1074509036%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="require-subject.html"><span class="token function">requireSubject</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sub<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Adds a validator that requires the <code class="lang-kotlin">sub</code> claim to equal the given value.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-998784618%2FFunctions%2F433806985" anchor-label="useKeysFrom" id="-998784618%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="use-keys-from.html"><span>use</span><wbr><span>Keys</span><wbr><span><span>From</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-998784618%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="use-keys-from.html"><span class="token function">useKeysFrom</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">registry<span class="token operator">: </span><a href="../../co.touchlab.kjwt.model.registry/-jwt-processor-registry/index.html">JwtProcessorRegistry</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Delegates key look-up to the given <a href="use-keys-from.html">registry</a> before consulting this parser's own keys.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="956786470%2FFunctions%2F433806985" anchor-label="verifyWith" id="956786470%2FFunctions%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="verify-with.html"><span>verify</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="956786470%2FFunctions%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="verify-with.html"><span class="token function">verifyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">processor<span class="token operator">: </span><a href="../../co.touchlab.kjwt.processor/-jws-processor/index.html">JwsProcessor</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">JwtParserBuilder</a></div><div class="brief "><p class="paragraph">Registers a <a href="../../co.touchlab.kjwt.processor/-jws-processor/index.html">JwsProcessor</a> to use for signature verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Touchlab</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,16 +1,21 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
-module:kjwt
+module:kjwt-core
 co.touchlab.kjwt
 co.touchlab.kjwt.annotations
 co.touchlab.kjwt.builder
-co.touchlab.kjwt.cryptography
 co.touchlab.kjwt.exception
 co.touchlab.kjwt.ext
+co.touchlab.kjwt.internal
 co.touchlab.kjwt.model
 co.touchlab.kjwt.model.algorithm
 co.touchlab.kjwt.model.jwk
 co.touchlab.kjwt.model.registry
 co.touchlab.kjwt.parser
+co.touchlab.kjwt.processor
 co.touchlab.kjwt.serializers
+module:kjwt-cryptography-kotlin-processor
+co.touchlab.kjwt.cryptography
+module:kjwt-cryptography-kotlin-processor-ext
+co.touchlab.kjwt.cryptography.ext

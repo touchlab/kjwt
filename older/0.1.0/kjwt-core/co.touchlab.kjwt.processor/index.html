@@ -1,0 +1,247 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>co.touchlab.kjwt.processor</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer></script></head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../index.html" tabindex="1">
+                    kotlin-jwt
+            </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+<dokka-template-command data="{&quot;@class&quot;:&quot;org.jetbrains.dokka.base.templating.ReplaceVersionsCommand&quot;,&quot;location&quot;:&quot;co.touchlab.kjwt.processor/index.html&quot;}">0.1.0</dokka-template-command>        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":kjwt-core/commonMain">common</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":kjwt-core/commonMain" data-filter=":kjwt-core/commonMain">
+                                <span class="checkbox--icon"></span>
+                                common
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+                <a class="navigation-controls--btn navigation-controls--btn_homepage" id="homepage-link" href="https://github.com/touchlab/kjwt"></a>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    kotlin-jwt
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageids="kjwt-core::co.touchlab.kjwt.processor////PointingToDeclaration//433806985">
+  <div class="breadcrumbs"><a href="../index.html">kjwt-core</a><span class="delimiter">/</span><span class="current">co.touchlab.kjwt.processor</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-1532935787%2FClasslikes%2F433806985" anchor-label="BaseJweProcessor" id="-1532935787%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-base-jwe-processor/index.html"><span>Base</span><wbr><span>Jwe</span><wbr><span><span>Processor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1532935787%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-base-jwe-processor/index.html">BaseJweProcessor</a></div><div class="brief "><p class="paragraph">Common base for all JWE processor types, carrying the <a href="-base-jwe-processor/algorithm.html">algorithm</a> and optional <a href="-base-jwe-processor/key-id.html">keyId</a> that identify the key material used for encryption or decryption.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1148960291%2FClasslikes%2F433806985" anchor-label="BaseJwsProcessor" id="1148960291%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-base-jws-processor/index.html"><span>Base</span><wbr><span>Jws</span><wbr><span><span>Processor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1148960291%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-base-jws-processor/index.html">BaseJwsProcessor</a></div><div class="brief "><p class="paragraph">Common base for all JWS processor types, carrying the <a href="-base-jws-processor/algorithm.html">algorithm</a> and optional <a href="-base-jws-processor/key-id.html">keyId</a> that identify the key material used for signing or verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-661795960%2FClasslikes%2F433806985" anchor-label="JweDecryptor" id="-661795960%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jwe-decryptor/index.html"><span>Jwe</span><wbr><span><span>Decryptor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-661795960%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jwe-decryptor/index.html">JweDecryptor</a> : <a href="-base-jwe-processor/index.html">BaseJweProcessor</a></div><div class="brief "><p class="paragraph">Functional interface for decrypting a JWE token payload.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2109527120%2FClasslikes%2F433806985" anchor-label="JweEncryptor" id="-2109527120%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jwe-encryptor/index.html"><span>Jwe</span><wbr><span><span>Encryptor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2109527120%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jwe-encryptor/index.html">JweEncryptor</a> : <a href="-base-jwe-processor/index.html">BaseJweProcessor</a></div><div class="brief "><p class="paragraph">Functional interface for encrypting a content encryption key (CEK) and the token payload.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1069545114%2FClasslikes%2F433806985" anchor-label="JweProcessor" id="-1069545114%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jwe-processor/index.html"><span>Jwe</span><wbr><span><span>Processor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1069545114%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jwe-processor/index.html">JweProcessor</a> : <a href="-base-jwe-processor/index.html">BaseJweProcessor</a>, <a href="-jwe-encryptor/index.html">JweEncryptor</a>, <a href="-jwe-decryptor/index.html">JweDecryptor</a></div><div class="brief "><p class="paragraph">Core abstraction for JWE (encrypted JWT) key encryption and decryption.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1612350964%2FClasslikes%2F433806985" anchor-label="JwsProcessor" id="1612350964%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jws-processor/index.html"><span>Jws</span><wbr><span><span>Processor</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1612350964%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jws-processor/index.html">JwsProcessor</a> : <a href="-base-jws-processor/index.html">BaseJwsProcessor</a>, <a href="-jws-signer/index.html">JwsSigner</a>, <a href="-jws-verifier/index.html">JwsVerifier</a></div><div class="brief "><p class="paragraph">Core abstraction for JWS (signed JWT) signing and verification.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="241456722%2FClasslikes%2F433806985" anchor-label="JwsSigner" id="241456722%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jws-signer/index.html"><span>Jws</span><wbr><span><span>Signer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="241456722%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jws-signer/index.html">JwsSigner</a> : <a href="-base-jws-processor/index.html">BaseJwsProcessor</a></div><div class="brief "><p class="paragraph">Functional interface for producing a JWS signature over raw byte data.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="889555302%2FClasslikes%2F433806985" anchor-label="JwsVerifier" id="889555302%2FClasslikes%2F433806985" data-filterable-set=":kjwt-core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":kjwt-core/commonMain" data-filterable-set=":kjwt-core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-jws-verifier/index.html"><span>Jws</span><wbr><span><span>Verifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="889555302%2FClasslikes%2F433806985"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kjwt-core/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-jws-verifier/index.html">JwsVerifier</a> : <a href="-base-jws-processor/index.html">BaseJwsProcessor</a></div><div class="brief "><p class="paragraph">Functional interface for verifying a JWS signature against raw byte data.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Touchlab</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
