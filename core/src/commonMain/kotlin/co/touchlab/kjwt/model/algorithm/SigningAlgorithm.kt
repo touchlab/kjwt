@@ -1,6 +1,7 @@
 package co.touchlab.kjwt.model.algorithm
 
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm.Companion.fromId
+import co.touchlab.kjwt.processor.JwsProcessor
 import co.touchlab.kjwt.serializers.SigningAlgorithmSerializer
 import kotlinx.serialization.Serializable
 
@@ -134,7 +135,17 @@ public sealed class SigningAlgorithm(
     }
 
     /** Unsecured JWT — opt-in only. Rejected by parser unless `allowUnsecured(true)`. */
-    public data object None : SigningAlgorithm("none")
+    public data object None : SigningAlgorithm("none") {
+        public object SimpleProcessor : JwsProcessor {
+            override val algorithm: SigningAlgorithm = this@None
+            override val keyId: String? = null
+
+            override suspend fun sign(data: ByteArray): ByteArray = ByteArray(0)
+
+            override suspend fun verify(data: ByteArray, signature: ByteArray): Boolean =
+                signature.isEmpty()
+        }
+    }
 
     override fun toString(): String = id
 

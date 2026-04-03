@@ -17,8 +17,12 @@ fun KotlinMultiplatformExtension.configureTests() {
 fun KotlinMultiplatformExtension.configureCryptographyProviderForTests() {
     val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-    sourceSets.jvmTest.dependencies {
-        implementation(libs.findLibrary("cryptography-provider-optimal").get())
+    sourceSets.findByName("jvmTest")?.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-bc").get())
+    }
+
+    sourceSets.findByName("androidDeviceTest")?.dependencies {
+        implementation(libs.findLibrary("cryptography-provider-bc").get())
     }
 
     sourceSets.nativeTest.dependencies {
@@ -42,10 +46,12 @@ private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
         implementation(libs.findLibrary("kotest-runner-junit5").get())
     }
 
-    project.tasks.named<Test>("jvmTest") {
-        useJUnitPlatform()
-        filter {
-            isFailOnNoMatchingTests = false
+    if (project.tasks.any { it.name == "jvmTest" }) {
+        project.tasks.named<Test>("jvmTest") {
+            useJUnitPlatform()
+            filter {
+                isFailOnNoMatchingTests = false
+            }
         }
     }
 }

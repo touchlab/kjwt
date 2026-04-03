@@ -1,9 +1,13 @@
 package kjwt
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import org.gradle.api.Action
 import org.gradle.kotlin.dsl.assign
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import kotlin.text.get
 
 fun KotlinMultiplatformExtension.allTargets(
     supportsWasmWasi: Boolean = true,
@@ -12,6 +16,51 @@ fun KotlinMultiplatformExtension.allTargets(
     webTargets()
     nativeTargets()
     if (supportsWasmWasi) wasmWasiTarget()
+}
+
+fun KotlinMultiplatformExtension.androidJvmTarget(
+    configure: Action<KotlinMultiplatformAndroidLibraryTarget>,
+) {
+    extensions.configure<KotlinMultiplatformAndroidLibraryTarget>("android") {
+        configure(this)
+
+        compileSdk = 36
+        minSdk = 23
+
+        withDeviceTestBuilder { sourceSetTreeName = "test" }.configure {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            managedDevices {
+                // Even dough the minSdk is 23, the managed devices are not starting on older APIs
+                localDevices.create("api28") {
+                    device = "Pixel 2"
+                    apiLevel = 28
+                    systemImageSource = "aosp"
+                }
+                localDevices.create("api32") {
+                    device = "Pixel 2"
+                    apiLevel = 32
+                    systemImageSource = "aosp-atd"
+                }
+                localDevices.create("api35") {
+                    device = "Pixel 2"
+                    apiLevel = 35
+                    systemImageSource = "aosp-atd"
+                }
+
+                groups {
+                    create("allSupported") {
+                        targetDevices.addAll(
+                            listOfNotNull(
+                                localDevices.getByName("api28"),
+                                localDevices.getByName("api32"),
+                                localDevices.getByName("api35"),
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 fun KotlinMultiplatformExtension.appleTargets(

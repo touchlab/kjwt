@@ -3,6 +3,7 @@ pluginManagement {}
 dependencyResolutionManagement {
     repositories {
         gradlePluginPortal()
+        google()
     }
 
     versionCatalogs {

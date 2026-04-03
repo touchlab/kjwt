@@ -1,4 +1,6 @@
+import kjwt.allTargets
 import kjwt.configureCryptographyProviderForTests
+import kjwt.configureTests
 
 plugins {
     id("kjwt.multiplatform-library")
@@ -8,6 +10,8 @@ plugins {
 description = "Kotlin Multiplaftorm JWT"
 
 kotlin {
+    allTargets()
+    configureTests()
     configureCryptographyProviderForTests()
 
     sourceSets {

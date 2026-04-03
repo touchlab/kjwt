@@ -19,7 +19,7 @@ import co.touchlab.kjwt.processor.BaseJwsProcessor
  */
 @ExperimentalKJWTApi
 @OptIn(InternalKJWTApi::class)
-public class DefaultJwtProcessorRegistry : JwtProcessorRegistry {
+public class DefaultJwtProcessorRegistry : MutableJwtProcessorRegistry {
     @InternalKJWTApi
     override var delegateKeyRegistry: JwtProcessorRegistry? = null
 
@@ -38,6 +38,8 @@ public class DefaultJwtProcessorRegistry : JwtProcessorRegistry {
     }
 
     override fun registerJwsProcessor(processor: BaseJwsProcessor, keyId: String?) {
+        if (processor.algorithm == SigningAlgorithm.None) return
+
         signingProcessors[Pair(processor.algorithm, keyId)] =
             processor.mergeWith(signingProcessors[Pair(processor.algorithm, keyId)])
     }
@@ -51,6 +53,8 @@ public class DefaultJwtProcessorRegistry : JwtProcessorRegistry {
         algorithm: SigningAlgorithm,
         keyId: String?,
     ): BaseJwsProcessor? {
+        if (algorithm == SigningAlgorithm.None) return SigningAlgorithm.None.SimpleProcessor
+
         return signingProcessors[Pair(algorithm, keyId)]
             ?: signingProcessors[Pair(algorithm, null)]
             ?: delegateKeyRegistry?.findBestJwsProcessor(algorithm, keyId)

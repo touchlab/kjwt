@@ -1,6 +1,3 @@
-import kjwt.allTargets
-import kjwt.configureTests
-
 plugins {
     kotlin("multiplatform")
     id("com.google.devtools.ksp")
@@ -12,8 +9,6 @@ plugins {
 }
 
 kotlin {
-    allTargets()
-    configureTests()
     explicitApi()
 
     compilerOptions {
