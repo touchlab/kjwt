@@ -47,11 +47,11 @@ jobs:
             api-level: 23
             target: default
 
-          - name: android-30
+          - name: android-28
             os: ubuntu-latest
             android: true
-            api-level: 30
-            target: aosp_atd
+            api-level: 28
+            target: default
 
           - name: android-35
             os: ubuntu-latest

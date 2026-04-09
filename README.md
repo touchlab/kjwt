@@ -101,7 +101,8 @@ As of now, the library supports the following operations:
 > outside these (ES384/512, HS384/512, RS384/512, PS384/512) always use TEE even if StrongBox is
 > requested — `Preferred` falls back silently, `Required` throws. Hardware-backed signing supports
 > HS256/384/512, RS256/384/512, PS256/384/512, ES256/384/512 (TEE) and HS256, RS256, PS256, ES256
-> (StrongBox). Hardware-backed encryption supports RSA-OAEP and RSA-OAEP-256 `(alg)`,
+> (StrongBox). **PS256/384/512 require API 28+** — Android Keystore's PSS parameter configuration
+> (`Signature.setParameter`) is not available on earlier API levels. Hardware-backed encryption supports RSA-OAEP and RSA-OAEP-256 `(alg)`,
 > A128GCM, A192GCM, A256GCM, A128CBC-HS256, A192CBC-HS384, A256CBC-HS512 `(enc)`.
 > On **iOS**, keys are stored in the Keychain; the Secure Enclave is used for ES256 when the `Preferred`
 > or `Required` hardware preference is set (ES256 only — other algorithms always use Keychain).

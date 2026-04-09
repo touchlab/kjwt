@@ -3,6 +3,7 @@ package co.touchlab.kjwt.hardware
 import co.touchlab.kjwt.hardware.model.SecureHardwarePreference
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.processor.JwsProcessor
+import androidx.test.filters.SdkSuppress
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
@@ -46,7 +47,9 @@ class SecureHardwareSigningKeyTest {
     // JWS — RSA PSS
     // -------------------------------------------------------------------------
 
-    @Test fun ps256SignAndVerify() = runBlocking { assertJwsRoundTrip(SigningAlgorithm.PS256, "__kjwt_test_ps256") }
+    @Test
+    @SdkSuppress(minSdkVersion = 28) // Android Keystore PSS parameter configuration requires API 28+
+    fun ps256SignAndVerify() = runBlocking { assertJwsRoundTrip(SigningAlgorithm.PS256, "__kjwt_test_ps256") }
 
     // -------------------------------------------------------------------------
     // JWS — ECDSA  (validates DER↔P1363 conversion for all three curves)
