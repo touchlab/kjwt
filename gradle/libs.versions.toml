@@ -4,11 +4,11 @@ agp = "9.1.0"
 androidxTest = "1.6.1"
 kotlinxSerializationJson = "1.10.0"
 kotlinxCoroutines = "1.10.2"
-cryptography = "0.5.0"
+cryptography = "0.6.0"
 kotest = "6.1.6"
 ksp = "2.3.6"
 detekt = "1.23.8"
-dokka = "2.1.0"
+dokka = "2.2.0"
 mavenPublish = "0.36.0"
 
 [libraries]
