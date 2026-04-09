@@ -459,6 +459,65 @@ import kotlin.time.Instant
             }
         }
 
+        context("EdDSA round-trips") {
+
+            test("sign Ed25519 round trip") {
+                val keyPair = ed25519SigningKey()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("ed25519-subject")
+                        .signWith(keyPair)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(keyPair)
+                        .build()
+                        .parseSigned(token)
+
+                assertEquals("Ed25519", jws.header.algorithm)
+                assertEquals("ed25519-subject", jws.payload.subjectOrNull)
+            }
+
+            test("sign Ed25519 with separate signing and verify keys") {
+                val keyPair = ed25519SigningKey()
+                val signingOnlyKey = SigningKey.SigningOnlyKey(keyPair.identifier, keyPair.privateKey)
+                val verifyOnlyKey = SigningKey.VerifyOnlyKey(keyPair.identifier, keyPair.publicKey)
+
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("ed25519-asymmetric")
+                        .signWith(signingOnlyKey)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(verifyOnlyKey)
+                        .build()
+                        .parseSigned(token)
+
+                assertEquals("ed25519-asymmetric", jws.payload.subjectOrNull)
+            }
+
+            test("sign Ed25519 signature is raw RFC 8032 format") {
+                // Ed25519 RFC 8032 signature = R‖S, each 32 bytes → 64 bytes total
+                val keyPair = ed25519SigningKey()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("test")
+                        .signWith(keyPair)
+                        .compact()
+
+                val signatureBytes = decodeBase64Url(token.split('.')[2])
+                assertEquals(64, signatureBytes.size, "Ed25519 signature must be exactly 64 bytes (raw RFC 8032 format)")
+            }
+        }
+
         context("none algorithm") {
 
             test("sign none produces empty signature part") {

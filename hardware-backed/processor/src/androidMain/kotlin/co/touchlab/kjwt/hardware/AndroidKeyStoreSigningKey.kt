@@ -3,14 +3,16 @@ package co.touchlab.kjwt.hardware
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import co.touchlab.kjwt.hardware.AndroidKeyStoreSigningKey.Companion.getInstance
+import co.touchlab.kjwt.hardware.AndroidKeyStoreSigningKey.Companion.getOrCreateInstance
 import co.touchlab.kjwt.hardware.ext.algorithmParameterSpec
 import co.touchlab.kjwt.hardware.ext.asKeyPropertiesDigest
 import co.touchlab.kjwt.hardware.ext.coordLen
 import co.touchlab.kjwt.hardware.ext.toJcaSignatureName
 import co.touchlab.kjwt.hardware.ext.toPSSParameterSpec
+import co.touchlab.kjwt.hardware.helpers.AndroidKeyStoreManager
 import co.touchlab.kjwt.hardware.internal.ecdsaDerToP1363
 import co.touchlab.kjwt.hardware.internal.ecdsaP1363ToDer
-import co.touchlab.kjwt.hardware.helpers.AndroidKeyStoreManager
 import co.touchlab.kjwt.hardware.model.SecureHardwarePreference
 import co.touchlab.kjwt.hardware.model.runWithFlag
 import co.touchlab.kjwt.model.algorithm.Jwa
@@ -20,6 +22,7 @@ import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.MessageDigest
 import java.security.Signature
+import java.security.spec.EdDSAParameterSpec
 import javax.crypto.KeyGenerator
 import javax.crypto.Mac
 
@@ -136,6 +139,15 @@ public class AndroidKeyStoreSigningKey internal constructor(
                 derSignature.ecdsaDerToP1363(algorithm.coordLen)
             }
 
+            is SigningAlgorithm.EdDSABased if (key is KeyStore.PrivateKeyEntry) -> {
+                // Android Keystore returns raw RFC 8032 bytes — no conversion needed
+                Signature.getInstance(jcaAlgorithm).run {
+                    initSign(key.privateKey)
+                    update(data)
+                    sign()
+                }
+            }
+
             else -> {
                 error("No key available for signing content using $algorithm with id $keyId.")
             }
@@ -193,12 +205,20 @@ public class AndroidKeyStoreSigningKey internal constructor(
                     }
             }
 
+            is SigningAlgorithm.EdDSABased if (key is KeyStore.PrivateKeyEntry) -> {
+                // Signature is raw RFC 8032 bytes — no conversion needed
+                Signature.getInstance(jcaAlgorithm).run {
+                    initVerify(key.certificate.publicKey)
+                    update(data)
+                    verify(signature)
+                }
+            }
+
             else -> {
                 error("No key available for verifying $algorithm with id $keyId.")
             }
         }
     }
-
 }
 
 /**
@@ -271,6 +291,11 @@ public object AndroidKeystoreSigningKeyFactory {
             setAlgorithmParameterSpec(algorithm.algorithmParameterSpec)
         }
 
+        if (algorithm is SigningAlgorithm.EdDSABased) {
+            setAlgorithmParameterSpec(EdDSAParameterSpec(false))
+            setDigests(KeyProperties.DIGEST_NONE)
+        }
+
         if (useStrongBox && Build.VERSION.SDK_INT >= 28) {
             setIsStrongBoxBacked(true)
         }
@@ -278,11 +303,23 @@ public object AndroidKeystoreSigningKeyFactory {
 
     private fun SigningAlgorithm.toKeyPropertiesAlgorithm(): String = when (this) {
         SigningAlgorithm.HS256 -> KeyProperties.KEY_ALGORITHM_HMAC_SHA256
+
         SigningAlgorithm.HS384 -> KeyProperties.KEY_ALGORITHM_HMAC_SHA384
+
         SigningAlgorithm.HS512 -> KeyProperties.KEY_ALGORITHM_HMAC_SHA512
+
         is SigningAlgorithm.PKCS1Based -> KeyProperties.KEY_ALGORITHM_RSA
+
         is SigningAlgorithm.PSSBased -> KeyProperties.KEY_ALGORITHM_RSA
+
         is SigningAlgorithm.ECDSABased -> KeyProperties.KEY_ALGORITHM_EC
+
+        SigningAlgorithm.Ed25519 -> "Ed25519"
+
+        // No constant available in KeyProperties for EdDSA algorithms
+        SigningAlgorithm.Ed448 -> "Ed448"
+
+        // No constant available in KeyProperties for EdDSA algorithms
         SigningAlgorithm.None -> error("None algorithm should be handled outside")
     }
 }

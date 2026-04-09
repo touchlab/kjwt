@@ -432,7 +432,7 @@ import kotlin.test.assertTrue
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 

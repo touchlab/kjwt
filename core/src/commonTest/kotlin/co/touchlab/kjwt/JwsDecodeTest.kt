@@ -1,5 +1,6 @@
 package co.touchlab.kjwt
 
+import co.touchlab.kjwt.exception.SignatureException
 import co.touchlab.kjwt.ext.audienceOrNull
 import co.touchlab.kjwt.ext.expirationOrNull
 import co.touchlab.kjwt.ext.getClaimOrNull
@@ -11,6 +12,7 @@ import co.touchlab.kjwt.ext.type
 import co.touchlab.kjwt.model.JwtInstance
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.time.Clock
@@ -448,6 +450,70 @@ class JwsDecodeTest :
                         .parseSigned(token)
 
                 assertNotNull(jws.payload.expirationOrNull)
+            }
+        }
+
+        context("EdDSA") {
+
+            test("parse Ed25519 signed token") {
+                val keyPair = ed25519SigningKey()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("ed25519-user")
+                        .signWith(keyPair)
+                        .compact()
+
+                val jws =
+                    Jwt
+                        .parser()
+                        .verifyWith(keyPair)
+                        .build()
+                        .parseSigned(token)
+
+                assertEquals("Ed25519", jws.header.algorithm)
+                assertEquals("ed25519-user", jws.payload.subjectOrNull)
+            }
+
+            test("reject Ed25519 token verified with wrong key") {
+                val signingKey = ed25519SigningKey()
+                val wrongKey = ed25519SigningKey()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("test")
+                        .signWith(signingKey)
+                        .compact()
+
+                assertFailsWith<SignatureException> {
+                    Jwt
+                        .parser()
+                        .verifyWith(wrongKey)
+                        .build()
+                        .parseSigned(token)
+                }
+            }
+
+            test("reject Ed25519 token with tampered payload") {
+                val keyPair = ed25519SigningKey()
+                val token =
+                    Jwt
+                        .builder()
+                        .subject("original")
+                        .signWith(keyPair)
+                        .compact()
+
+                val parts = token.split('.')
+                val tamperedPayload = "eyJzdWIiOiJoYWNrZWQifQ" // {"sub":"hacked"}
+                val tamperedToken = "${parts[0]}.$tamperedPayload.${parts[2]}"
+
+                assertFailsWith<SignatureException> {
+                    Jwt
+                        .parser()
+                        .verifyWith(keyPair)
+                        .build()
+                        .parseSigned(tamperedToken)
+                }
             }
         }
     })

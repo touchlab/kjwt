@@ -135,6 +135,8 @@ public class AppleKeychainSigningKey internal constructor(
                     ?: error("No RSA private key found for alias '$keyId'. Did you call getOrCreateInstance?")
                 signWithSecKey(privateKey, algorithm.secKeyAlgorithm!!, data)
             }
+
+            is SigningAlgorithm.EdDSABased -> error("EdDSA is not implemented yet.")
         }
     }
 
@@ -161,6 +163,8 @@ public class AppleKeychainSigningKey internal constructor(
                     ?: error("No RSA public key found for alias '$keyId'.")
                 verifyWithSecKey(publicKey, algorithm.secKeyAlgorithm!!, data, signature)
             }
+
+            is SigningAlgorithm.EdDSABased -> error("EdDSA is not implemented yet.")
         }
     }
 
@@ -249,6 +253,8 @@ public object AppleKeychainSigningKeyFactory {
                 // Secure Enclave does not support RSA — always use standard Keychain.
                 generateAsymmetricKey(algorithm.secKeyType!!, keySizeInBits, keyId, useSecureEnclave = false)
             }
+
+            is SigningAlgorithm.EdDSABased -> error("EdDSA is not implemented yet.")
 
             SigningAlgorithm.None -> error("None algorithm should not be stored in hardware.")
         }

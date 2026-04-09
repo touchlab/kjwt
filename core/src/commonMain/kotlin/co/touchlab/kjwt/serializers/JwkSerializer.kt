@@ -181,6 +181,55 @@ public object JwkOctSerializer : KSerializer<Jwk.Oct> {
 }
 
 // ---------------------------------------------------------------------------
+// OKP
+// ---------------------------------------------------------------------------
+
+/**
+ * Serializer for [Jwk.Okp] values to and from their JSON Web Key representation per RFC 8037.
+ *
+ * Encodes the required OKP parameters (`crv`, `x`) and optional private key parameter (`d`)
+ * as Base64URL strings, along with optional metadata fields (`use`, `key_ops`, `alg`, `kid`).
+ * Throws [co.touchlab.kjwt.exception.MalformedJwkException] during deserialization if a required
+ * field is missing.
+ */
+public object JwkOkpSerializer : KSerializer<Jwk.Okp> {
+    private val delegate = JsonObject.serializer()
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun serialize(
+        encoder: Encoder,
+        value: Jwk.Okp,
+    ) {
+        encoder.encodeSerializableValue(
+            delegate,
+            buildJsonObject {
+                put("kty", JsonPrimitive(Jwk.Okp.KTY))
+                put("crv", JsonPrimitive(value.crv))
+                put("x", JsonPrimitive(value.x))
+                value.d?.let { put("d", JsonPrimitive(it)) }
+                value.use?.let { put("use", JsonPrimitive(it)) }
+                value.keyOps?.let { ops -> put("key_ops", JsonArray(ops.map { JsonPrimitive(it) })) }
+                value.alg?.let { put("alg", JsonPrimitive(it)) }
+                value.kid?.let { put("kid", JsonPrimitive(it)) }
+            },
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): Jwk.Okp {
+        val obj = decoder.decodeSerializableValue(delegate)
+        return Jwk.Okp(
+            crv = obj.requireString("crv"),
+            x = obj.requireString("x"),
+            d = obj.optString("d"),
+            use = obj.optString("use"),
+            keyOps = obj.optStringList("key_ops"),
+            alg = obj.optString("alg"),
+            kid = obj.optString("kid"),
+        )
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Jwk (polymorphic dispatcher)
 // ---------------------------------------------------------------------------
 
@@ -188,8 +237,9 @@ public object JwkOctSerializer : KSerializer<Jwk.Oct> {
  * Polymorphic serializer for [Jwk] values, dispatching to the appropriate concrete serializer
  * based on the `kty` field in the JSON object.
  *
- * Supports `"RSA"` ([JwkRsaSerializer]), `"EC"` ([JwkEcSerializer]), and `"oct"` ([JwkOctSerializer])
- * key types. Throws [co.touchlab.kjwt.exception.MalformedJwkException] if `kty` is absent, and
+ * Supports `"RSA"` ([JwkRsaSerializer]), `"EC"` ([JwkEcSerializer]), `"oct"` ([JwkOctSerializer]),
+ * and `"OKP"` ([JwkOkpSerializer]) key types. Throws
+ * [co.touchlab.kjwt.exception.MalformedJwkException] if `kty` is absent, and
  * [co.touchlab.kjwt.exception.UnsupportedJwtException] if the key type is not recognised.
  */
 public object JwkSerializer : KSerializer<Jwk> {
@@ -204,6 +254,7 @@ public object JwkSerializer : KSerializer<Jwk> {
             is Jwk.Rsa -> encoder.encodeSerializableValue(JwkRsaSerializer, value)
             is Jwk.Ec -> encoder.encodeSerializableValue(JwkEcSerializer, value)
             is Jwk.Oct -> encoder.encodeSerializableValue(JwkOctSerializer, value)
+            is Jwk.Okp -> encoder.encodeSerializableValue(JwkOkpSerializer, value)
         }
     }
 
@@ -220,6 +271,7 @@ public object JwkSerializer : KSerializer<Jwk> {
             Jwk.Rsa.KTY -> input.json.decodeFromJsonElement(JwkRsaSerializer, obj)
             Jwk.Ec.KTY -> input.json.decodeFromJsonElement(JwkEcSerializer, obj)
             Jwk.Oct.KTY -> input.json.decodeFromJsonElement(JwkOctSerializer, obj)
+            Jwk.Okp.KTY -> input.json.decodeFromJsonElement(JwkOkpSerializer, obj)
             else -> throw UnsupportedJwtException("Unsupported JWK key type: '$kty'")
         }
     }
@@ -337,6 +389,43 @@ public object JwkOctThumbprintSerializer : KSerializer<Jwk.Oct.OctThumbprint> {
 }
 
 // ---------------------------------------------------------------------------
+// OkpThumbprint
+// ---------------------------------------------------------------------------
+
+/**
+ * Serializer for [Jwk.Okp.OkpThumbprint] values to and from their canonical JSON representation.
+ *
+ * Encodes only the required members (`crv`, `kty`, `x`) in lexicographic key order as defined by
+ * RFC 7638 for computing JWK Thumbprints.
+ */
+public object JwkOkpThumbprintSerializer : KSerializer<Jwk.Okp.OkpThumbprint> {
+    private val delegate = JsonObject.serializer()
+    override val descriptor: SerialDescriptor = delegate.descriptor
+
+    override fun serialize(
+        encoder: Encoder,
+        value: Jwk.Okp.OkpThumbprint,
+    ) {
+        encoder.encodeSerializableValue(
+            delegate,
+            buildJsonObject {
+                put("crv", JsonPrimitive(value.crv))
+                put("kty", JsonPrimitive(Jwk.Okp.KTY))
+                put("x", JsonPrimitive(value.x))
+            },
+        )
+    }
+
+    override fun deserialize(decoder: Decoder): Jwk.Okp.OkpThumbprint {
+        val obj = decoder.decodeSerializableValue(delegate)
+        return Jwk.Okp.OkpThumbprint(
+            crv = obj.requireString("crv"),
+            x = obj.requireString("x"),
+        )
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Jwk.Thumbprint (polymorphic dispatcher)
 // ---------------------------------------------------------------------------
 
@@ -344,9 +433,9 @@ public object JwkOctThumbprintSerializer : KSerializer<Jwk.Oct.OctThumbprint> {
  * Polymorphic serializer for [Jwk.Thumbprint] values, dispatching to the appropriate concrete
  * thumbprint serializer based on the `kty` field in the JSON object.
  *
- * Supports `"RSA"` ([JwkRsaThumbprintSerializer]), `"EC"` ([JwkEcThumbprintSerializer]), and
- * `"oct"` ([JwkOctThumbprintSerializer]) key types. Throws
- * [co.touchlab.kjwt.exception.MalformedJwkException] if `kty` is absent, and
+ * Supports `"RSA"` ([JwkRsaThumbprintSerializer]), `"EC"` ([JwkEcThumbprintSerializer]),
+ * `"oct"` ([JwkOctThumbprintSerializer]), and `"OKP"` ([JwkOkpThumbprintSerializer]) key types.
+ * Throws [co.touchlab.kjwt.exception.MalformedJwkException] if `kty` is absent, and
  * [co.touchlab.kjwt.exception.UnsupportedJwtException] if the key type is not recognised.
  */
 public object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
@@ -361,6 +450,7 @@ public object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
             is Jwk.Rsa.RSAThumbprint -> encoder.encodeSerializableValue(JwkRsaThumbprintSerializer, value)
             is Jwk.Ec.ECThumbprint -> encoder.encodeSerializableValue(JwkEcThumbprintSerializer, value)
             is Jwk.Oct.OctThumbprint -> encoder.encodeSerializableValue(JwkOctThumbprintSerializer, value)
+            is Jwk.Okp.OkpThumbprint -> encoder.encodeSerializableValue(JwkOkpThumbprintSerializer, value)
         }
     }
 
@@ -377,6 +467,7 @@ public object JwkThumbprintSerializer : KSerializer<Jwk.Thumbprint> {
             Jwk.Rsa.KTY -> input.json.decodeFromJsonElement(JwkRsaThumbprintSerializer, obj)
             Jwk.Ec.KTY -> input.json.decodeFromJsonElement(JwkEcThumbprintSerializer, obj)
             Jwk.Oct.KTY -> input.json.decodeFromJsonElement(JwkOctThumbprintSerializer, obj)
+            Jwk.Okp.KTY -> input.json.decodeFromJsonElement(JwkOkpThumbprintSerializer, obj)
             else -> throw UnsupportedJwtException("Unsupported JWK key type: '$kty'")
         }
     }

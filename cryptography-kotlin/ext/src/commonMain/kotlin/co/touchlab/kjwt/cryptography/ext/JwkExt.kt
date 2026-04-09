@@ -13,6 +13,7 @@ import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.Digest
 import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
+import dev.whyoleg.cryptography.algorithms.EdDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
@@ -20,11 +21,11 @@ import dev.whyoleg.cryptography.bigint.decodeToBigInt
 import dev.whyoleg.cryptography.serialization.asn1.BitArray
 import dev.whyoleg.cryptography.serialization.asn1.Der
 import dev.whyoleg.cryptography.serialization.asn1.ObjectIdentifier
-import dev.whyoleg.cryptography.serialization.asn1.modules.EcKeyAlgorithmIdentifier
+import dev.whyoleg.cryptography.serialization.asn1.modules.EcAlgorithmIdentifier
 import dev.whyoleg.cryptography.serialization.asn1.modules.EcParameters
 import dev.whyoleg.cryptography.serialization.asn1.modules.EcPrivateKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.PrivateKeyInfo
-import dev.whyoleg.cryptography.serialization.asn1.modules.RsaKeyAlgorithmIdentifier
+import dev.whyoleg.cryptography.serialization.asn1.modules.RsaAlgorithmIdentifier
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPrivateKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.RsaPublicKey
 import dev.whyoleg.cryptography.serialization.asn1.modules.SubjectPublicKeyInfo
@@ -101,7 +102,7 @@ private fun Jwk.Rsa.toSpkiDer(): ByteArray {
         )
     val spki =
         SubjectPublicKeyInfo(
-            algorithm = RsaKeyAlgorithmIdentifier,
+            algorithm = RsaAlgorithmIdentifier,
             subjectPublicKey = BitArray(0, Der.encodeToByteArray(RsaPublicKey.serializer(), rsaPubKey)),
         )
     return Der.encodeToByteArray(SubjectPublicKeyInfo.serializer(), spki)
@@ -129,7 +130,7 @@ private fun Jwk.Rsa.toPkcs8Der(): ByteArray {
     val pkcs8 =
         PrivateKeyInfo(
             version = 0,
-            privateKeyAlgorithm = RsaKeyAlgorithmIdentifier,
+            privateKeyAlgorithm = RsaAlgorithmIdentifier,
             privateKey = Der.encodeToByteArray(RsaPrivateKey.serializer(), rsaPrivKey),
         )
     return Der.encodeToByteArray(PrivateKeyInfo.serializer(), pkcs8)
@@ -286,7 +287,7 @@ private fun Jwk.Ec.toSpkiDer(): ByteArray {
             y.decodeBase64Url().padToLength(coordSize)
     val spki =
         SubjectPublicKeyInfo(
-            algorithm = EcKeyAlgorithmIdentifier(EcParameters(ecCurveOid(crv))),
+            algorithm = EcAlgorithmIdentifier(EcParameters(ecCurveOid(crv))),
             subjectPublicKey = BitArray(0, point),
         )
     return Der.encodeToByteArray(SubjectPublicKeyInfo.serializer(), spki)
@@ -308,7 +309,7 @@ private fun Jwk.Ec.toPkcs8Der(): ByteArray {
     val pkcs8 =
         PrivateKeyInfo(
             version = 0,
-            privateKeyAlgorithm = EcKeyAlgorithmIdentifier(EcParameters(ecCurveOid(crv))),
+            privateKeyAlgorithm = EcAlgorithmIdentifier(EcParameters(ecCurveOid(crv))),
             privateKey = Der.encodeToByteArray(EcPrivateKey.serializer(), ecPrivKey),
         )
     return Der.encodeToByteArray(PrivateKeyInfo.serializer(), pkcs8)
@@ -345,6 +346,51 @@ public suspend fun Jwk.Ec.toEcdsaPrivateKey(
         .get(ECDSA)
         .privateKeyDecoder(ecCurve(crv).toCryptographyKotlin())
         .decodeFromByteArray(EC.PrivateKey.Format.DER, toPkcs8Der())
+
+// ---------------------------------------------------------------------------
+// OKP → EdDSA
+// ---------------------------------------------------------------------------
+
+private fun edDsaCurve(crv: String): EdDSA.Curve =
+    when (crv) {
+        "Ed25519" -> EdDSA.Curve.Ed25519
+        "Ed448" -> EdDSA.Curve.Ed448
+        else -> error("Unsupported OKP curve: '$crv'")
+    }
+
+/**
+ * Converts this [Jwk.Okp] to an [EdDSA.PublicKey] for EdDSA signature verification.
+ *
+ * @param cryptoProvider the [CryptographyProvider] used to decode the key; defaults to
+ *   [CryptographyProvider.Default]
+ * @return the decoded [EdDSA.PublicKey]
+ */
+@ExperimentalKJWTApi
+public suspend fun Jwk.Okp.toEdDsaPublicKey(
+    cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
+): EdDSA.PublicKey =
+    cryptoProvider
+        .get(EdDSA)
+        .publicKeyDecoder(edDsaCurve(crv))
+        .decodeFromByteArray(EdDSA.PublicKey.Format.RAW, x.decodeBase64Url())
+
+/**
+ * Converts this [Jwk.Okp] to an [EdDSA.PrivateKey] for EdDSA signing.
+ *
+ * @param cryptoProvider the [CryptographyProvider] used to decode the key; defaults to
+ *   [CryptographyProvider.Default]
+ * @return the decoded [EdDSA.PrivateKey]
+ */
+@ExperimentalKJWTApi
+public suspend fun Jwk.Okp.toEdDsaPrivateKey(
+    cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
+): EdDSA.PrivateKey {
+    val d = requireNotNull(d) { "EdDSA private key requires 'd' parameter" }
+    return cryptoProvider
+        .get(EdDSA)
+        .privateKeyDecoder(edDsaCurve(crv))
+        .decodeFromByteArray(EdDSA.PrivateKey.Format.RAW, d.decodeBase64Url())
+}
 
 // ---------------------------------------------------------------------------
 // Digest helpers

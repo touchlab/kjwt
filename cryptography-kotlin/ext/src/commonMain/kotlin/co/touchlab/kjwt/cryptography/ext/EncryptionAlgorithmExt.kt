@@ -4,7 +4,6 @@ package co.touchlab.kjwt.cryptography.ext
 
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
 import co.touchlab.kjwt.cryptography.EncryptionKey
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm.Dir
@@ -39,10 +38,7 @@ internal fun EncryptionAlgorithm.identifier(keyId: String?) =
 public fun Dir.key(
     key: ByteArray,
     keyId: String? = null,
-): EncryptionKey.EncryptionKeyPair {
-    val simpleKey = SimpleKey(key)
-    return EncryptionKey.EncryptionKeyPair(identifier(keyId), simpleKey, simpleKey)
-}
+): EncryptionKey.EncryptionKeyPair = EncryptionKey.EncryptionKeyPair(identifier(keyId), key, key)
 
 /**
  * Generates a new random symmetric key for use with the `dir` algorithm.

@@ -51,7 +51,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -75,7 +75,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals("a192gcm-sub", jwe.payload.subjectOrNull)
@@ -93,7 +93,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals("a256gcm-sub", jwe.payload.subjectOrNull)
@@ -111,7 +111,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals("a128cbc-sub", jwe.payload.subjectOrNull)
@@ -129,7 +129,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals("a192cbc-sub", jwe.payload.subjectOrNull)
@@ -147,7 +147,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals("a256cbc-sub", jwe.payload.subjectOrNull)
@@ -232,7 +232,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -254,7 +254,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 assertEquals(setOf("single-aud"), jwe.payload.audienceOrNull)
@@ -275,7 +275,7 @@ class JweDecodeTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -299,7 +299,7 @@ class JweDecodeTest :
                 val result =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parse(token)
 
@@ -324,7 +324,7 @@ class JweDecodeTest :
                 assertFailsWith<SignatureException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, wrongCek)
+                        .decryptWith(wrongCek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 }
@@ -371,7 +371,7 @@ class JweDecodeTest :
                 assertFailsWith<SignatureException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(tamperedToken)
                 }
@@ -395,7 +395,7 @@ class JweDecodeTest :
                 assertFailsWith<SignatureException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(tamperedToken)
                 }
@@ -419,7 +419,7 @@ class JweDecodeTest :
                 assertFailsWith<SignatureException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(tamperedToken)
                 }
@@ -431,7 +431,7 @@ class JweDecodeTest :
                 assertFailsWith<MalformedJwtException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted("eyJhbGciOiJkaXIifQ.eyJzdWIiOiJ0ZXN0In0.signature")
                 }
@@ -450,7 +450,7 @@ class JweDecodeTest :
                 assertFailsWith<ExpiredJwtException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
                 }
@@ -468,7 +468,7 @@ class JweDecodeTest :
                 assertFailsWith<IncorrectClaimException> {
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .requireIssuer("expected-issuer")
                         .build()
                         .parseEncrypted(token)

@@ -63,6 +63,8 @@ class JwaSerializerTest :
                         "ES256",
                         "ES384",
                         "ES512",
+                        "Ed25519",
+                        "Ed448",
                         "none",
                     )
                 val actualIds =

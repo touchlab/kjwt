@@ -140,7 +140,7 @@ class JwkSerializationTest :
 
             test("unknown kty throws UnsupportedJwtException") {
                 assertFailsWith<UnsupportedJwtException> {
-                    Jwt.defaultJsonParser.decodeFromString<Jwk>("""{"kty":"OKP","crv":"Ed25519","x":"abc"}""")
+                    Jwt.defaultJsonParser.decodeFromString<Jwk>("""{"kty":"OKPT","crv":"Ed25519","x":"abc"}""")
                 }
             }
 
@@ -186,6 +186,66 @@ class JwkSerializationTest :
                 val jwk: Jwk = Jwk.Rsa(n = "n", e = "AQAB")
                 val count = Jwt.defaultJsonParser.encodeToString(jwk).split("\"kty\"").size - 1
                 assertEquals(1, count)
+            }
+        }
+
+        context("OKP round-trip (RFC 8037)") {
+
+            // RFC 8037 §A.1 — Ed25519 key pair
+            val okpPrivateKeyJson = """{"kty":"OKP","crv":"Ed25519","d":"nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A","x":"11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"}"""
+
+            // RFC 8037 §A.2 — Ed25519 public key only
+            val okpPublicKeyJson = """{"kty":"OKP","crv":"Ed25519","x":"11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"}"""
+
+            test("okp Ed25519 public key serialization round-trip") {
+                val jwk = Jwt.defaultJsonParser.decodeFromString<Jwk>(okpPublicKeyJson)
+
+                assertTrue(jwk is Jwk.Okp)
+                assertEquals("OKP", Jwk.Okp.KTY)
+                assertEquals("Ed25519", jwk.crv)
+                assertEquals("11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo", jwk.x)
+                assertNull(jwk.d)
+                assertTrue(!jwk.isPrivate)
+
+                val reserialized = Jwt.defaultJsonParser.encodeToString(jwk)
+                assertTrue(reserialized.contains("\"kty\":\"OKP\""))
+                assertTrue(reserialized.contains("\"crv\":\"Ed25519\""))
+                assertEquals(jwk, Jwt.defaultJsonParser.decodeFromString<Jwk>(reserialized))
+            }
+
+            test("okp Ed25519 private key serialization round-trip") {
+                val jwk = Jwt.defaultJsonParser.decodeFromString<Jwk>(okpPrivateKeyJson)
+
+                assertTrue(jwk is Jwk.Okp)
+                assertEquals("Ed25519", jwk.crv)
+                assertEquals("nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A", jwk.d)
+                assertTrue(jwk.isPrivate)
+
+                val reserialized = Jwt.defaultJsonParser.encodeToString(jwk)
+                assertTrue(reserialized.contains("\"d\":"))
+                assertEquals(jwk, Jwt.defaultJsonParser.decodeFromString<Jwk>(reserialized))
+            }
+
+            test("okp isPrivate reflects d field presence") {
+                val pub = Jwt.defaultJsonParser.decodeFromString<Jwk>(okpPublicKeyJson) as Jwk.Okp
+                val priv = Jwt.defaultJsonParser.decodeFromString<Jwk>(okpPrivateKeyJson) as Jwk.Okp
+
+                assertTrue(!pub.isPrivate)
+                assertTrue(priv.isPrivate)
+            }
+
+            test("okp thumbprint contains only crv and x sorted alphabetically") {
+                val jwk = Jwt.defaultJsonParser.decodeFromString<Jwk>(okpPrivateKeyJson) as Jwk.Okp
+                val thumbprint = jwk.thumbprint
+
+                assertTrue(thumbprint is Jwk.Okp.OkpThumbprint)
+                assertEquals(jwk.crv, thumbprint.crv)
+                assertEquals(jwk.x, thumbprint.x)
+            }
+
+            test("okp subtype kty included when typed as concrete") {
+                val jwk = Jwk.Okp(crv = "Ed25519", x = "abc123")
+                assertTrue(Jwt.defaultJsonParser.encodeToString(jwk).contains("\"kty\":\"OKP\""))
             }
         }
 

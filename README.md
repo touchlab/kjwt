@@ -70,7 +70,8 @@ As of now, the library supports the following operations:
 |                 | ✅ PS256³           | ✅ A128CBC-HS256 `(enc)`   | ✅ Android Native (x64, x86, arm64, arm32)   |
 |                 | ✅ PS384³           | ⚠️ A192CBC-HS384 `(enc)`⁴ | ❌ wasmWasi⁵                                 |
 |                 | ✅ PS512³           | ✅ A256CBC-HS512 `(enc)`   |                                             |
-|                 | ❌ EdDSA            |                           |                                             |
+|                 | ✅ Ed25519⁸         |                           |                                             |
+|                 | ⚠️ Ed448⁸          |                           |                                             |
 
 > ¹ Opt-in: call `requireIssuer()` / `requireSubject()` / `requireAudience()` on the parser builder. A missing claim
 > throws `MissingClaimException`; a mismatched value throws `IncorrectClaimException`.
@@ -102,11 +103,20 @@ As of now, the library supports the following operations:
 > requested — `Preferred` falls back silently, `Required` throws. Hardware-backed signing supports
 > HS256/384/512, RS256/384/512, PS256/384/512, ES256/384/512 (TEE) and HS256, RS256, PS256, ES256
 > (StrongBox). **PS256/384/512 require API 28+** — Android Keystore's PSS parameter configuration
-> (`Signature.setParameter`) is not available on earlier API levels. Hardware-backed encryption supports RSA-OAEP and RSA-OAEP-256 `(alg)`,
+> (`Signature.setParameter`) is not available on earlier API levels. Hardware-backed encryption supports RSA-OAEP and
+> RSA-OAEP-256 `(alg)`,
 > A128GCM, A192GCM, A256GCM, A128CBC-HS256, A192CBC-HS384, A256CBC-HS512 `(enc)`.
 > On **iOS**, keys are stored in the Keychain; the Secure Enclave is used for ES256 when the `Preferred`
 > or `Required` hardware preference is set (ES256 only — other algorithms always use Keychain).
 > iOS hardware backing covers JWS (sign/verify) only; JWE encryption is Android-only.
+>
+> ⁸ EdDSA algorithms use fully-specified identifiers (`alg = "Ed25519"` / `"Ed448"`) instead of the
+> ambiguous `"EdDSA"` umbrella to prevent algorithm-confusion attacks. **Ed448** is unavailable on Apple
+> platforms (CryptoKit only implements Ed25519 — switch to `cryptography-provider-openssl3-prebuilt` to
+> enable it) and on JS/wasmJs (WebCrypto does not support EdDSA). Hardware-backed **Ed25519** on Android
+> requires API 33+ (Android 13); the Android Keystore does not support Ed448. Hardware-backed EdDSA is
+> not available on iOS/macOS (`kSecAttrKeyTypeEdDSA` is macOS-only and not exposed via the Secure Enclave
+> or the standard Keychain signing path used by this library).
 
 ---
 

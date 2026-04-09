@@ -24,6 +24,7 @@ class SecureHardwareSigningKeyTest {
             "__kjwt_test_es256", "__kjwt_test_es384", "__kjwt_test_es512",
             "__kjwt_test_sb_preferred", "__kjwt_test_sb_none",
             "__kjwt_test_tamper", "__kjwt_test_corrupt",
+            "__kjwt_test_ed25519",
         ).forEach { runCatching { ks.deleteEntry(it) } }
     }
 
@@ -60,6 +61,14 @@ class SecureHardwareSigningKeyTest {
     @Test fun es384SignAndVerify() = runBlocking { assertJwsRoundTrip(SigningAlgorithm.ES384, "__kjwt_test_es384") }
 
     @Test fun es512SignAndVerify() = runBlocking { assertJwsRoundTrip(SigningAlgorithm.ES512, "__kjwt_test_es512") }
+
+    // -------------------------------------------------------------------------
+    // JWS — EdDSA  (Android Keystore EdDSA support requires API 33+)
+    // -------------------------------------------------------------------------
+
+    @Test
+    @SdkSuppress(minSdkVersion = 33)
+    fun ed25519SignAndVerify() = runBlocking { assertJwsRoundTrip(SigningAlgorithm.Ed25519, "__kjwt_test_ed25519") }
 
     // -------------------------------------------------------------------------
     // Secure Hardware Preference

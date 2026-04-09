@@ -18,7 +18,6 @@ import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
 import dev.whyoleg.cryptography.algorithms.SHA384
 import dev.whyoleg.cryptography.algorithms.SHA512
-import dev.whyoleg.cryptography.materials.key.Key
 import kotlin.random.Random
 
 /**
@@ -47,10 +46,10 @@ public sealed class EncryptionKey : BaseJweProcessor {
     public abstract val identifier: Identifier
 
     /** The public key material used for encryption; throws on subtypes that do not hold a public key. */
-    public abstract val publicKey: Key
+    public abstract val publicKey: Any
 
     /** The private key material used for decryption; throws on subtypes that do not hold a private key. */
-    public abstract val privateKey: Key
+    public abstract val privateKey: Any
 
     override val algorithm: EncryptionAlgorithm get() = identifier.algorithm
     override val keyId: String? get() = identifier.keyId
@@ -83,10 +82,10 @@ public sealed class EncryptionKey : BaseJweProcessor {
      */
     public class EncryptionOnlyKey @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val publicKey: Key,
+        override val publicKey: Any,
     ) : EncryptionKey(), JweEncryptor {
         @Deprecated("EncryptionOnlyKey does not have a private key", level = DeprecationLevel.ERROR)
-        override val privateKey: Key
+        override val privateKey: Any
             get() = error("EncryptionOnlyKey does not have a private key")
 
         override suspend fun encrypt(
@@ -124,10 +123,10 @@ public sealed class EncryptionKey : BaseJweProcessor {
      */
     public class DecryptionOnlyKey @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val privateKey: Key,
+        override val privateKey: Any,
     ) : EncryptionKey(), JweDecryptor {
         @Deprecated("DecryptionOnlyKey does not have a public key", level = DeprecationLevel.ERROR)
-        override val publicKey: Key
+        override val publicKey: Any
             get() = error("DecryptionOnlyKey does not have a public key")
 
         override suspend fun decrypt(
@@ -170,8 +169,8 @@ public sealed class EncryptionKey : BaseJweProcessor {
      */
     public class EncryptionKeyPair @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val publicKey: Key,
-        override val privateKey: Key,
+        override val publicKey: Any,
+        override val privateKey: Any,
     ) : EncryptionKey(), JweProcessor {
         override suspend fun encrypt(
             data: ByteArray,
@@ -236,7 +235,7 @@ public sealed class EncryptionKey : BaseJweProcessor {
     }
 }
 
-private suspend fun Key.encryptWith(
+private suspend fun Any.encryptWith(
     algorithm: EncryptionAlgorithm,
     data: ByteArray,
     aad: ByteArray,
@@ -249,9 +248,8 @@ private suspend fun Key.encryptWith(
             encryptContent(contentAlgorithm, cek, data, aad, encryptedKey)
         }
 
-        is SimpleKey if (algorithm is EncryptionAlgorithm.Dir) -> {
-            val cek = value
-            encryptContent(contentAlgorithm, cek, data, aad, ByteArray(0))
+        is ByteArray if (algorithm is EncryptionAlgorithm.Dir) -> {
+            encryptContent(contentAlgorithm, this, data, aad, ByteArray(0))
         }
 
         else -> {
@@ -259,7 +257,7 @@ private suspend fun Key.encryptWith(
         }
     }
 
-private suspend fun Key.decryptWith(
+private suspend fun Any.decryptWith(
     algorithm: EncryptionAlgorithm,
     aad: ByteArray,
     encryptedKey: ByteArray,
@@ -274,9 +272,8 @@ private suspend fun Key.decryptWith(
             decryptContent(contentAlgorithm, cek, iv, data, tag, aad)
         }
 
-        is SimpleKey if (algorithm is EncryptionAlgorithm.Dir) -> {
-            val cek = value
-            decryptContent(contentAlgorithm, cek, iv, data, tag, aad)
+        is ByteArray if (algorithm is EncryptionAlgorithm.Dir) -> {
+            decryptContent(contentAlgorithm, this, iv, data, tag, aad)
         }
 
         else -> {

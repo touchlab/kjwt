@@ -18,6 +18,8 @@ public fun SigningAlgorithm.toJcaSignatureName(): String = when (this) {
     SigningAlgorithm.ES256 -> "SHA256withECDSA"
     SigningAlgorithm.ES384 -> "SHA384withECDSA"
     SigningAlgorithm.ES512 -> "SHA512withECDSA"
+    SigningAlgorithm.Ed25519 -> "Ed25519"
+    SigningAlgorithm.Ed448 -> "Ed448"
     SigningAlgorithm.None -> error("Unsupported algorithm")
 }
 

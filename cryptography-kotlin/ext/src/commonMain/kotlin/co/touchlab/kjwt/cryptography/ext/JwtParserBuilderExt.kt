@@ -3,7 +3,6 @@ package co.touchlab.kjwt.cryptography.ext
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
 import co.touchlab.kjwt.cryptography.EncryptionKey
 import co.touchlab.kjwt.cryptography.SigningKey
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
@@ -17,7 +16,6 @@ import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
-import dev.whyoleg.cryptography.materials.key.Key
 
 /**
  * Registers an HMAC (HS256/384/512) symmetric key for JWS signature verification.
@@ -96,7 +94,11 @@ public fun JwtParserBuilder.verifyWith(
  * @return this builder for chaining
  */
 @DelicateKJWTApi
-public fun JwtParserBuilder.verifyWith(algorithm: SigningAlgorithm, key: Key, keyId: String? = null): JwtParserBuilder =
+internal fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm,
+    key: Any,
+    keyId: String? = null
+): JwtParserBuilder =
     verifyWith(
         SigningKey.VerifyOnlyKey(
             identifier = SigningKey.Identifier(algorithm, keyId),
@@ -258,22 +260,6 @@ public fun JwtParserBuilder.registerSigningKey(key: SigningKey): JwtParserBuilde
     apply { processorRegistry.registerJwsProcessor(key) }
 
 /**
- * Registers a direct (`dir`) [SimpleKey] symmetric key for JWE decryption.
- *
- * @param algorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir])
- * @param privateKey the [SimpleKey] wrapping the raw symmetric content encryption key
- * @param keyId optional key ID to associate with this decryptor; when set, only tokens whose `kid`
- *   header matches will use this key. Defaults to `null` (matches any token).
- * @return this builder for chaining
- */
-@OptIn(DelicateKJWTApi::class)
-public fun JwtParserBuilder.decryptWith(
-    algorithm: EncryptionAlgorithm.Dir,
-    privateKey: SimpleKey,
-    keyId: String? = null,
-): JwtParserBuilder = decryptWith(algorithm as EncryptionAlgorithm, privateKey, keyId)
-
-/**
  * Registers an RSA-OAEP (RSA-OAEP / RSA-OAEP-256) private key for JWE decryption.
  *
  * @param algorithm the OAEP-based key encryption algorithm (RSA-OAEP or RSA-OAEP-256)
@@ -302,9 +288,9 @@ public fun JwtParserBuilder.decryptWith(
  * @return this builder for chaining
  */
 @DelicateKJWTApi
-public fun JwtParserBuilder.decryptWith(
+internal fun JwtParserBuilder.decryptWith(
     algorithm: EncryptionAlgorithm,
-    privateKey: Key,
+    privateKey: Any,
     keyId: String? = null,
 ): JwtParserBuilder =
     decryptWith(
@@ -363,11 +349,12 @@ public fun JwtParserBuilder.registerEncryptionKey(key: EncryptionKey): JwtParser
  *   header matches will use this key. Defaults to `null` (matches any token).
  * @return this builder for chaining.
  */
+@OptIn(DelicateKJWTApi::class)
 public fun JwtParserBuilder.decryptWith(
     key: ByteArray,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     keyId: String? = null,
-): JwtParserBuilder = decryptWith(keyAlgorithm, SimpleKey(key), keyId)
+): JwtParserBuilder = decryptWith(keyAlgorithm, key, keyId)
 
 /**
  * Registers a direct key (`dir`) for JWE decryption from a UTF-8 String.

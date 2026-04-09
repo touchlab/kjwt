@@ -156,7 +156,7 @@ class JwtBuilderHeaderTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -176,7 +176,7 @@ class JwtBuilderHeaderTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -196,7 +196,7 @@ class JwtBuilderHeaderTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -216,7 +216,7 @@ class JwtBuilderHeaderTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 

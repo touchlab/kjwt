@@ -1,6 +1,5 @@
 package co.touchlab.kjwt
 
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.ext.key
 import co.touchlab.kjwt.cryptography.ext.newKey
 import co.touchlab.kjwt.cryptography.ext.parse
@@ -68,7 +67,7 @@ suspend fun rsaOaep256KeyPair(): RSA.OAEP.KeyPair =
 
 // ---- AES key bytes for JWE Dir ----
 
-fun aesSimpleKey(bits: Int): SimpleKey = SimpleKey(Random.Default.nextBytes(bits / 8))
+fun aesSimpleKey(bits: Int): ByteArray = Random.Default.nextBytes(bits / 8)
 
 // ---- Token helpers ----
 
@@ -116,6 +115,11 @@ suspend fun es256SigningKey(keyId: String? = null) = SigningAlgorithm.ES256.newK
 suspend fun es384SigningKey(keyId: String? = null) = SigningAlgorithm.ES384.newKey(keyId = keyId)
 
 suspend fun es512SigningKey(keyId: String? = null) = SigningAlgorithm.ES512.newKey(keyId = keyId)
+
+// EdDSA
+suspend fun ed25519SigningKey(keyId: String? = null) = SigningAlgorithm.Ed25519.newKey(keyId = keyId)
+
+suspend fun ed448SigningKey(keyId: String? = null) = SigningAlgorithm.Ed448.newKey(keyId = keyId)
 
 // ---- EncryptionKey helpers (library API) ----
 

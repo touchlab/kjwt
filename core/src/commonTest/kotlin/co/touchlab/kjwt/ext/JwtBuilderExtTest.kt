@@ -1,7 +1,6 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.Jwt
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.ext.decryptWith
 import co.touchlab.kjwt.cryptography.ext.encryptWith
 import co.touchlab.kjwt.cryptography.ext.signWith
@@ -229,7 +228,7 @@ class JwtBuilderExtTest :
 
         context("encryptWith(ByteArray)") {
 
-        test("encrypt with byte array key round trip") {
+            test("encrypt with byte array key round trip") {
                 val keyBytes = Random.nextBytes(32) // 256-bit key for A256GCM
 
                 val token =
@@ -242,7 +241,7 @@ class JwtBuilderExtTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
+                        .decryptWith(keyBytes, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -262,7 +261,7 @@ class JwtBuilderExtTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyBytes))
+                        .decryptWith(keyBytes, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -286,7 +285,7 @@ class JwtBuilderExtTest :
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, SimpleKey(keyString.encodeToByteArray()))
+                        .decryptWith(keyString.encodeToByteArray(), EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 

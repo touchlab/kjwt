@@ -2,8 +2,11 @@ package co.touchlab.kjwt.jwk
 
 import co.touchlab.kjwt.Jwt
 import co.touchlab.kjwt.cryptography.ext.signWith
+import co.touchlab.kjwt.cryptography.ext.toEdDsaPrivateKey
+import co.touchlab.kjwt.cryptography.ext.toEdDsaPublicKey
 import co.touchlab.kjwt.cryptography.ext.verifyWith
 import co.touchlab.kjwt.ecKeyPair
+import co.touchlab.kjwt.ed25519SigningKey
 import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.cryptography.ext.toEcdsaPrivateKey
 import co.touchlab.kjwt.cryptography.ext.toEcdsaPublicKey
@@ -16,11 +19,13 @@ import co.touchlab.kjwt.rsaPkcs1KeyPair
 import dev.whyoleg.cryptography.CryptographyProvider
 import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
+import dev.whyoleg.cryptography.algorithms.EdDSA
 import dev.whyoleg.cryptography.algorithms.RSA
 import dev.whyoleg.cryptography.algorithms.SHA256
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  * Tests that JWK key conversion round-trips correctly: generate a key, export its parameters
@@ -139,6 +144,63 @@ class JwkKeyConversionTest :
                 val jwk = Jwk.Ec(crv = "P-256", x = "xCoord", y = "yCoord")
                 assertFailsWith<IllegalArgumentException> {
                     jwk.toEcdsaPrivateKey()
+                }
+            }
+        }
+
+        context("EdDSA / OKP (RFC 8037)") {
+
+            // Known vectors from RFC 8037 §A.1
+            val rfcPublicX = "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo"
+            val rfcPrivateD = "nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A"
+
+            test("okp Ed25519 public key conversion and verify") {
+                val publicJwk = Jwk.Okp(crv = "Ed25519", x = rfcPublicX)
+                val privateJwk = Jwk.Okp(crv = "Ed25519", x = rfcPublicX, d = rfcPrivateD)
+
+                val edPublicKey = publicJwk.toEdDsaPublicKey()
+                val edPrivateKey = privateJwk.toEdDsaPrivateKey()
+
+                val data = "test message".encodeToByteArray()
+                val signature = edPrivateKey.signatureGenerator().generateSignature(data)
+                edPublicKey.signatureVerifier().verifySignature(data, signature)
+            }
+
+            test("okp Ed25519 sign-then-verify round-trip via JWK") {
+                val keyPair = ed25519SigningKey()
+
+                // Export keys to raw bytes and wrap in OKP JWK
+                val publicBytes = (keyPair.publicKey as EdDSA.PublicKey)
+                    .encodeToByteArray(EdDSA.PublicKey.Format.RAW)
+                val privateBytes = (keyPair.privateKey as EdDSA.PrivateKey)
+                    .encodeToByteArray(EdDSA.PrivateKey.Format.RAW)
+
+                val jwk = Jwk.Okp(
+                    crv = "Ed25519",
+                    x = publicBytes.encodeBase64Url(),
+                    d = privateBytes.encodeBase64Url(),
+                )
+
+                // Round-trip: JWK → EdDSA keys → sign → verify
+                val reParsedPublicKey = jwk.toEdDsaPublicKey()
+                val reParsedPrivateKey = jwk.toEdDsaPrivateKey()
+
+                val data = "round-trip test".encodeToByteArray()
+                val signature = reParsedPrivateKey.signatureGenerator().generateSignature(data)
+                reParsedPublicKey.signatureVerifier().verifySignature(data, signature)
+            }
+
+            test("okp private key missing d throws IllegalArgumentException") {
+                val publicOnlyJwk = Jwk.Okp(crv = "Ed25519", x = rfcPublicX)
+                assertFailsWith<IllegalArgumentException> {
+                    publicOnlyJwk.toEdDsaPrivateKey()
+                }
+            }
+
+            test("okp unsupported curve throws IllegalStateException") {
+                val xdhJwk = Jwk.Okp(crv = "X25519", x = rfcPublicX)
+                assertFailsWith<IllegalStateException> {
+                    xdhJwk.toEdDsaPublicKey()
                 }
             }
         }

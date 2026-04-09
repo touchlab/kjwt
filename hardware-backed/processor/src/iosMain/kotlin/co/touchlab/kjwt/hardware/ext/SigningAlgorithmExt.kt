@@ -36,6 +36,7 @@ public val SigningAlgorithm.secKeyAlgorithm: CFStringRef?
         SigningAlgorithm.ES256 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA256
         SigningAlgorithm.ES384 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA384
         SigningAlgorithm.ES512 -> kSecKeyAlgorithmECDSASignatureMessageX962SHA512
+        is SigningAlgorithm.EdDSABased -> null
         SigningAlgorithm.None -> null
     }
 
@@ -46,6 +47,7 @@ internal val SigningAlgorithm.secKeyType: CFStringRef?
         is SigningAlgorithm.MACBased -> null // HMAC stored as generic password, not as SecKey
         is SigningAlgorithm.PKCS1Based, is SigningAlgorithm.PSSBased -> kSecAttrKeyTypeRSA
         is SigningAlgorithm.ECDSABased -> kSecAttrKeyTypeECSECPrimeRandom
+        is SigningAlgorithm.EdDSABased -> null
         SigningAlgorithm.None -> null
     }
 

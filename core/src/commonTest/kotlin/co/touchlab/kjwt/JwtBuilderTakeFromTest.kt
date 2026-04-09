@@ -116,7 +116,7 @@ class JwtBuilderTakeFromTest :
                         .encryptWith(cek, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
                         .compact()
 
-                val jwe = Jwt.parser().decryptWith(EncryptionAlgorithm.Dir, cek).build().parseEncrypted(token)
+                val jwe = Jwt.parser().decryptWith(cek, EncryptionAlgorithm.Dir).build().parseEncrypted(token)
 
                 assertEquals("u4", jwe.payload.subject)
                 assertEquals("guest", jwe.payload.getClaim("role"))

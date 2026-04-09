@@ -1,7 +1,6 @@
 package co.touchlab.kjwt.ext
 
 import co.touchlab.kjwt.Jwt
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.ext.decryptWith
 import co.touchlab.kjwt.cryptography.ext.encryptWith
 import co.touchlab.kjwt.cryptography.ext.signWith
@@ -236,7 +235,7 @@ class JwtParserBuilderExtTest :
                     Jwt
                         .builder()
                         .subject("parser-ext-decrypt-bytes")
-                        .encryptWith(SimpleKey(keyBytes), EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
+                        .encryptWith(keyBytes, EncryptionAlgorithm.Dir, EncryptionContentAlgorithm.A256GCM)
                         .compact()
 
                 val jwe =
@@ -257,7 +256,7 @@ class JwtParserBuilderExtTest :
                         .builder()
                         .subject("parser-ext-decrypt-cbc")
                         .encryptWith(
-                            SimpleKey(keyBytes),
+                            keyBytes,
                             EncryptionAlgorithm.Dir,
                             EncryptionContentAlgorithm.A256CbcHs512
                         )
@@ -285,7 +284,7 @@ class JwtParserBuilderExtTest :
                         .builder()
                         .subject("parser-ext-decrypt-string")
                         .encryptWith(
-                            SimpleKey(keyString.encodeToByteArray()),
+                            keyString.encodeToByteArray(),
                             EncryptionAlgorithm.Dir,
                             EncryptionContentAlgorithm.A256GCM
                         )

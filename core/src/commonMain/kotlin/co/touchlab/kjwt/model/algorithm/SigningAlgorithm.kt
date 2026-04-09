@@ -61,6 +61,12 @@ public sealed class SigningAlgorithm(
     /** ECDSA with SHA-512 (`ES512`) signing algorithm using elliptic-curve key pairs. */
     public data object ES512 : ECDSABased("ES512")
 
+    /** EdDSA with Ed25519 curve (`Ed25519`) signing algorithm using Edwards-curve key pairs (RFC 8037). */
+    public data object Ed25519 : EdDSABased("Ed25519", JwtEdCurve.Ed25519)
+
+    /** EdDSA with Ed448 curve (`Ed448`) signing algorithm using Edwards-curve key pairs (RFC 8037). */
+    public data object Ed448 : EdDSABased("Ed448", JwtEdCurve.Ed448)
+
     /**
      * Groups the HMAC-based signing algorithms (HS256, HS384, HS512).
      */
@@ -134,6 +140,19 @@ public sealed class SigningAlgorithm(
                 }
     }
 
+    /**
+     * Groups the EdDSA signing algorithms (Ed25519, Ed448) as defined in RFC 8037.
+     *
+     * Each uses a fully-specified algorithm identifier in the JWT header (`"Ed25519"` or `"Ed448"`)
+     * to prevent algorithm-confusion attacks. This follows the industry direction away from the
+     * ambiguous `"EdDSA"` umbrella identifier.
+     */
+    public sealed class EdDSABased(
+        id: String,
+        /** The Edwards curve (Ed25519 or Ed448) used by this algorithm. */
+        public val curve: JwtEdCurve,
+    ) : SigningAlgorithm(id)
+
     /** Unsecured JWT — opt-in only. Rejected by parser unless `allowUnsecured(true)`. */
     public data object None : SigningAlgorithm("none") {
         public object SimpleProcessor : JwsProcessor {
@@ -167,6 +186,8 @@ public sealed class SigningAlgorithm(
                 ES256,
                 ES384,
                 ES512,
+                Ed25519,
+                Ed448,
                 None,
             )
         }

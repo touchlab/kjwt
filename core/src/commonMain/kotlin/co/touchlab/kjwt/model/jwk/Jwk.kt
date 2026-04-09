@@ -5,6 +5,8 @@ import co.touchlab.kjwt.serializers.JwkEcSerializer
 import co.touchlab.kjwt.serializers.JwkEcThumbprintSerializer
 import co.touchlab.kjwt.serializers.JwkOctSerializer
 import co.touchlab.kjwt.serializers.JwkOctThumbprintSerializer
+import co.touchlab.kjwt.serializers.JwkOkpSerializer
+import co.touchlab.kjwt.serializers.JwkOkpThumbprintSerializer
 import co.touchlab.kjwt.serializers.JwkRsaSerializer
 import co.touchlab.kjwt.serializers.JwkRsaThumbprintSerializer
 import co.touchlab.kjwt.serializers.JwkSerializer
@@ -175,6 +177,47 @@ public sealed class Jwk {
         public companion object {
             /** The `kty` value identifying this key type as an octet sequence (RFC 7517 §4.1). */
             public const val KTY: String = "oct"
+        }
+    }
+
+    /**
+     * Octet Key Pair (OKP) key (kty = "OKP") as defined in RFC 8037.
+     *
+     * Supports EdDSA signing algorithms (Ed25519, Ed448). The [crv] field identifies the curve and
+     * the [x] field holds the base64url-encoded public key bytes. The optional [d] field holds the
+     * base64url-encoded private key bytes.
+     */
+    @Serializable(with = JwkOkpSerializer::class)
+    public data class Okp(
+        /** The curve name, e.g. `"Ed25519"` or `"Ed448"`. */
+        public val crv: String,
+        /** The base64url-encoded public key bytes. */
+        public val x: String,
+        /** The base64url-encoded private key bytes; present only for private keys. */
+        public val d: String? = null,
+        override val use: String? = null,
+        override val keyOps: List<String>? = null,
+        override val alg: String? = null,
+        override val kid: String? = null,
+    ) : Jwk() {
+        override val isPrivate: Boolean get() = d != null
+
+        override val thumbprint: Thumbprint by lazy {
+            OkpThumbprint(crv, x)
+        }
+
+        /**
+         * Thumbprint computed from the OKP key parameters `crv` (curve) and `x` (public key bytes).
+         */
+        @Serializable(with = JwkOkpThumbprintSerializer::class)
+        public data class OkpThumbprint(
+            public val crv: String,
+            public val x: String,
+        ) : Thumbprint()
+
+        public companion object {
+            /** The `kty` value identifying this key type as an Octet Key Pair (RFC 8037). */
+            public const val KTY: String = "OKP"
         }
     }
 }

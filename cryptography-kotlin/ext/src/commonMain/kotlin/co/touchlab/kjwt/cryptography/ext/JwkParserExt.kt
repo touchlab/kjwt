@@ -10,6 +10,29 @@ import co.touchlab.kjwt.parser.JwtParserBuilder
 import dev.whyoleg.cryptography.CryptographyProvider
 
 // ---------------------------------------------------------------------------
+// verifyWith — EdDSA (OKP)
+// ---------------------------------------------------------------------------
+
+/**
+ * Configures the parser to verify JWS signatures using an EdDSA public key derived from the given [Jwk.Okp] JWK.
+ *
+ * @param algorithm the EdDSA-based signing algorithm (Ed25519 or Ed448)
+ * @param jwk the OKP JWK containing the public key parameter `x` and curve `crv`
+ * @param keyId optional key ID override; when set, the parser will only use this key if the token's
+ *   `kid` header matches. Defaults to the JWK's own `kid` field.
+ * @param cryptoProvider the [CryptographyProvider] used to decode the key; defaults to [CryptographyProvider.Default]
+ * @return this builder for chaining
+ */
+@OptIn(DelicateKJWTApi::class)
+@ExperimentalKJWTApi
+public suspend fun JwtParserBuilder.verifyWith(
+    algorithm: SigningAlgorithm.EdDSABased,
+    jwk: Jwk.Okp,
+    keyId: String? = jwk.kid,
+    cryptoProvider: CryptographyProvider = CryptographyProvider.Default,
+): JwtParserBuilder = verifyWith(algorithm, jwk.toEdDsaPublicKey(cryptoProvider), keyId)
+
+// ---------------------------------------------------------------------------
 // verifyWith — HMAC (oct)
 // ---------------------------------------------------------------------------
 

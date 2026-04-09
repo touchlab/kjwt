@@ -6,7 +6,6 @@ import co.touchlab.kjwt.builder.JwtBuilder
 import co.touchlab.kjwt.cryptography.EncryptionKey
 import co.touchlab.kjwt.cryptography.SigningKey
 import co.touchlab.kjwt.cryptography.SigningKey.Identifier
-import co.touchlab.kjwt.cryptography.SimpleKey
 import co.touchlab.kjwt.cryptography.toCryptographyKotlin
 import co.touchlab.kjwt.model.JwtInstance
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
@@ -18,7 +17,6 @@ import dev.whyoleg.cryptography.algorithms.EC
 import dev.whyoleg.cryptography.algorithms.ECDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
-import dev.whyoleg.cryptography.materials.key.Key
 
 /**
  * Signs the JWT using an HMAC (HS256/384/512) symmetric key.
@@ -81,24 +79,6 @@ public suspend fun JwtBuilder.signWith(
 ): JwtInstance.Jws = signWith(SigningKey.SigningOnlyKey(Identifier(algorithm, keyId), key), keyId)
 
 /**
- * Signs the JWT using any [SigningAlgorithm] and raw [Key].
- *
- * Prefer the strongly typed overloads (e.g. [signWith] accepting [HMAC.Key] or
- * [RSA.PKCS1.PrivateKey]) when possible, as they enforce the correct key type at compile time.
- *
- * @param algorithm the JWS signing algorithm to use
- * @param key the raw cryptography-kotlin key to sign with; must be compatible with [algorithm]
- * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
- * @return the resulting [JwtInstance.Jws] compact serialization
- */
-@DelicateKJWTApi
-public suspend fun JwtBuilder.signWith(
-    algorithm: SigningAlgorithm,
-    key: Key,
-    keyId: String? = null,
-): JwtInstance.Jws = signWith(SigningKey.SigningOnlyKey(Identifier(algorithm, keyId), key), keyId)
-
-/**
  * Builds and returns a JWS compact serialization using a pre-built [SigningKey.SigningOnlyKey].
  *
  * @param key the signing key (or key pair) used to produce the signature
@@ -135,7 +115,7 @@ public suspend fun JwtBuilder.signWith(
  */
 @OptIn(DelicateKJWTApi::class)
 public suspend fun JwtBuilder.encryptWith(
-    key: SimpleKey,
+    key: ByteArray,
     keyAlgorithm: EncryptionAlgorithm.Dir,
     contentAlgorithm: EncryptionContentAlgorithm,
     keyId: String? = null,
@@ -158,30 +138,6 @@ public suspend fun JwtBuilder.encryptWith(
 public suspend fun JwtBuilder.encryptWith(
     key: RSA.OAEP.PublicKey,
     keyAlgorithm: EncryptionAlgorithm.OAEPBased,
-    contentAlgorithm: EncryptionContentAlgorithm,
-    keyId: String? = null,
-): JwtInstance.Jwe = encryptWithJweProcessor(
-    processor = EncryptionKey.EncryptionOnlyKey(EncryptionKey.Identifier(keyAlgorithm, keyId), key),
-    contentAlgorithm = contentAlgorithm,
-    keyId = keyId,
-)
-
-/**
- * Encrypts the JWT using any [EncryptionAlgorithm] and raw [Key].
- *
- * Prefer the strongly typed overloads (e.g. [encryptWith] accepting [RSA.OAEP.PublicKey] or
- * [SimpleKey]) when possible, as they enforce the correct key type at compile time.
- *
- * @param key the raw cryptography-kotlin key to use for key encryption; must be compatible with [keyAlgorithm]
- * @param keyAlgorithm the JWE key-encryption algorithm to use
- * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload
- * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
- * @return the resulting [JwtInstance.Jwe] compact serialization
- */
-@DelicateKJWTApi
-public suspend fun JwtBuilder.encryptWith(
-    key: Key,
-    keyAlgorithm: EncryptionAlgorithm,
     contentAlgorithm: EncryptionContentAlgorithm,
     keyId: String? = null,
 ): JwtInstance.Jwe = encryptWithJweProcessor(
@@ -453,22 +409,6 @@ public suspend fun JwtBuilder.signWith(
 
     return signWith(algorithm, parsedKey, keyId)
 }
-
-/**
- * Encrypts the JWT using the direct key algorithm (`dir`) with a raw key supplied as a [ByteArray].
- *
- * @param key the raw symmetric key bytes used for direct encryption.
- * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir]).
- * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload.
- * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
- * @return the encrypted [JwtInstance.Jwe] token.
- */
-public suspend fun JwtBuilder.encryptWith(
-    key: ByteArray,
-    keyAlgorithm: EncryptionAlgorithm.Dir,
-    contentAlgorithm: EncryptionContentAlgorithm,
-    keyId: String? = null,
-): JwtInstance.Jwe = encryptWith(SimpleKey(key), keyAlgorithm, contentAlgorithm, keyId)
 
 /**
  * Encrypts the JWT using the direct key algorithm (`dir`) with a key supplied as a UTF-8 String.

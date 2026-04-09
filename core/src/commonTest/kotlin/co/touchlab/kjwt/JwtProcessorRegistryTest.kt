@@ -1,6 +1,8 @@
 package co.touchlab.kjwt
 
 import co.touchlab.kjwt.annotations.DelicateKJWTApi
+import co.touchlab.kjwt.cryptography.EncryptionKey
+import co.touchlab.kjwt.cryptography.SigningKey
 import co.touchlab.kjwt.cryptography.ext.decryptWith
 import co.touchlab.kjwt.cryptography.ext.encryptWith
 import co.touchlab.kjwt.cryptography.ext.registerEncryptionKey
@@ -11,8 +13,6 @@ import co.touchlab.kjwt.ext.subjectOrNull
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
-import co.touchlab.kjwt.cryptography.EncryptionKey
-import co.touchlab.kjwt.cryptography.SigningKey
 import co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
 import io.kotest.core.spec.style.FunSpec
 import kotlin.test.assertEquals
@@ -200,7 +200,7 @@ import kotlin.test.assertFailsWith
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek)
+                        .decryptWith(cek, EncryptionAlgorithm.Dir)
                         .build()
                         .parseEncrypted(token)
 
@@ -227,7 +227,7 @@ import kotlin.test.assertFailsWith
                 val jwe =
                     Jwt
                         .parser()
-                        .decryptWith(EncryptionAlgorithm.Dir, cek, "enc-k1")
+                        .decryptWith(cek, EncryptionAlgorithm.Dir, "enc-k1")
                         .build()
                         .parseEncrypted(token)
 

@@ -10,9 +10,9 @@ import co.touchlab.kjwt.processor.JwsSigner
 import co.touchlab.kjwt.processor.JwsVerifier
 import dev.whyoleg.cryptography.DelicateCryptographyApi
 import dev.whyoleg.cryptography.algorithms.ECDSA
+import dev.whyoleg.cryptography.algorithms.EdDSA
 import dev.whyoleg.cryptography.algorithms.HMAC
 import dev.whyoleg.cryptography.algorithms.RSA
-import dev.whyoleg.cryptography.materials.key.Key
 
 /**
  * Represents a cryptographic key (or key pair) used for JWS signing and/or verification.
@@ -40,10 +40,10 @@ public sealed class SigningKey : BaseJwsProcessor {
     public abstract val identifier: Identifier
 
     /** The public key material used for signature verification; throws on subtypes that do not hold a public key. */
-    public abstract val publicKey: Key
+    public abstract val publicKey: Any
 
     /** The private key material used for signing; throws on subtypes that do not hold a private key. */
-    public abstract val privateKey: Key
+    public abstract val privateKey: Any
 
     override val algorithm: SigningAlgorithm get() = identifier.algorithm
     override val keyId: String? get() = identifier.keyId
@@ -79,10 +79,10 @@ public sealed class SigningKey : BaseJwsProcessor {
      */
     public class SigningOnlyKey @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val privateKey: Key,
+        override val privateKey: Any,
     ) : SigningKey(), JwsSigner {
         @Deprecated("SigningOnlyKey does not have a public key", level = DeprecationLevel.ERROR)
-        override val publicKey: Key
+        override val publicKey: Any
             get() = error("SigningOnlyKey does not have a public key")
 
         override suspend fun sign(data: ByteArray): ByteArray = privateKey.sign(identifier.algorithm, data)
@@ -116,10 +116,10 @@ public sealed class SigningKey : BaseJwsProcessor {
      */
     public class VerifyOnlyKey @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val publicKey: Key,
+        override val publicKey: Any,
     ) : SigningKey(), JwsVerifier {
         @Deprecated("VerifyOnlyKey does not have a private key", level = DeprecationLevel.ERROR)
-        override val privateKey: Key
+        override val privateKey: Any
             get() = error("VerifyOnlyKey does not have a private key")
 
         override suspend fun verify(data: ByteArray, signature: ByteArray): Boolean =
@@ -156,8 +156,8 @@ public sealed class SigningKey : BaseJwsProcessor {
      */
     public class SigningKeyPair @DelicateKJWTApi constructor(
         override val identifier: Identifier,
-        override val publicKey: Key,
-        override val privateKey: Key,
+        override val publicKey: Any,
+        override val privateKey: Any,
     ) : SigningKey(), JwsProcessor {
         override suspend fun sign(data: ByteArray): ByteArray = privateKey.sign(identifier.algorithm, data)
 
@@ -212,7 +212,7 @@ public sealed class SigningKey : BaseJwsProcessor {
     }
 }
 
-private suspend fun Key.sign(algorithm: SigningAlgorithm, data: ByteArray): ByteArray =
+private suspend fun Any.sign(algorithm: SigningAlgorithm, data: ByteArray): ByteArray =
     when (this) {
         is HMAC.Key if (algorithm is SigningAlgorithm.MACBased) -> {
             signatureGenerator().generateSignature(data)
@@ -231,6 +231,10 @@ private suspend fun Key.sign(algorithm: SigningAlgorithm, data: ByteArray): Byte
                 .generateSignature(data)
         }
 
+        is EdDSA.PrivateKey if (algorithm is SigningAlgorithm.EdDSABased) -> {
+            signatureGenerator().generateSignature(data)
+        }
+
         else -> {
             when (algorithm) {
                 SigningAlgorithm.None -> ByteArray(0)
@@ -239,7 +243,7 @@ private suspend fun Key.sign(algorithm: SigningAlgorithm, data: ByteArray): Byte
         }
     }
 
-private suspend fun Key.verify(algorithm: SigningAlgorithm, data: ByteArray, signature: ByteArray): Boolean =
+private suspend fun Any.verify(algorithm: SigningAlgorithm, data: ByteArray, signature: ByteArray): Boolean =
     try {
         when (this) {
             is HMAC.Key if (algorithm is SigningAlgorithm.MACBased) -> {
@@ -260,6 +264,11 @@ private suspend fun Key.verify(algorithm: SigningAlgorithm, data: ByteArray, sig
             is ECDSA.PublicKey if (algorithm is SigningAlgorithm.ECDSABased) -> {
                 signatureVerifier(algorithm.digest.toCryptographyKotlin(), ECDSA.SignatureFormat.RAW)
                     .verifySignature(data, signature)
+                true
+            }
+
+            is EdDSA.PublicKey if (algorithm is SigningAlgorithm.EdDSABased) -> {
+                signatureVerifier().verifySignature(data, signature)
                 true
             }
 
