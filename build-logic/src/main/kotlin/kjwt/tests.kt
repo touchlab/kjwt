@@ -2,6 +2,7 @@ package kjwt
 
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.Test
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.withType
@@ -34,7 +35,7 @@ fun KotlinMultiplatformExtension.configureCryptographyProviderForTests() {
     }
 }
 
-private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
+fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
     val libs = project.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
     sourceSets.commonTest.dependencies {
@@ -42,11 +43,15 @@ private fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
         implementation(libs.findLibrary("kotest-engine").get())
     }
 
-    sourceSets.jvmTest.dependencies {
-        implementation(libs.findLibrary("kotest-runner-junit5").get())
+    sourceSets.findByName("androidDeviceTest")?.dependencies {
+        implementation(libs.findLibrary("kotest-runner-junit4").get())
     }
 
     if (project.tasks.any { it.name == "jvmTest" }) {
+        sourceSets.jvmTest.dependencies {
+            implementation(libs.findLibrary("kotest-runner-junit5").get())
+        }
+
         project.tasks.named<Test>("jvmTest") {
             useJUnitPlatform()
             filter {

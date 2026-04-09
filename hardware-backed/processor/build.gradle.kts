@@ -1,5 +1,6 @@
 import kjwt.androidJvmTarget
-import kjwt.configureCryptographyProviderForTests
+import kjwt.configureKotlinTestDependencies
+import kjwt.iosTargets
 
 plugins {
     id("kjwt.multiplatform-library")
@@ -10,11 +11,20 @@ plugins {
 description = "Hardware backed cryptography for KJWT"
 
 kotlin {
-    configureCryptographyProviderForTests()
-
+    iosTargets()
     androidJvmTarget {
         namespace = "co.touchlab.kjwt.hardware"
+
+        packaging.resources.excludes.addAll(
+            listOf(
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+            )
+        )
     }
+
+    configureKotlinTestDependencies()
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
         commonMain.dependencies {
@@ -22,9 +32,6 @@ kotlin {
         }
 
         getByName("androidDeviceTest").dependencies {
-            implementation(kotlin("test"))
-
-            implementation(libs.kotlinx.coroutines.test)
             implementation(libs.androidx.test.runner)
 
             implementation(projects.kjwtCryptographyKotlinProcessor)

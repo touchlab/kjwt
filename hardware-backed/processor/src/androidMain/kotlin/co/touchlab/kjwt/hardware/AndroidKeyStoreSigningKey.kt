@@ -8,8 +8,11 @@ import co.touchlab.kjwt.hardware.ext.asKeyPropertiesDigest
 import co.touchlab.kjwt.hardware.ext.coordLen
 import co.touchlab.kjwt.hardware.ext.toJcaSignatureName
 import co.touchlab.kjwt.hardware.ext.toPSSParameterSpec
+import co.touchlab.kjwt.hardware.internal.ecdsaDerToP1363
+import co.touchlab.kjwt.hardware.internal.ecdsaP1363ToDer
 import co.touchlab.kjwt.hardware.helpers.AndroidKeyStoreManager
-import co.touchlab.kjwt.hardware.model.AndroidStrongBoxKeyPreference
+import co.touchlab.kjwt.hardware.model.SecureHardwarePreference
+import co.touchlab.kjwt.hardware.model.runWithFlag
 import co.touchlab.kjwt.model.algorithm.Jwa
 import co.touchlab.kjwt.model.algorithm.SigningAlgorithm
 import co.touchlab.kjwt.processor.JwsProcessor
@@ -64,13 +67,13 @@ public class AndroidKeyStoreSigningKey internal constructor(
          * @param keySizeInBits RSA key size in bits, used when [algorithm] is RSA-based.
          *   Ignored for ECDSA and HMAC keys. Defaults to 2048.
          * @param strongBoxPreference Controls whether the key is generated inside StrongBox.
-         *   Defaults to [co.touchlab.kjwt.hardware.model.AndroidStrongBoxKeyPreference.None].
+         *   Defaults to [SecureHardwarePreference.None].
          */
         public fun getOrCreateInstance(
             algorithm: SigningAlgorithm,
             keyId: String?,
             keySizeInBits: Int = 2048,
-            strongBoxPreference: AndroidStrongBoxKeyPreference = AndroidStrongBoxKeyPreference.None,
+            strongBoxPreference: SecureHardwarePreference = SecureHardwarePreference.None,
         ): AndroidKeyStoreSigningKey {
             val finalKeyId = AndroidKeyStoreManager.getDefaultKey(keyId, algorithm)
 
@@ -196,79 +199,6 @@ public class AndroidKeyStoreSigningKey internal constructor(
         }
     }
 
-    /** Returns (length, bytesConsumed) for a DER length field. */
-    private fun readDerLength(bytes: ByteArray, pos: Int): Pair<Int, Int> {
-        val first = bytes[pos].toInt() and 0xFF
-        return if (first < 0x80) {
-            Pair(first, 1)
-        } else {
-            val numOctets = first and 0x7F
-            var len = 0
-            for (i in 0 until numOctets) {
-                len = (len shl 8) or (bytes[pos + 1 + i].toInt() and 0xFF)
-            }
-            Pair(len, 1 + numOctets)
-        }
-    }
-
-    /**
-     * Converts a DER-encoded ECDSA signature (as returned by Android Keystore) to the
-     * P1363 (IEEE 1363) raw `r || s` format required by JWT.
-     */
-    private fun ByteArray.ecdsaDerToP1363(coordinateLen: Int): ByteArray {
-        var pos = 0
-        // SEQUENCE tag
-        require(this[pos++] == 0x30.toByte()) { "Expected SEQUENCE tag 0x30" }
-        // Skip SEQUENCE length
-        val (_, seqLenBytes) = readDerLength(this, pos)
-        pos += seqLenBytes
-        // r INTEGER
-        require(this[pos++] == 0x02.toByte()) { "Expected INTEGER tag 0x02 for r" }
-        val (rLen, rLenBytes) = readDerLength(this, pos)
-        pos += rLenBytes
-        val rBytes = copyOfRange(pos, pos + rLen)
-        pos += rLen
-        // s INTEGER
-        require(this[pos++] == 0x02.toByte()) { "Expected INTEGER tag 0x02 for s" }
-        val (sLen, sLenBytes) = readDerLength(this, pos)
-        pos += sLenBytes
-        val sBytes = copyOfRange(pos, pos + sLen)
-
-        return stripAndPad(rBytes, coordinateLen) + stripAndPad(sBytes, coordinateLen)
-    }
-
-    private fun ByteArray.ecdsaP1363ToDer(coordinateLen: Int): ByteArray {
-        val r = copyOf(coordinateLen)
-        val s = copyOfRange(coordinateLen, coordinateLen * 2)
-
-        fun encodeDerInteger(raw: ByteArray): ByteArray {
-            var start = 0
-            while (start < raw.size - 1 && raw[start] == 0x00.toByte()) start++
-            val stripped = raw.copyOfRange(start, raw.size)
-            val withSign = if (stripped[0].toInt() and 0x80 != 0) byteArrayOf(0x00) + stripped else stripped
-            return byteArrayOf(0x02.toByte(), withSign.size.toByte()) + withSign
-        }
-
-        val rDer = encodeDerInteger(r)
-        val sDer = encodeDerInteger(s)
-        val body = rDer + sDer
-
-        val seqLen = if (body.size < 0x80) {
-            byteArrayOf(body.size.toByte())
-        } else {
-            byteArrayOf(0x81.toByte(), body.size.toByte())
-        }
-
-        return byteArrayOf(0x30.toByte()) + seqLen + body
-    }
-
-    /** Strips the leading 0x00 DER sign byte and zero-pads to [targetLen] on the left. */
-    private fun stripAndPad(bytes: ByteArray, targetLen: Int): ByteArray {
-        var start = 0
-        while (start < bytes.size - 1 && bytes[start] == 0x00.toByte()) start++
-        val stripped = bytes.copyOfRange(start, bytes.size)
-        return ByteArray(maxOf(0, targetLen - stripped.size)) + stripped
-    }
 }
 
 /**
@@ -284,13 +214,13 @@ public object AndroidKeystoreSigningKeyFactory {
      *
      * @param keySizeInBits RSA key size in bits (ignored for ECDSA and HMAC keys). Defaults to 2048.
      * @param strongBoxPreference Controls whether the key is generated inside StrongBox.
-     *   Defaults to [AndroidStrongBoxKeyPreference.None].
+     *   Defaults to [SecureHardwarePreference.None].
      */
     public fun create(
         algorithm: SigningAlgorithm,
         keyId: String,
         keySizeInBits: Int = 2048,
-        strongBoxPreference: AndroidStrongBoxKeyPreference = AndroidStrongBoxKeyPreference.None,
+        strongBoxPreference: SecureHardwarePreference = SecureHardwarePreference.None,
     ) {
         strongBoxPreference.runWithFlag { useStrongBox ->
             val spec = KeyGenParameterSpec.Builder(keyId, algorithm.purpose())

@@ -2,7 +2,6 @@ package co.touchlab.kjwt.hardware.ext
 
 import android.os.Build
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
-import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import java.security.spec.MGF1ParameterSpec
 import javax.crypto.spec.OAEPParameterSpec
 import javax.crypto.spec.PSource
@@ -35,15 +34,3 @@ public fun EncryptionAlgorithm.toOaepParameterSpec(): OAEPParameterSpec = when (
     }
 }
 
-public fun EncryptionContentAlgorithm.generateCek(
-    generateRandomBytes: (Int) -> ByteArray,
-): ByteArray = generateRandomBytes(
-    when (this) {
-        EncryptionContentAlgorithm.A128GCM -> 16
-        EncryptionContentAlgorithm.A192GCM -> 24
-        EncryptionContentAlgorithm.A256GCM -> 32
-        EncryptionContentAlgorithm.A128CbcHs256 -> 32
-        EncryptionContentAlgorithm.A192CbcHs384 -> 48
-        EncryptionContentAlgorithm.A256CbcHs512 -> 64
-    }
-)

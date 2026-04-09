@@ -1,8 +1,8 @@
 [versions]
-kotlin = "2.2.21"
+kotlin = "2.3.20"
 agp = "9.1.0"
 androidxTest = "1.6.1"
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.10.0"
 kotlinxCoroutines = "1.10.2"
 cryptography = "0.5.0"
 kotest = "6.1.6"
@@ -29,6 +29,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotest-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version.ref = "kotest" }
 kotest-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-runner-junit4 = { module = "io.kotest:kotest-runner-junit4", version.ref = "kotest" }
 
 ksp-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

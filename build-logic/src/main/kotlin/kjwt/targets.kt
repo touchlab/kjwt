@@ -7,7 +7,6 @@ import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import kotlin.text.get
 
 fun KotlinMultiplatformExtension.allTargets(
     supportsWasmWasi: Boolean = true,
@@ -63,23 +62,32 @@ fun KotlinMultiplatformExtension.androidJvmTarget(
     }
 }
 
-fun KotlinMultiplatformExtension.appleTargets(
-    // not supported by Swift anymore -> not supported by CryptoKit
-    supportsWatchosArm32: Boolean = true,
-) {
+fun KotlinMultiplatformExtension.appleTargets() {
+    macosTargets()
+    iosTargets()
+    watchosTargets()
+    tvosTargets()
+}
+
+fun KotlinMultiplatformExtension.macosTargets() {
     macosX64()
     macosArm64()
+}
 
+fun KotlinMultiplatformExtension.iosTargets() {
     iosArm64()
     iosX64()
     iosSimulatorArm64()
+}
 
+fun KotlinMultiplatformExtension.watchosTargets() {
     watchosX64()
-    if (supportsWatchosArm32) watchosArm32()
     watchosArm64()
     watchosSimulatorArm64()
     watchosDeviceArm64()
+}
 
+fun KotlinMultiplatformExtension.tvosTargets() {
     tvosX64()
     tvosArm64()
     tvosSimulatorArm64()

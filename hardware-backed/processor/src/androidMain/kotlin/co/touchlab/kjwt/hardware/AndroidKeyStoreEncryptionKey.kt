@@ -9,7 +9,8 @@ import co.touchlab.kjwt.hardware.ext.generateCek
 import co.touchlab.kjwt.hardware.ext.toOaepCipherName
 import co.touchlab.kjwt.hardware.ext.toOaepParameterSpec
 import co.touchlab.kjwt.hardware.helpers.AndroidKeyStoreManager
-import co.touchlab.kjwt.hardware.model.AndroidStrongBoxKeyPreference
+import co.touchlab.kjwt.hardware.model.SecureHardwarePreference
+import co.touchlab.kjwt.hardware.model.runWithFlag
 import co.touchlab.kjwt.model.algorithm.EncryptionAlgorithm
 import co.touchlab.kjwt.model.algorithm.EncryptionContentAlgorithm
 import co.touchlab.kjwt.model.algorithm.Jwa
@@ -88,7 +89,7 @@ public class AndroidKeyStoreEncryptionKey internal constructor(
             algorithm: EncryptionAlgorithm.Dir,
             keyId: String?,
             keySizeInBits: Int = 2048,
-            strongBoxPreference: AndroidStrongBoxKeyPreference = AndroidStrongBoxKeyPreference.None,
+            strongBoxPreference: SecureHardwarePreference = SecureHardwarePreference.None,
         ): AndroidKeyStoreEncryptionKey {
             error(
                 "AndroidKeyStoreEncryptionKey does not support the Dir algorithm. Use a symmetric key provider instead."
@@ -103,13 +104,13 @@ public class AndroidKeyStoreEncryptionKey internal constructor(
          *   alias derived from [algorithm] is used.
          * @param keySizeInBits RSA key size in bits. Defaults to 2048.
          * @param strongBoxPreference Controls whether the key is generated inside StrongBox.
-         *   Defaults to [co.touchlab.kjwt.hardware.model.AndroidStrongBoxKeyPreference.None].
+         *   Defaults to [SecureHardwarePreference.None].
          */
         public fun getOrCreateInstance(
             algorithm: EncryptionAlgorithm,
             keyId: String?,
             keySizeInBits: Int = 2048,
-            strongBoxPreference: AndroidStrongBoxKeyPreference = AndroidStrongBoxKeyPreference.None,
+            strongBoxPreference: SecureHardwarePreference = SecureHardwarePreference.Preferred,
         ): AndroidKeyStoreEncryptionKey {
             require(algorithm != EncryptionAlgorithm.Dir) {
                 "AndroidKeyStoreEncryptionKey does not support the Dir algorithm. Use a symmetric key provider instead."
@@ -306,13 +307,13 @@ public object AndroidKeystoreEncryptionKeyFactory {
      *
      * @param keySizeInBits RSA key size in bits. Defaults to 2048.
      * @param strongBoxPreference Controls whether the key is generated inside StrongBox.
-     *   Defaults to [AndroidStrongBoxKeyPreference.None].
+     *   Defaults to [SecureHardwarePreference.None].
      */
     public fun create(
         algorithm: EncryptionAlgorithm,
         keyId: String,
         keySizeInBits: Int = 2048,
-        strongBoxPreference: AndroidStrongBoxKeyPreference = AndroidStrongBoxKeyPreference.None,
+        strongBoxPreference: SecureHardwarePreference = SecureHardwarePreference.None,
     ) {
         strongBoxPreference.runWithFlag { useStrongBox ->
             val spec =

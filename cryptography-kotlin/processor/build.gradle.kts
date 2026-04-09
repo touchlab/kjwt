@@ -1,5 +1,5 @@
 import kjwt.allTargets
-import kjwt.configureCryptographyProviderForTests
+import kjwt.configureTests
 
 plugins {
     id("kjwt.multiplatform-library")
@@ -10,6 +10,7 @@ description = "Cryptography-kotlin extensions for KJWT"
 
 kotlin {
     allTargets()
+    configureTests()
     sourceSets {
         commonMain.dependencies {
             api(projects.kjwtCore)

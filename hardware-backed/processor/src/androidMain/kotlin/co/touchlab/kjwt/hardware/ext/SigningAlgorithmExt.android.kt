@@ -44,10 +44,3 @@ public val SigningAlgorithm.ECDSABased.algorithmParameterSpec: ECGenParameterSpe
             SigningAlgorithm.ES512 -> "secp521r1"
         }
     )
-
-public val SigningAlgorithm.ECDSABased.coordLen: Int
-    get() = when (this) {
-        SigningAlgorithm.ES256 -> 32
-        SigningAlgorithm.ES384 -> 48
-        SigningAlgorithm.ES512 -> 66 // P-521 is 521 bits = 66 bytes
-    }
