@@ -37,3 +37,6 @@ project(":kjwt-cryptography-kotlin-processor").projectDir = file("cryptography-k
 
 include(":kjwt-cryptography-kotlin-processor-ext")
 project(":kjwt-cryptography-kotlin-processor-ext").projectDir = file("cryptography-kotlin/ext")
+
+include(":kjwt-hardware-backed-processor")
+project(":kjwt-hardware-backed-processor").projectDir = file("hardware-backed/processor")

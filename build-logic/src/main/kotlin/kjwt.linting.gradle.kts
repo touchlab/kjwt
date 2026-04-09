@@ -18,6 +18,11 @@ dependencies {
 }
 
 tasks.withType<Detekt>().configureEach {
+    if (name.contains("android", true)) {
+        enabled = false
+        return@configureEach
+    }
+
     exclude { it.file.path.contains("generated/") }
 
     reports {
@@ -33,7 +38,11 @@ val detektAll by tasks.registering {
     group = "verification"
     description = "Runs over whole code base without the starting overhead for each module."
 
-    dependsOn(tasks.withType<Detekt>())
+    dependsOn(
+        tasks
+            .withType<Detekt>()
+            .filterNot { it.name.contains("android", true) }
+    )
 }
 
 val mergedDetektReport by tasks.registering(ReportMergeTask::class) {

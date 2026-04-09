@@ -63,7 +63,7 @@ public interface JwtProcessorRegistry {
      * safely — it guards against cyclic delegation chains.
      */
     @InternalKJWTApi
-    public var delegateKeyRegistry: JwtProcessorRegistry?
+    public val delegateKeyRegistry: JwtProcessorRegistry?
 
     /**
      * Sets [other] as the delegate registry for this registry.
@@ -112,7 +112,9 @@ public interface JwtProcessorRegistry {
         algorithm: EncryptionAlgorithm,
         keyId: String?,
     ): BaseJweProcessor?
+}
 
+public interface MutableJwtProcessorRegistry : JwtProcessorRegistry {
     /**
      * Registers a [BaseJwsProcessor] in this registry under its algorithm and optional [keyId].
      *

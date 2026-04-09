@@ -58,17 +58,17 @@ As of now, the library supports the following operations:
 | Operations      | Signing Algorithms | Encryption Algorithms     | Platforms                                   |
 |-----------------|--------------------|---------------------------|---------------------------------------------|
 | ✅ Sign          | ✅ HS256            | ✅ RSA-OAEP `(alg)`        | ✅ JVM (incl. Android)                       |
-| ✅ Verify        | ✅ HS384            | ✅ RSA-OAEP-256 `(alg)`    | ✅ JS (node + browser)⁴                      |
-| ✅ `iss` check¹  | ✅ HS512            | ✅ dir `(alg)`             | ✅ wasmJs (node + browser)⁴                  |
-| ✅ `sub` check¹  | ✅ RS256            | ❌ A128KW `(alg)`          | ❌ wasmWasi⁵                                 |
-| ✅ `aud` check¹  | ✅ RS384            | ❌ A192KW `(alg)`          | ✅ iOS (arm64, x64, simulatorArm64)⁶         |
-| ✅ `exp` check   | ✅ RS512            | ❌ A256KW `(alg)`          | ✅ macOS (x64, arm64)⁶                       |
-| ✅ `nbf` check   | ✅ ES256            | ❌ ECDH-ES `(alg)`         | ✅ watchOS (x64, arm32, arm64, sim, device)⁶ |
-| ⚠️ `iat` check² | ❌ ES256K           | ✅ A128GCM `(enc)`         | ✅ tvOS (x64, arm64, sim)⁶                   |
+| ✅ Verify        | ✅ HS384            | ✅ RSA-OAEP-256 `(alg)`    | ✅ Android (TEE / StrongBox)⁷                |
+| ✅ `iss` check¹  | ✅ HS512            | ✅ dir `(alg)`             | ✅ iOS (arm64, x64, simulatorArm64)⁶⁷        |
+| ✅ `sub` check¹  | ✅ RS256            | ❌ A128KW `(alg)`          | ✅ macOS (x64, arm64)⁶                       |
+| ✅ `aud` check¹  | ✅ RS384            | ❌ A192KW `(alg)`          | ✅ watchOS (x64, arm32, arm64, sim, device)⁶ |
+| ✅ `exp` check   | ✅ RS512            | ❌ A256KW `(alg)`          | ✅ tvOS (x64, arm64, sim)⁶                   |
+| ✅ `nbf` check   | ✅ ES256            | ❌ ECDH-ES `(alg)`         | ✅ JS (node + browser)⁴                      |
+| ⚠️ `iat` check² | ❌ ES256K           | ✅ A128GCM `(enc)`         | ✅ wasmJs (node + browser)⁴                  |
 | ⚠️ `jti` check² | ✅ ES384            | ⚠️ A192GCM `(enc)`⁴       | ✅ Linux (x64, arm64)                        |
 | ❌ `typ` check   | ✅ ES512            | ✅ A256GCM `(enc)`         | ✅ Windows/MinGW (x64)                       |
 |                 | ✅ PS256³           | ✅ A128CBC-HS256 `(enc)`   | ✅ Android Native (x64, x86, arm64, arm32)   |
-|                 | ✅ PS384³           | ⚠️ A192CBC-HS384 `(enc)`⁴ |                                             |
+|                 | ✅ PS384³           | ⚠️ A192CBC-HS384 `(enc)`⁴ | ❌ wasmWasi⁵                                 |
 |                 | ✅ PS512³           | ✅ A256CBC-HS512 `(enc)`   |                                             |
 |                 | ❌ EdDSA            |                           |                                             |
 
@@ -92,6 +92,21 @@ As of now, the library supports the following operations:
 > algorithms and is a good choice when a single consistent provider is needed across Apple, Linux, and Android Native.
 > With only `cryptography-provider-cryptokit`, RSA and AES-CBC algorithms are unavailable. With only
 > `cryptography-provider-apple`, AES-GCM algorithms are unavailable.
+>
+> ⁷ Hardware-backed key storage is available via the `kjwt-hardware-backed-processor` module.
+> On **Android**, keys are always stored in the TEE (all API levels). StrongBox (API 28+) is used when
+> the `Preferred` or `Required` hardware preference is set and the device has a dedicated secure element.
+> Per the [Android CDD/Keymaster HAL spec](https://developer.android.com/privacy-and-security/keystore),
+> StrongBox supports only ES256 (P-256), HS256, RS256, and PS256 (2048-bit RSA + SHA-256); algorithms
+> outside these (ES384/512, HS384/512, RS384/512, PS384/512) always use TEE even if StrongBox is
+> requested — `Preferred` falls back silently, `Required` throws. Hardware-backed signing supports
+> HS256/384/512, RS256/384/512, PS256/384/512, ES256/384/512 (TEE) and HS256, RS256, PS256, ES256
+> (StrongBox). **PS256/384/512 require API 28+** — Android Keystore's PSS parameter configuration
+> (`Signature.setParameter`) is not available on earlier API levels. Hardware-backed encryption supports RSA-OAEP and RSA-OAEP-256 `(alg)`,
+> A128GCM, A192GCM, A256GCM, A128CBC-HS256, A192CBC-HS384, A256CBC-HS512 `(enc)`.
+> On **iOS**, keys are stored in the Keychain; the Secure Enclave is used for ES256 when the `Preferred`
+> or `Required` hardware preference is set (ES256 only — other algorithms always use Keychain).
+> iOS hardware backing covers JWS (sign/verify) only; JWE encryption is Android-only.
 
 ---
 
@@ -108,10 +123,10 @@ dependencies {
     // For usage with `Cryptography-Kotlin`, include the processor and the providers for it:
     implementation("co.touchlab:kjwt-cryptography-kotlin-processor:<kjwt-version>")
     implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:<cryptography-kotlin-version>")
-    
+
     // Optional: Some extensions exist for the cryptography-kotlin library
     implementation("co.touchlab:kjwt-cryptography-kotlin-processor-ext:<kjwt-version>")
-    
+
     // Mover providers will be added soon
 }
 ```

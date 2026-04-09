@@ -5,6 +5,7 @@ import co.touchlab.kjwt.cryptography.EncryptionKey
 import co.touchlab.kjwt.cryptography.SigningKey
 import co.touchlab.kjwt.ext.mergeWith
 import co.touchlab.kjwt.model.registry.JwtProcessorRegistry
+import co.touchlab.kjwt.model.registry.MutableJwtProcessorRegistry
 import co.touchlab.kjwt.processor.BaseJweProcessor
 import co.touchlab.kjwt.processor.BaseJwsProcessor
 
@@ -17,7 +18,7 @@ import co.touchlab.kjwt.processor.BaseJwsProcessor
  *   algorithm and key ID
  */
 @OptIn(DelicateKJWTApi::class)
-public fun JwtProcessorRegistry.registerSigningKey(key: SigningKey) {
+public fun MutableJwtProcessorRegistry.registerSigningKey(key: SigningKey) {
     registerJwsProcessor(key)
 }
 
@@ -63,7 +64,7 @@ public fun JwtProcessorRegistry.findBestJwsProcessorAndMerge(
  *   algorithm and key ID
  */
 @OptIn(DelicateKJWTApi::class)
-public fun JwtProcessorRegistry.registerEncryptionKey(key: EncryptionKey) {
+public fun MutableJwtProcessorRegistry.registerEncryptionKey(key: EncryptionKey) {
     registerJweProcessor(key)
 }
 

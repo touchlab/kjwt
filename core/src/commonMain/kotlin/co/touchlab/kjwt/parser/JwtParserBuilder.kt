@@ -11,6 +11,7 @@ import co.touchlab.kjwt.model.JwtHeader
 import co.touchlab.kjwt.model.JwtPayload
 import co.touchlab.kjwt.model.registry.DefaultJwtProcessorRegistry
 import co.touchlab.kjwt.model.registry.JwtProcessorRegistry
+import co.touchlab.kjwt.model.registry.MutableJwtProcessorRegistry
 import co.touchlab.kjwt.processor.JweProcessor
 import co.touchlab.kjwt.processor.JwsProcessor
 import kotlinx.serialization.json.Json
@@ -34,7 +35,7 @@ public class JwtParserBuilder(
 ) {
     /** The processor registry used by the built [JwtParser] to look up signing and encryption keys. */
     @InternalKJWTApi
-    public val processorRegistry: JwtProcessorRegistry = DefaultJwtProcessorRegistry()
+    public val processorRegistry: MutableJwtProcessorRegistry = DefaultJwtProcessorRegistry()
 
     @PublishedApi
     internal val validators: MutableList<(JwtPayload, JwtHeader) -> Unit> = mutableListOf()

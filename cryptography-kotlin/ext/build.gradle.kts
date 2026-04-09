@@ -1,3 +1,5 @@
+import kjwt.allTargets
+
 plugins {
     id("kjwt.multiplatform-library")
     alias(libs.plugins.kotlin.serialization)
@@ -6,6 +8,7 @@ plugins {
 description = "Cryptography-kotlin processor for KJWT"
 
 kotlin {
+    allTargets()
     sourceSets {
         commonMain.dependencies {
             api(projects.kjwtCore)

@@ -16,6 +16,7 @@ object Projects {
         ":kjwt-core" to Type.Library,
         ":kjwt-cryptography-kotlin-processor" to Type.Library,
         ":kjwt-cryptography-kotlin-processor-ext" to Type.Library,
+        ":kjwt-hardware-backed-processor" to Type.Library,
     )
 
     val allLibraries: Set<String> = allProjects.filter { it.value == Type.Library }.keys
