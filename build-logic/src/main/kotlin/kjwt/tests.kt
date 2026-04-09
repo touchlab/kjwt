@@ -43,10 +43,6 @@ fun KotlinMultiplatformExtension.configureKotlinTestDependencies() {
         implementation(libs.findLibrary("kotest-engine").get())
     }
 
-    sourceSets.findByName("androidDeviceTest")?.dependencies {
-        implementation(libs.findLibrary("kotest-runner-junit4").get())
-    }
-
     if (project.tasks.any { it.name == "jvmTest" }) {
         sourceSets.jvmTest.dependencies {
             implementation(libs.findLibrary("kotest-runner-junit5").get())

@@ -33,9 +33,6 @@ kotlin {
 
         getByName("androidDeviceTest").dependencies {
             implementation(libs.androidx.test.runner)
-
-            implementation(projects.kjwtCryptographyKotlinProcessor)
-            implementation(projects.kjwtCryptographyKotlinProcessorExt)
         }
     }
 }

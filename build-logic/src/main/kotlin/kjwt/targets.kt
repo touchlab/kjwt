@@ -28,36 +28,6 @@ fun KotlinMultiplatformExtension.androidJvmTarget(
 
         withDeviceTestBuilder { sourceSetTreeName = "test" }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            managedDevices {
-                // Even dough the minSdk is 23, the managed devices are not starting on older APIs
-                localDevices.create("api28") {
-                    device = "Pixel 2"
-                    apiLevel = 28
-                    systemImageSource = "aosp"
-                }
-                localDevices.create("api32") {
-                    device = "Pixel 2"
-                    apiLevel = 32
-                    systemImageSource = "aosp-atd"
-                }
-                localDevices.create("api35") {
-                    device = "Pixel 2"
-                    apiLevel = 35
-                    systemImageSource = "aosp-atd"
-                }
-
-                groups {
-                    create("allSupported") {
-                        targetDevices.addAll(
-                            listOfNotNull(
-                                localDevices.getByName("api28"),
-                                localDevices.getByName("api32"),
-                                localDevices.getByName("api35"),
-                            )
-                        )
-                    }
-                }
-            }
         }
     }
 }
