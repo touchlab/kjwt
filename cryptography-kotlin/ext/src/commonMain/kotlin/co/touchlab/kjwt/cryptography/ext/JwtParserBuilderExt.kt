@@ -82,7 +82,7 @@ public fun JwtParserBuilder.verifyWith(
 ): JwtParserBuilder = verifyWith(algorithm as SigningAlgorithm, key, keyId)
 
 /**
- * Registers a raw [Key] for JWS signature verification using any [SigningAlgorithm].
+ * Registers a raw cryptography key for JWS signature verification using any [SigningAlgorithm].
  *
  * Prefer the strongly typed overloads (e.g. [verifyWith] accepting [HMAC.Key] or
  * [RSA.PKCS1.PublicKey]) when possible, as they enforce the correct key type at compile time.
@@ -276,10 +276,10 @@ public fun JwtParserBuilder.decryptWith(
 ): JwtParserBuilder = decryptWith(algorithm as EncryptionAlgorithm, privateKey, keyId)
 
 /**
- * Registers a raw [Key] for JWE token decryption using any [EncryptionAlgorithm].
+ * Registers a raw cryptography key for JWE token decryption using any [EncryptionAlgorithm].
  *
  * Prefer the strongly typed overloads (e.g. [decryptWith] accepting [RSA.OAEP.PrivateKey] or
- * [SimpleKey]) when possible, as they enforce the correct key type at compile time.
+ * raw [ByteArray]) when possible, as they enforce the correct key type at compile time.
  *
  * @param algorithm the JWE key-encryption algorithm this key is associated with
  * @param privateKey the raw cryptography-kotlin key to decrypt tokens with; must be compatible with [algorithm]

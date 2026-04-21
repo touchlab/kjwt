@@ -105,9 +105,9 @@ public suspend fun JwtBuilder.signWith(
 ): JwtInstance.Jws = signWith(key, keyId)
 
 /**
- * Encrypts the JWT using a direct (`dir`) [SimpleKey] symmetric key.
+ * Encrypts the JWT using a direct (`dir`) symmetric key supplied as raw bytes.
  *
- * @param key the [SimpleKey] wrapping the raw symmetric content encryption key
+ * @param key the raw symmetric content encryption key bytes
  * @param keyAlgorithm the direct key encryption algorithm ([EncryptionAlgorithm.Dir])
  * @param contentAlgorithm the content encryption algorithm to apply to the JWT payload
  * @param keyId optional key ID to embed in the token header's `kid` field. Defaults to `null`.
