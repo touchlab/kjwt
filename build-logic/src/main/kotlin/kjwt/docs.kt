@@ -35,6 +35,5 @@ fun DokkaExtension.registerVersioningPlugin(project: Project) {
     pluginsConfiguration.versioning {
         version.set(Projects.VERSION)
         olderVersionsDir.set(project.rootProject.projectDir.resolve("build/previous-versions"))
-        renderVersionsNavigationOnAllPages.set(true)
     }
 }
