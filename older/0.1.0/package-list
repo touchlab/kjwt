@@ -19,3 +19,7 @@ module:kjwt-cryptography-kotlin-processor
 co.touchlab.kjwt.cryptography
 module:kjwt-cryptography-kotlin-processor-ext
 co.touchlab.kjwt.cryptography.ext
+module:kjwt-hardware-backed-processor
+co.touchlab.kjwt.hardware
+co.touchlab.kjwt.hardware.ext
+co.touchlab.kjwt.hardware.model

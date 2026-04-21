@@ -126,79 +126,79 @@
             <tr>
               <td>✅ Sign</td>
               <td>✅ HS256</td>
-              <td>✅ RSA-OAEP <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
+              <td>✅ RSA-OAEP <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
               <td>✅ JVM (incl. Android)</td>
             </tr>
             <tr>
               <td>✅ Verify</td>
               <td>✅ HS384</td>
-              <td>✅ RSA-OAEP-256 <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
-              <td>✅ JS (node + browser)⁴</td>
+              <td>✅ RSA-OAEP-256 <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
+              <td>✅ Android (TEE / StrongBox)⁷</td>
             </tr>
             <tr>
-              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">iss</code> check¹</td>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">iss</code> check¹</td>
               <td>✅ HS512</td>
-              <td>✅ dir <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
-              <td>✅ wasmJs (node + browser)⁴</td>
+              <td>✅ dir <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
+              <td>✅ iOS (arm64, x64, simulatorArm64)⁶⁷</td>
             </tr>
             <tr>
-              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">sub</code> check¹</td>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">sub</code> check¹</td>
               <td>✅ RS256</td>
-              <td>❌ A128KW <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
-              <td>❌ wasmWasi⁵</td>
-            </tr>
-            <tr>
-              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">aud</code> check¹</td>
-              <td>✅ RS384</td>
-              <td>❌ A192KW <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
-              <td>✅ iOS (arm64, x64, simulatorArm64)⁶</td>
-            </tr>
-            <tr>
-              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">exp</code> check</td>
-              <td>✅ RS512</td>
-              <td>❌ A256KW <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
+              <td>❌ A128KW <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
               <td>✅ macOS (x64, arm64)⁶</td>
             </tr>
             <tr>
-              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">nbf</code> check</td>
-              <td>✅ ES256</td>
-              <td>❌ ECDH-ES <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(alg)</code></td>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">aud</code> check¹</td>
+              <td>✅ RS384</td>
+              <td>❌ A192KW <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
               <td>✅ watchOS (x64, arm32, arm64, sim, device)⁶</td>
             </tr>
             <tr>
-              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">iat</code> check²</td>
-              <td>❌ ES256K</td>
-              <td>✅ A128GCM <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code></td>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">exp</code> check</td>
+              <td>✅ RS512</td>
+              <td>❌ A256KW <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
               <td>✅ tvOS (x64, arm64, sim)⁶</td>
             </tr>
             <tr>
-              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">jti</code> check²</td>
+              <td>✅ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">nbf</code> check</td>
+              <td>✅ ES256</td>
+              <td>❌ ECDH-ES <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(alg)</code></td>
+              <td>✅ JS (node + browser)⁴</td>
+            </tr>
+            <tr>
+              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">iat</code> check²</td>
+              <td>❌ ES256K</td>
+              <td>✅ A128GCM <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code></td>
+              <td>✅ wasmJs (node + browser)⁴</td>
+            </tr>
+            <tr>
+              <td>⚠️ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">jti</code> check²</td>
               <td>✅ ES384</td>
-              <td>⚠️ A192GCM <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code>⁴</td>
+              <td>⚠️ A192GCM <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code>⁴</td>
               <td>✅ Linux (x64, arm64)</td>
             </tr>
             <tr>
-              <td>❌ <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">typ</code> check</td>
+              <td>❌ <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">typ</code> check</td>
               <td>✅ ES512</td>
-              <td>✅ A256GCM <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code></td>
+              <td>✅ A256GCM <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code></td>
               <td>✅ Windows/MinGW (x64)</td>
             </tr>
             <tr>
               <td></td>
               <td>✅ PS256³</td>
-              <td>✅ A128CBC-HS256 <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code></td>
+              <td>✅ A128CBC-HS256 <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code></td>
               <td>✅ Android Native (x64, x86, arm64, arm32)</td>
             </tr>
             <tr>
               <td></td>
               <td>✅ PS384³</td>
-              <td>⚠️ A192CBC-HS384 <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code>⁴</td>
-              <td></td>
+              <td>⚠️ A192CBC-HS384 <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code>⁴</td>
+              <td>❌ wasmWasi⁵</td>
             </tr>
             <tr>
               <td></td>
               <td>✅ PS512³</td>
-              <td>✅ A256CBC-HS512 <code class="org.jetbrains.dokka.pages.commenttable@4671607e lang-kotlin">(enc)</code></td>
+              <td>✅ A256CBC-HS512 <code class="org.jetbrains.dokka.pages.commenttable@514cc0df lang-kotlin">(enc)</code></td>
               <td></td>
             </tr>
             <tr>
@@ -217,12 +217,13 @@
         <p class="paragraph">⁴ JS and wasmJs use WebCrypto, which does not support 192-bit AES keys. <code class="lang-kotlin">A192GCM</code> and <code class="lang-kotlin">A192CBC-HS384</code> are unavailable on these platforms.</p>
         <p class="paragraph">⁵ wasmWasi has no <code class="lang-kotlin">cryptography-kotlin</code> provider. The library compiles for this target but all cryptographic operations throw at runtime.</p>
         <p class="paragraph">⁶ Apple targets (iOS, macOS, watchOS, tvOS): use <code class="lang-kotlin">cryptography-provider-optimal</code> for full algorithm support (CryptoKit for AES-GCM; Apple/CommonCrypto for AES-CBC+HMAC and RSA). <code class="lang-kotlin">cryptography-provider-openssl3-prebuilt</code> also supports all algorithms and is a good choice when a single consistent provider is needed across Apple, Linux, and Android Native. With only <code class="lang-kotlin">cryptography-provider-cryptokit</code>, RSA and AES-CBC algorithms are unavailable. With only <code class="lang-kotlin">cryptography-provider-apple</code>, AES-GCM algorithms are unavailable.</p>
+        <p class="paragraph">⁷ Hardware-backed key storage is available via the <code class="lang-kotlin">kjwt-hardware-backed-processor</code> module. On <strong>Android</strong>, keys are always stored in the TEE (all API levels). StrongBox (API 28+) is used when the <code class="lang-kotlin">Preferred</code> or <code class="lang-kotlin">Required</code> hardware preference is set and the device has a dedicated secure element. Per the <a href="https://developer.android.com/privacy-and-security/keystore">Android CDD/Keymaster HAL spec</a>, StrongBox supports only ES256 (P-256), HS256, RS256, and PS256 (2048-bit RSA + SHA-256); algorithms outside these (ES384/512, HS384/512, RS384/512, PS384/512) always use TEE even if StrongBox is requested — <code class="lang-kotlin">Preferred</code> falls back silently, <code class="lang-kotlin">Required</code> throws. Hardware-backed signing supports HS256/384/512, RS256/384/512, PS256/384/512, ES256/384/512 (TEE) and HS256, RS256, PS256, ES256 (StrongBox). <strong>PS256/384/512 require API 28+</strong> — Android Keystore's PSS parameter configuration (<code class="lang-kotlin">Signature.setParameter</code>) is not available on earlier API levels. Hardware-backed encryption supports RSA-OAEP and RSA-OAEP-256 <code class="lang-kotlin">(alg)</code>, A128GCM, A192GCM, A256GCM, A128CBC-HS256, A192CBC-HS384, A256CBC-HS512 <code class="lang-kotlin">(enc)</code>. On <strong>iOS</strong>, keys are stored in the Keychain; the Secure Enclave is used for ES256 when the <code class="lang-kotlin">Preferred</code> or <code class="lang-kotlin">Required</code> hardware preference is set (ES256 only — other algorithms always use Keychain). iOS hardware backing covers JWS (sign/verify) only; JWE encryption is Android-only.</p>
       </blockquote>
 
       <h2 class="">Setup</h2>
       <p class="paragraph">Add the library to your project and register a cryptography provider. The <code class="lang-kotlin">cryptography-provider-optimal</code> artifact auto-registers on startup and is the recommended choice:</p>
       <div class="sample-container">
-        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation("co.touchlab:kjwt-core:&lt;kjwt-version&gt;")<br><br>    // For usage with `Cryptography-Kotlin`, include the processor and the providers for it:<br>    implementation("co.touchlab:kjwt-cryptography-kotlin-processor:&lt;kjwt-version&gt;")<br>    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:&lt;cryptography-kotlin-version&gt;")<br>    <br>    // Optional: Some extensions exist for the cryptography-kotlin library<br>    implementation("co.touchlab:kjwt-cryptography-kotlin-processor-ext:&lt;kjwt-version&gt;")<br>    <br>    // Mover providers will be added soon<br>}</code></pre>
+        <pre><code class="block lang-kotlin" theme="idea">// build.gradle.kts<br>dependencies {<br>    implementation("co.touchlab:kjwt-core:&lt;kjwt-version&gt;")<br><br>    // For usage with `Cryptography-Kotlin`, include the processor and the providers for it:<br>    implementation("co.touchlab:kjwt-cryptography-kotlin-processor:&lt;kjwt-version&gt;")<br>    implementation("dev.whyoleg.cryptography:cryptography-provider-optimal:&lt;cryptography-kotlin-version&gt;")<br><br>    // Optional: Some extensions exist for the cryptography-kotlin library<br>    implementation("co.touchlab:kjwt-cryptography-kotlin-processor-ext:&lt;kjwt-version&gt;")<br><br>    // Mover providers will be added soon<br>}</code></pre>
 <span class="copy-tooltip">
           <div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div>
 <span class="copy-icon"></span></span></div>
@@ -323,6 +324,17 @@
           <div class="w-100"><span class="inline-flex">
               <div><a href="kjwt-cryptography-kotlin-processor-ext/index.html">kjwt-cryptography-kotlin-processor-ext</a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1922870987%2FMain%2F0"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div><span class="brief-comment"></span></div>
+        </div>
+      </div>
+<a data-name="-1598456394%2FMain%2F0" anchor-label="kjwt-hardware-backed-processor" id="-1598456394%2FMain%2F0" data-filterable-set=""></a>
+      <div class="table-row table-row_multimodule">
+        <div class="main-subrow ">
+          <div class="w-100"><span class="inline-flex">
+              <div><a href="kjwt-hardware-backed-processor/index.html">kjwt-hardware-backed-processor</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1598456394%2FMain%2F0"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
           <div><span class="brief-comment"></span></div>
